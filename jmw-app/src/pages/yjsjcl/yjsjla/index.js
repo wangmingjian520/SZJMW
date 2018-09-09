@@ -37,29 +37,7 @@ export default class yjsjla extends React.Component{
         //         console.log(error);
         //     })
         let _this =this;
-        axios.ajax({
-            url:'/yjsjla/tableList',
-            data:{
-                params: this.params,
-                isShowLoading:true
-            }
-        }).then((res)=>{
-            if(res.code == 0) {
-                res.result.list.map((item,index)=>{
-                    item.key = index;
-                })
-                this.setState({
-                    dataSource:res.result.list,
-                    selectedRowKeys:[],
-                    selectedRows:null,
-                    pagination:Utils.pagination(res,(current)=>{
-                        _this.params.page = current;
-                        this.requestList();
-                    })
-                })
-            }
-        })
-
+        axios.requestList(this,'/yjsjla/tableList',this.params);
     }
     
     onRowClick = (record,index)=>{
@@ -74,30 +52,14 @@ export default class yjsjla extends React.Component{
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
-        axios.ajax({
-            url:'/yjsjla/tableList',
-            data:{
-                params:{
-                    searchInfo: value
-                },
-                isShowLoading:true
-            }
-        }).then((res)=>{
-            if(res.code == 0) {
-                res.result.list.map((item,index)=>{
-                    item.key = index;
-                })
-                this.setState({
-                    dataSource:res.result.list,
-                    selectedRowKeys:[],
-                    selectedRows:null,
-                    pagination:Utils.pagination(res,(current)=>{
-                        _this.params.page = current;
-                        this.requestList();
-                    })
-                })
+        this.setState({
+            params:{
+                searchInfo: value
             }
         })
+
+        axios.requestList(this,'/yjsjla/tableList',this.params);
+       
     }
 
     //打开新增
@@ -194,7 +156,7 @@ export default class yjsjla extends React.Component{
         // }
         //多选框
         const rowCheckSelection = {
-            type: 'checkBox',
+            type: 'checkbox',
             selectedRowKeys,
             onChange:(selectedRowKeys,selectedRows)=>{
                 let ids = [];
@@ -235,7 +197,7 @@ export default class yjsjla extends React.Component{
                     <Table
                         // bordered
                         columns={columns}
-                        dataSource={this.state.dataSource}
+                        dataSource={this.state.list}
                         pagination={this.state.pagination}
                        
                         rowSelection={rowCheckSelection}
