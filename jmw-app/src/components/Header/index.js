@@ -13,8 +13,9 @@ export default class Header extends React.Component{
 
     render(){
         return(
-            <div className="header">
+            <div className="secondHeader">
                 <span className="header-Info">{this.state.typeName}</span>
+
             </div>
                    
             );

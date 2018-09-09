@@ -1,14 +1,14 @@
 import React from 'react';
 import { Card , Table } from  'antd';
-
+import  './index.less'
 export default class Wzmlgl extends React.Component{
-    componentDidCatch(){
-        const dateSource = [
-            {
+    // componentDidCatch(){
+    //     const dateSource = [
+    //         {
 
-            }
-        ]
-    }
+    //         }
+    //     ]
+    // }
 
     render(){
         const colums = [
