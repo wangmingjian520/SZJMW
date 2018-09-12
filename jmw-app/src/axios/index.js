@@ -11,8 +11,8 @@ export default class Axios {
             url:url,
             data:data
         }).then((data)=>{
-            if(data && data.result){
-                let list = data.result.list.map((item,index)=>{
+            if(data && data.data){
+                let list = data.data.list.map((item,index)=>{
                 item.key = index;
                 return item
                 })
@@ -64,7 +64,7 @@ export default class Axios {
                 }
                 if (response.status == '200'){
                     let res = response.data;
-                    if (res.code == '0'){
+                    if (res.code == '1'){
                         resolve(res);
                     }else{
                         Modal.info({

@@ -9,11 +9,11 @@ export default {
             onChange:(current)=>{
                 callback(current)
             },
-            current:data.result.page,
-            pageSise:data.result.page_size,
-            total:data.result.total_count,
+            current:data.data.current_page,
+            pageSise:data.data.page_size,
+            total:data.data.total,
             showTotal:()=>{
-                return `共${data.result.total_count}条`
+                return `共${data.data.total}条`
             },
             showQuickJumper:true
 

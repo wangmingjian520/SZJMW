@@ -3,7 +3,7 @@ import { Menu } from 'antd';
 import MenuConfig from '../../config/menuConfig'
 import { NavLink , Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { swtichMenu } from './../../redux/action'
+import { switchMenu } from './../../redux/action'
 const { SubMenu } = Menu;
 
 class NavLeft extends React.Component{
@@ -11,18 +11,18 @@ class NavLeft extends React.Component{
         currentKey: ''
     }
     
-    handleClick= (item)=>{
+    handleClick= ({item})=>{
         console.log(item);
         const { dispatch } = this.props;
-        dispatch(swtichMenu(this.props.title))
+        dispatch(switchMenu(item.props.title))
         this.setState({
-            currentKey:item.key
+            currentKey:item.props.eventKey
         })
     }
 
     componentWillMount(){
         const menuTreeNode = this.renderMenu(MenuConfig);
-        let currentKey = window.location.hash.replace('/#|\?.*$/g','')
+        let currentKey = window.location.hash.replace(/#|\?.*$/g,'')
         this.setState({
             currentKey,
             menuTreeNode
@@ -48,14 +48,12 @@ class NavLeft extends React.Component{
         return(
             <div>
                    <Menu
+                        onClick={this.handleClick}
                         selectedKeys={this.state.currentKey}
                         theme="light"
                         mode="inline"
-                        defaultSelectedKeys={['1']}
-                        defaultOpenKeys={['sub1']}
                         style={{ height: '100%', borderLeft: 2 }}
                         >
-
                         {this.state.menuTreeNode}
                     </Menu>
                 
