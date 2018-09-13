@@ -1,23 +1,25 @@
 import React from 'react';
 import {  Button , Table ,Form , Breadcrumb , Modal , message ,Input ,Layout ,Select ,DatePicker} from  'antd';
 import axios from '../../../axios'
-import Utils from '../../../utils/utils'
 import moment from 'moment'
+import { connect } from 'react-redux'
 const Content = Layout;
 const { TextArea ,Search} = Input;
 // const Search = Input.Search;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class yjsjla extends React.Component{
+class Yjsjla extends React.Component{
     
     state={
         dataSource:[],
         isShowOpenAdd:false,
-        isShowOpenEdit:false
+        isShowOpenEdit:false,
+        selectedRows1:[]
     }
 
     params={
-        page:1
+        currentPage:1,
+        pageSize:10
     }
     componentDidMount(){
       this.requestList()
@@ -37,16 +39,19 @@ export default class yjsjla extends React.Component{
         //         console.log(error);
         //     })
         let _this =this;
-        axios.requestList(this,'/yjsjla/tableList',this.params);
+        axios.requestList(_this,'/yjsjla/tableList',this.params);
     }
     
+    //点击表单行
     onRowClick = (record,index)=>{
-        let selectKey = [index];
-        this.setState({
-            selectedRowKeys : selectKey,
-            selctedItem:record
-        })
-
+        let selectKey = [{index:record}];
+        //this.state.selectedRowKeys.push(index);
+        //this.state.selectedRows1.push(selectKey);
+        
+        // this.setState({
+        //     selectedRowKeys:this.state.selectedRowKeys,
+        //     selectedItem:selectKey
+        // })
     }
 
     //查询
@@ -57,9 +62,12 @@ export default class yjsjla extends React.Component{
                 searchInfo: value
             }
         })
+        axios.requestList(_this,'/yjsjla/tableList',this.params);
+    }
 
-        axios.requestList(this,'/yjsjla/tableList',this.params);
-       
+    //选择框改变属性
+    handleChange =()=>{
+
     }
 
     //打开新增
@@ -175,13 +183,18 @@ export default class yjsjla extends React.Component{
             <div>
                 <Breadcrumb style={{ margin: '16px 0' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
-                    <Breadcrumb.Item>应急管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>应急事件处理</Breadcrumb.Item>
+                    <Breadcrumb.Item>应急事件立案</Breadcrumb.Item>
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div>
                     <span className="table_input ft">
-                        <Search style={{width: 200}}
+                    <Select defaultValue="sjbh" style={{ width: 120 }} onChange={this.handleChange}>
+                        <Option value="sjbh">应急事件编号</Option>
+                        <Option value="infoTitle">信息标题</Option>
+                        <Option value="Yiminghe">事件</Option>
+                    </Select>
+                        <Search style={{width: 300}}
                         placeholder="请输入标题内容"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
@@ -255,7 +268,7 @@ class OpenAddForm extends React.Component{
                                 }
                             ]
                         })(
-                            <Select defaultValue=""  style={{ width: 200 }}>
+                            <Select defaultValue=""  style={{ width: 200 }} >
                                 <Option value="" >请选择应急事件编号</Option>
                                 <Option value="1">编号1</Option>
                                 <Option value="2">编号2</Option>
@@ -324,3 +337,10 @@ class OpenAddForm extends React.Component{
     }
 }
 OpenAddForm = Form.create({})(OpenAddForm);
+
+const mapStateToPops =state=>{
+    return {
+        menuName:state.menuName
+    }
+}
+export default connect(mapStateToPops)(Yjsjla)

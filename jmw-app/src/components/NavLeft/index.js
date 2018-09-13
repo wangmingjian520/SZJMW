@@ -1,7 +1,7 @@
 import React from 'react'
 import { Menu } from 'antd';
 import MenuConfig from '../../config/menuConfig'
-import { NavLink , Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { switchMenu } from './../../redux/action'
 const { SubMenu } = Menu;
@@ -50,6 +50,7 @@ class NavLeft extends React.Component{
                    <Menu
                         onClick={this.handleClick}
                         selectedKeys={this.state.currentKey}
+                        // openKeys={this.state.currentKey}
                         theme="light"
                         mode="inline"
                         style={{ height: '100%', borderLeft: 2 }}

@@ -9,8 +9,8 @@ export default {
             onChange:(current)=>{
                 callback(current)
             },
-            current:data.data.current_page,
-            pageSise:data.data.page_size,
+            current:data.data.currentPage,
+            pageSise:data.data.pageSize,
             total:data.data.total,
             showTotal:()=>{
                 return `共${data.data.total}条`
@@ -27,5 +27,24 @@ export default {
         data.map((item)=>{
             options:PushManager(<Option value={item.id} key={item.id}>{item.name}</Option>)
         })
-    }
+    },
+    /**
+     * ETable 行点击通用函数
+     * @param {*选中行的索引} selectedRowKeys
+     * @param {*选中行对象} selectedItem
+     */
+    updateSelectedItem(selectedRowKeys, selectedRows, selectedIds) {
+        if (selectedIds) {
+            this.setState({
+                selectedRowKeys,
+                selectedIds: selectedIds,
+                selectedItem: selectedRows
+            })
+        } else {
+            this.setState({
+                selectedRowKeys,
+                selectedItem: selectedRows
+            })
+        }
+    },
 }

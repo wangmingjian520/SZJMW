@@ -1,46 +1,46 @@
 export default [
     
     {
-        title:'应急物资管理',
-        key:'/main/yjwz',
+        title:'应急资源管理',
+        key:'/main/yjzygl',
         children:[
             {
                 title:'物资储备管理',
-                key:'/main/yjwz/wzcbgl',
+                key:'/main/yjzygl/wzcbgl',
                 children:[
                     {
                         title:'物资目录管理',
-                        key:'/main/yjwz/wzcbgl/wzmlgl',
+                        key:'/main/yjzygl/wzcbgl/wzmlgl',
                     },
                     {
                         title:'物资储备库点管理',
-                        key:'/main/yjwz/wzcbgl/wzcbkdgl',
+                        key:'/main/yjzygl/wzcbgl/wzcbkdgl',
                     },
                     {
                         title:'物资储备信息',
-                        key:'/main/yjwz/wzcbgl/wzcbxx',
+                        key:'/main/yjzygl/wzcbgl/wzcbxx',
                     }
                 ]
             },
             {
                 title:'设备设施管理',
-                key:'/main/yjwz/sbssgl',
+                key:'/main/yjzygl/sbssgl',
             },
             {
                 title:'应急组织管理',
-                key:'/main/yjwz/yjzzgl',
+                key:'/main/yjzygl/yjzzgl',
             },
             {
                 title:'应急救援队伍',
-                key:'/main/yjwz/yjjydw',
+                key:'/main/yjzygl/yjjydw',
             },
             {
                 title:'应急专家',
-                key:'/main/yjwz/yjzj',
+                key:'/main/yjzygl/yjzj',
             },
             {
                 title:'应急通讯录',
-                key:'/main/yjwz/yjtxl',
+                key:'/main/yjzygl/yjtxl',
             }
         ]
     },

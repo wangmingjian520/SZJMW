@@ -21,8 +21,8 @@ export default class IRouter extends React.Component{
                     <Route  path="/" render={()=>
                         <Index_main>
                         <Switch>
-                            <Route path="/main/yjwz/wzcbgl/wzmlgl" component={Wzmlgl}></Route>
-                            <Route path="/main/yjwz/wzcbgl/wzcbkdgl" component={Wzcbkdgl}></Route>
+                            <Route path="/main/yjzygl/wzcbgl/wzmlgl" component={Wzmlgl}></Route>
+                            <Route path="/main/yjzygl/wzcbgl/wzcbkdgl" component={Wzcbkdgl}></Route>
 
                             <Route path="/main/yjsjcl/yjsjla" component={Yjsjla}></Route>
                             <Redirect to="/main"/>
