@@ -4,8 +4,8 @@ import App from './App'
 import Index_main from './index_main'
 import Login from './pages/login'
 import NoMatch from './pages/noMatch'
-import Wzmlgl from './pages/yjwz/wzcbgl/wzmlgl'
-import Wzcbkdgl from './pages/yjwz/wzcbgl/wzcbkdgl'
+import Wzmlgl from './pages/yjzygl/wzcbgl/wzmlgl'
+import Wzcbkdgl from './pages/yjzygl/wzcbgl/wzcbkdgl'
 
 import Yjsjla from './pages/yjsjcl/yjsjla'
 
