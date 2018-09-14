@@ -3,7 +3,20 @@ import {Select} from 'antd';
 
 const Option = Select.Option;
 export default {
-
+    /**
+     * 格式化日期
+     * @param {*日期} time 
+     */
+    formateDate(time){
+        if(!time)return '';
+        let date = new Date(time);
+        return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+    },
+    /**
+     * 格式化翻页控件
+     * @param {*收到的数据} data 
+     * @param {*返回的数据} callback 
+     */
     pagination(data,callback){
         return {
             onChange:(current)=>{

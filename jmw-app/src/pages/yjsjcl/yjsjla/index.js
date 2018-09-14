@@ -3,6 +3,7 @@ import {  Button , Table ,Form , Breadcrumb , Modal , message ,Input ,Layout ,Se
 import axios from '../../../axios'
 import moment from 'moment'
 import { connect } from 'react-redux'
+import InterfaceUrl from '../../../utils/apiAndInterfaceUrl'
 const Content = Layout;
 const { TextArea ,Search} = Input;
 // const Search = Input.Search;
@@ -39,7 +40,7 @@ class Yjsjla extends React.Component{
         //         console.log(error);
         //     })
         let _this =this;
-        axios.requestList(_this,'/yjsjla/tableList',this.params);
+        axios.requestList(_this,InterfaceUrl.yjsjla,this.params);
     }
     
     //点击表单行
@@ -62,7 +63,7 @@ class Yjsjla extends React.Component{
                 searchInfo: value
             }
         })
-        axios.requestList(_this,'/yjsjla/tableList',this.params);
+        axios.requestList(_this,InterfaceUrl.yjsjla,this.params);
     }
 
     //选择框改变属性

@@ -21,11 +21,12 @@ export default class IRouter extends React.Component{
                     <Route  path="/" render={()=>
                         <Index_main>
                         <Switch>
+                            {/* 应急资源管理 */}
                             <Route path="/main/yjzygl/wzcbgl/wzmlgl" component={Wzmlgl}></Route>
                             <Route path="/main/yjzygl/wzcbgl/wzcbkdgl" component={Wzcbkdgl}></Route>
 
                             <Route path="/main/yjsjcl/yjsjla" component={Yjsjla}></Route>
-                            <Redirect to="/main"/>
+                            <Redirect to="/main/yjzygl/wzcbgl/wzmlgl" />
                             <Route component={NoMatch}></Route>
                         </Switch>
                         </Index_main>

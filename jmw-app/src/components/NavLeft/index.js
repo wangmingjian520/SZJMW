@@ -21,6 +21,7 @@ class NavLeft extends React.Component{
     }
 
     componentWillMount(){
+        
         const menuTreeNode = this.renderMenu(MenuConfig);
         let currentKey = window.location.hash.replace(/#|\?.*$/g,'')
         this.setState({
