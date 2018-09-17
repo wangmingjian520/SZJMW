@@ -1,81 +1,128 @@
 export default [
-    
     {
-        title:'应急资源管理',
-        key:'/main/yjzygl',
-        children:[
-            {
-                title:'物资储备管理',
-                key:'/main/yjzygl/wzcbgl',
-                children:[
-                    {
-                        title:'物资目录管理',
-                        key:'/main/yjzygl/wzcbgl/wzmlgl',
-                    },
-                    {
-                        title:'物资储备库点管理',
-                        key:'/main/yjzygl/wzcbgl/wzcbkdgl',
-                    },
-                    {
-                        title:'物资储备信息',
-                        key:'/main/yjzygl/wzcbgl/wzcbxx',
-                    }
-                ]
-            },
-            {
-                title:'设备设施管理',
-                key:'/main/yjzygl/sbssgl',
-            },
-            {
-                title:'应急组织管理',
-                key:'/main/yjzygl/yjzzgl',
-            },
-            {
-                title:'应急救援队伍',
-                key:'/main/yjzygl/yjjydw',
-            },
-            {
-                title:'应急专家',
-                key:'/main/yjzygl/yjzj',
-            },
-            {
-                title:'应急通讯录',
-                key:'/main/yjzygl/yjtxl',
-            }
-        ]
-    },
-    {
-        title:'应急预案',
-        key:'/main/yjya'
-    },
-    {
-        title:'应急演练',
-        key:'/yjyl'
-    },
-    {
-        title:'应急地理信息系统',
-        key:'/yjdlxxxt'
-    },
-    {
-        title:'应急事件处理',
-        key:'/yjsjcl',
-        children:[
-            {
-                title:'应急事件受理',
-                key:'/main/yjsjcl/yjsjsl',
-            },
-            {
-                title:'应急事件立案',
-                key:'/main/yjsjcl/yjsjla',
-            },
-            {
-                title:'应急事件结案',
-                key:'/main/yjsjcl/yjsjja',
-            }
-        ]
-    },
-    {
-        title:'应急知识库',
-        key:'/yjzsk'
+        "title": "应急资源管理",
+        "key": "/yjzygl",
+        "id": "4bd86e71-ac89-42c1-b0c6-ed16c5e36883",
+        "children": [{
+            "title": "物资储备管理",
+            "key": "/wzcbgl",
+            "id": "431a6698-c336-4955-a29f-e5e5050212d5",
+            "children": [{
+                "title": "物资目录管理",
+                "key": "/wzmlgl",
+                "id": "33118af4-9b6c-4f35-a528-f8652c1bdc02",
+                "children": null
+            }, {
+                "title": "物资储备库点管理",
+                "key": "/wzcbkdgl",
+                "id": "4bda27e1-fa50-46a6-9f61-109d58c81255",
+                "children": null
+            }, {
+                "title": "服务机构管理",
+                "key": "/fwjg",
+                "id": "599b1ef9-0712-479d-ad8b-0553b43f06d4",
+                "children": [{
+                    "title": "服务机构管理",
+                    "key": "/fwjggl",
+                    "id": "69471d44-47f0-43e4-bd48-96b1c1bdf61d",
+                    "children": null
+                }, {
+                    "title": "服务机构合同管理",
+                    "key": "/fwjghtgl",
+                    "id": "732bf1ab-67f5-4dbe-a21d-2262b74fd7c5",
+                    "children": null
+                }]
+            }, {
+                "title": "物资储备信息",
+                "key": "/wzcbxx",
+                "id": "8048e161-99ac-452f-8239-d58abb09e4a1",
+                "children": null
+            }, {
+                "title": "物资储备检查",
+                "key": "/wzcbjc",
+                "id": "129d6410-2e17-40d8-89d8-c0524f91ff41",
+                "children": [{
+                    "title": "检查计划管理",
+                    "key": "/jcjhgl",
+                    "id": "37248a5b-aff5-49ec-92f6-befc58ee21d5",
+                    "children": null
+                }, {
+                    "title": "双随机检查",
+                    "key": "/ssjjc",
+                    "id": "32abd086-19b5-4a0d-9fd7-a1c6866d3702",
+                    "children": null
+                }, {
+                    "title": "检查登记",
+                    "key": "/jcdj",
+                    "id": "7f690a4c-2eb9-4462-8837-03bed76bd52c",
+                    "children": null
+                }, {
+                    "title": "问题整改",
+                    "key": "/wtzg",
+                    "id": "01b37634-f76f-4609-b6e5-eb0f1b87767f",
+                    "children": null
+                }]
+            }]
+        }, {
+            "title": "设备设施管理",
+            "key": "/sbssgl",
+            "id": "8f4373ac-6316-4047-8545-72c62060d06e",
+            "children": null
+        }, {
+            "title": "应急组织体系",
+            "key": "/yjzztx",
+            "id": "21fd5086-bf25-4dac-b469-712253055524",
+            "children": [{
+                "title": "应急组织基本信息",
+                "key": "/yjzzjbxx",
+                "id": "1e745045-8372-4de8-8a94-25763f4caddc",
+                "children": null
+            }, {
+                "title": "应急指挥部管理",
+                "key": "/yjzhbgl",
+                "id": "080914ce-186a-449d-8e38-11cd134a54ba",
+                "children": null
+            }]
+        }, {
+            "title": "应急救援队伍",
+            "key": "/yjjydw",
+            "id": "0f567cd7-cedd-47a7-99f6-ad9f34225566",
+            "children": null
+        }, {
+            "title": "应急专家",
+            "key": "/jjzj",
+            "id": "2f2ac03b-56c4-4adf-a39d-6a5d5dbf537f",
+            "children": null
+        }, {
+            "title": "应急通讯录",
+            "key": "/yjtxl",
+            "id": "f5feaddc-ff2b-4fc5-bd32-df7b5ec00d5b",
+            "children": null
+        }]
+    }, {
+        "title": "应急预案",
+        "key": "/yjya",
+        "id": "ac4c48be-b365-4056-8f9a-60057ec907a1",
+        "children": null
+    }, {
+        "title": "应急演练",
+        "key": "/yjyl",
+        "id": "b75226c6-a38e-4bf8-8f67-fcd221152979",
+        "children": null
+    }, {
+        "title": "应急地理信息系统",
+        "key": "/yjdlxxxt",
+        "id": "e46129cd-f428-4068-9264-c7e3638b37a5",
+        "children": null
+    }, {
+        "title": "应急事件处理",
+        "key": "/yjsjcl",
+        "id": "0fefaf9b-f807-49e2-993f-5493eaad433f",
+        "children": null
+    }, {
+        "title": "应急知识库",
+        "key": "/yjzsk",
+        "id": "9fcfeef3-7184-4868-a1ae-a2f5948412d8",
+        "children": null
     }
 ]

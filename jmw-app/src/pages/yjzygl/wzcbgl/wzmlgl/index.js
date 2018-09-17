@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Button ,Table, Form , Breadcrumb , Modal , message ,Input ,Layout ,Select ,DatePicker} from  'antd';
+import {  Button , Form , Breadcrumb , Modal , message ,Input ,Layout ,Select ,DatePicker} from  'antd';
 import axios from './../../../../axios'
 import Utils from './../../../../utils/utils'
 import ETable from './../../../../components/ETable/index'
