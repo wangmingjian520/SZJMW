@@ -3,12 +3,13 @@ import axios from 'axios'
 import Utils from './../utils/utils'
 import { Modal } from 'antd'
 export default class Axios {
-    static requestList(_this,url,params){
+    static requestList(_this,url,method,params){
         var data = {
             params:params
         }
         this.ajax({
             url:url,
+            method:method,
             data:data
         }).then((data)=>{
             if(data && data.data){
