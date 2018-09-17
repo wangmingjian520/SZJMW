@@ -4,7 +4,7 @@ import axios from './../../../../axios'
 import Utils from './../../../../utils/utils'
 import ETable from './../../../../components/ETable/index'
 import moment from 'moment'
-import InterfaceUrl from '../../../../utils/apiAndInterfaceUrl'
+import FaceUrl from '../../../../utils/apiAndInterfaceUrl'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
@@ -18,7 +18,7 @@ export default class Wzmlgl extends React.Component{
 
     params={
         currentPage:1,
-        pageSize:10
+        pageSize:10,
     }
 
     componentDidMount(){
@@ -27,7 +27,7 @@ export default class Wzmlgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,InterfaceUrl.wzmlgl,InterfaceUrl.POST,this.params);
+        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params,true);
     }
 
     //查询
@@ -40,11 +40,12 @@ export default class Wzmlgl extends React.Component{
                 searchType : type
             }
         })
-        axios.requestList(_this,InterfaceUrl.wzmlgl,this.params);
+        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params,true);
     }
 
     //打开添加编辑删除
     handleOperate =(type)=>{
+        let item = this.state.selectedItem
         if(type==='add'){
             this.setState({
                 type:type,
@@ -52,11 +53,17 @@ export default class Wzmlgl extends React.Component{
                 title:'添加'
            })
         }else if(type==='edit'){
-            this.setState({
-                type:type,
-                isVisible:true,
-                title:'修改'
-           })
+            if(item&&item.length==1){
+                this.setState({
+                    type:type,
+                    isVisible:true,
+                    title:'修改'
+               })  
+            }else{
+                message.error('请选择一条需要修改的项！');
+                
+            }
+            
         }
     }
 
@@ -66,92 +73,87 @@ export default class Wzmlgl extends React.Component{
         let addInfo = this.modalForm.props.form.getFieldsValue();
         console.log(addInfo);
         if(addInfo){
-            axios.ajax({
-                url:'/yjsjla/tableAdd',
-                data:{
-                    params:{
-                        addFromInfo:addInfo
-                    },
-                    isShowLoading:true
-                }
-            }).then((res)=>{
-                if(res.code === 0) {
-                    this.setState({
-                        isShowOpenAdd:false
-                    })
-                    message.success(res.message);
-                    this.requestList();
+            this.setState({
+                params:{
+                    addFromInfo:addInfo
                 }
             })
+            axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params,true);
         }
     }
 
     //删除操作
     handleDelete = ()=>{
-        let _this =this;
-        let rows = this.state.selectedRows;
+        let rows = this.state.selectedItem;
         let ids = [];
-        if(rows){
+        if(rows&&rows.length){
             rows.map((item)=>{
-                ids.push(item.id)
+                ids.push(item.kid)
             })
             Modal.confirm({
                 title:'提示',
                 content:`您确定要删除 ${ids.join(',')}`,
                 onOk:()=>{
-                    axios.requestList(_this,InterfaceUrl.wzmlgl,this.params);
+                    let _this =this;
+                    axios.requestList(_this,FaceUrl.wzmlgl,this.params);
                     message.success('删除成功');
                 }
             })
         }else{
-            message.error('请选择需要删除项！');
+            message.error('请选择需要删除的项！');
         }
     }
 
     render(){
         const columns = [
             {
-                title:'kid',
-                dateIndex:'kid'
+                 title:'物资类型',
+                 dataIndex:'wzType',
+                 key:'wzType',
+                 align:'center'
+              },
+             {
+                 title:'物资名称',
+                 dataIndex:'wzName',
+                 key:'wzName',
+                 align:'center'
              },
-            {
-               title:'物资类别',
-               dateIndex:'wzType'
-            },
-            {
-                title:'物资名称',
-                dateIndex:'wzName'
+             {
+                 title:'测算标准',
+                 dataIndex:'csbz',
+                 key:'csbz',
+                 align:'center'
              },
-            {
-                title:'测算标准',
-                dateIndex:'csbz'
-            },
-            {
-                title:'数量',
-                dateIndex:'wzNum'
-            },
-            {
-                title:'规格品质要求',
-                dateIndex:'ggpzReq'
-            }
-        ]
+             {
+                 title:'数量',
+                 dataIndex:'wzNum',
+                 key:'wzNum',
+                 align:'center'
+             },
+             {
+                 title:'规格品质要求',
+                 dataIndex:'ggpzReq',
+                 key:'ggpzReq',
+                 align:'center'
+             }
+         ]
 
-        const selectedRowKeys =this.state.selectedRowKeys
+       // const selectedRowKeys =this.state.selectedRowKeys
         //多选框
-        const rowCheckSelection = {
+        const rowSelection = {
             type: 'checkbox',
-            selectedRowKeys,
-            onChange:(selectedRowKeys,selectedRows)=>{
-                let ids = [];
-                selectedRows.map((item)=>{
-                    ids.push(item.id)
-                })
-                this.setState({
-                    selectedRowKeys,
-                    selectedRows,
-                    selectedIds:ids
-                })
-            }
+            // selectedRowKeys,
+            // onChange:(selectedRowKeys,selectedRows)=>{
+            //     let ids = [];
+            //     selectedRows.map((item)=>{
+            //         ids.push(item.id)
+            //     })
+            //     this.setState({
+            //         selectedRowKeys,
+            //         selectedRows,
+            //         selectedIds:ids
+            //     })
+            // }
         }
 
         return (
@@ -184,15 +186,16 @@ export default class Wzmlgl extends React.Component{
                     </span>   
                     </div>
                     
-                    <Table
+                    <ETable
                         columns={columns}
                         updateSelectedItem={Utils.updateSelectedItem.bind(this)}
                         dataSource={this.state.list}
                         selectedRowKeys={this.state.selectedRowKeys}
                         selectedIds={this.state.selectedIds}
                         selectedItem={this.state.selectedItem}
-                        rowSelection={rowCheckSelection}
+                        rowSelection={rowSelection}
                         pagination={this.state.pagination}
+                        
                     />
                 
                 </Content>
@@ -207,7 +210,8 @@ export default class Wzmlgl extends React.Component{
                     }}
                     onOk={this.handleSubmit}
                 >
-                <OpenFormTable wrappedComponentRef={(inst)=>{this.modalForm = inst;}}/>
+                <OpenFormTable type={this.state.type} tibleInfo={this.state.tibleInfo}
+                 wrappedComponentRef={(inst)=>{this.modalForm = inst;}}/>
                 </Modal>
             </div>
             
@@ -216,6 +220,8 @@ export default class Wzmlgl extends React.Component{
 }
 class OpenFormTable extends React.Component{
     render(){
+        let type = this.props.type;
+        let tibleInfo =this.props.tibleInfo || {};
         const formItemLayout = {
             labelCol:{
                 span:6
@@ -230,7 +236,7 @@ class OpenFormTable extends React.Component{
                <FormItem label="物资类别" {...formItemLayout}>
                     {
                         getFieldDecorator('wzType',{
-                            initialValue:'',
+                            initialValue:tibleInfo.wzType,
                             rules:[
                                 {
                                     required: true,

@@ -8,7 +8,7 @@ const { SubMenu } = Menu;
 
 class NavLeft extends React.Component{
     state = {
-        currentKey: ''
+        currentKey: '首页'
     }
     
     handleClick= ({item})=>{
@@ -50,8 +50,8 @@ class NavLeft extends React.Component{
             <div>
                    <Menu
                         onClick={this.handleClick}
-                        selectedKeys={this.state.currentKey}
-                        // openKeys={this.state.currentKey}
+                        //selectedKeys={this.state.currentKey}
+                        openKeys={this.state.currentKey}
                         theme="light"
                         mode="inline"
                         style={{ height: '100%', borderLeft: 2 }}

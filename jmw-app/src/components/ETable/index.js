@@ -13,9 +13,9 @@ export default class ETable extends React.Component {
             let selectedIds = this.props.selectedIds;
             let selectedItem = this.props.selectedItem || [];
             if (selectedIds) {
-                const i = selectedIds.indexOf(record.id);
+                const i = selectedIds.indexOf(record.kid);
                 if (i == -1) {//避免重复添加
-                    selectedIds.push(record.id)
+                    selectedIds.push(record.kid)
                     selectedRowKeys.push(index);
                     selectedItem.push(record);
                 }else{
@@ -24,7 +24,7 @@ export default class ETable extends React.Component {
                     selectedItem.splice(i,1);
                 }
             } else {
-                selectedIds = [record.id];
+                selectedIds = [record.kid];
                 selectedRowKeys = [index]
                 selectedItem = [record];
             }
@@ -45,15 +45,15 @@ export default class ETable extends React.Component {
         const selectedIds = [];
         if(rowSelection.type == 'checkbox'){
             selectedRows.map((item)=>{
-                selectedIds.push(item.id);
+                selectedIds.push(item.kid);
             });
             this.setState({
                 selectedRowKeys,
                 selectedIds:selectedIds,
-                selectedItem: selectedRows[0]
+                selectedItem: selectedRows
             });
         }
-        this.props.updateSelectedItem(selectedRowKeys,selectedRows[0],selectedIds);
+        this.props.updateSelectedItem(selectedRowKeys,selectedRows,selectedIds);
     };
 
     onSelectAll = (selected, selectedRows, changeRows) => {
@@ -69,27 +69,9 @@ export default class ETable extends React.Component {
     getOptions = () => {
         let p = this.props;
         let row_selection = this.props.rowSelection;
-        // const name_list = {
-        //     "标题":170,
-        //     "内容":80,
-        //     "说明":96
-        // };
-        // if (p.columns && p.columns.length > 0) {
-        //     p.columns.forEach((item)=> {
-        //         if(!item.title){
-        //             return
-        //         }
-        //         if(!item.width){
-        //             if(name_list[item.title]){
-        //                 item.width = name_list[item.title];
-        //             }
-        //         }
-        //         item.bordered = true;
-        //     });
-        // }
         const { selectedRowKeys } = this.props;
         const rowSelection = {
-            type: '',
+            type: 'radio',
             selectedRowKeys,
             onChange: this.onSelectChange,
             onSelect:(record, selected, selectedRows)=>{

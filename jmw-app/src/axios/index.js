@@ -3,12 +3,14 @@ import axios from 'axios'
 import Utils from './../utils/utils'
 import { Modal } from 'antd'
 export default class Axios {
-    static requestList(_this,url,params){
+    static requestList(_this,url,method,params,isShowLoading){
         var data = {
-            params:params
+            params:params,
+            isShowLoading,
         }
         this.ajax({
             url:url,
+            method:method,
             data:data
         }).then((data)=>{
             if(data && data.data){
@@ -34,7 +36,7 @@ export default class Axios {
             JsonP(options.url, {
                 param: 'callback'
             }, function (err, response) {
-                if (response.status == 'success') {
+                if (response.status === 'success') {
                     resolve(response);
                 } else {
                     reject(response.messsage);
@@ -53,7 +55,7 @@ export default class Axios {
         return new Promise((resolve,reject)=>{
             axios({
                 url:options.url,
-                method:'get',
+                method:options.method,
                 baseURL:baseApi,
                 timeout:5000,
                 params: (options.data && options.data.params) || ''
