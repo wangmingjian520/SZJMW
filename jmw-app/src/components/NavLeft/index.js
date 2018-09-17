@@ -8,22 +8,25 @@ const { SubMenu } = Menu;
 
 class NavLeft extends React.Component{
     state = {
-        currentKey: ''
+        openKeys:['/main/yjzygl','/main/yjzygl/wzcbgl']
     }
+    
     
     handleClick= ({item})=>{
         console.log(item);
         const { dispatch } = this.props;
         dispatch(switchMenu(item.props.title))
         this.setState({
+            openKeys:item.props.openKeys,
             currentKey:item.props.eventKey
         })
     }
 
-    componentWillMount(){
-        
+    componentWillMount(){   
         const menuTreeNode = this.renderMenu(MenuConfig);
-        let currentKey = window.location.hash.replace(/#|\?.*$/g,'')
+        let currentKey = window.location.hash.replace(/#|\?.*$/g,'');
+        
+        //console.log("111"+currentKey);
         this.setState({
             currentKey,
             menuTreeNode
@@ -49,12 +52,13 @@ class NavLeft extends React.Component{
         return(
             <div>
                    <Menu
-                        onClick={this.handleClick}
-                        selectedKeys={this.state.currentKey}
-                        // openKeys={this.state.currentKey}
                         theme="light"
                         mode="inline"
                         style={{ height: '100%', borderLeft: 2 }}
+                        onClick={this.handleClick}
+                        defaultSelectedKeys={[this.state.currentKey]}
+                        defaultOpenKeys={this.state.openKeys}
+                        
                         >
                         {this.state.menuTreeNode}
                     </Menu>
