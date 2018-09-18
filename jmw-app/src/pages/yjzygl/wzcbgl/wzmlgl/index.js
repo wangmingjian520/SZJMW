@@ -4,7 +4,7 @@ import axios from './../../../../axios'
 import Utils from './../../../../utils/utils'
 import ETable from './../../../../components/ETable/index'
 import moment from 'moment'
-import InterfaceUrl from '../../../../utils/apiAndInterfaceUrl'
+import FaceUrl from '../../../../utils/apiAndInterfaceUrl'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
@@ -18,7 +18,7 @@ export default class Wzmlgl extends React.Component{
 
     params={
         currentPage:1,
-        pageSize:10
+        pageSize:10,
     }
 
     componentDidMount(){
@@ -27,7 +27,7 @@ export default class Wzmlgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,InterfaceUrl.wzmlgl,InterfaceUrl.POST,this.params);
+        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params);
     }
 
     //查询
@@ -40,7 +40,7 @@ export default class Wzmlgl extends React.Component{
                 searchType : type
             }
         })
-        axios.requestList(_this,InterfaceUrl.wzmlgl,this.params);
+        axios.requestList(_this,FaceUrl.wzmlgl,this.params);
     }
 
     //打开添加编辑删除
@@ -99,7 +99,7 @@ export default class Wzmlgl extends React.Component{
                 title:'提示',
                 content:`您确定要删除 ${ids.join(',')}`,
                 onOk:()=>{
-                    axios.requestList(_this,InterfaceUrl.wzmlgl,this.params);
+                    axios.requestList(_this,FaceUrl.wzmlgl,this.params);
                     message.success('删除成功');
                 }
             })
@@ -111,28 +111,24 @@ export default class Wzmlgl extends React.Component{
     render(){
         const columns = [
             {
-                title:'kid',
-                dateIndex:'kid'
+                title:'物资类别',
+                dataIndex:'wzType',
              },
             {
-               title:'物资类别',
-               dateIndex:'wzType'
-            },
-            {
                 title:'物资名称',
-                dateIndex:'wzName'
+                dataIndex:'wzName',
              },
             {
                 title:'测算标准',
-                dateIndex:'csbz'
+                dataIndex:'csbz'
             },
             {
                 title:'数量',
-                dateIndex:'wzNum'
+                dataIndex:'wzNum'
             },
             {
                 title:'规格品质要求',
-                dateIndex:'ggpzReq'
+                dataIndex:'ggpzReq'
             }
         ]
 
@@ -156,45 +152,46 @@ export default class Wzmlgl extends React.Component{
 
         return (
             <div>
-                <Breadcrumb style={{ margin: '16px 0' }}>
+                <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
                     <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
                     <Breadcrumb.Item>物资储备管理</Breadcrumb.Item>
                     <Breadcrumb.Item>物资目录管理</Breadcrumb.Item>
                 </Breadcrumb>
                 <Content className="content-wrap">
-                    <div>
+                    <div >
                     <span className="table_input ft">
-                    <Select defaultValue="wzType" style={{ width: 120 }} onChange={this.handleChange}>
+                    {/* <Select defaultValue="wzName" size="large" style={{ width:120,borderRadius:0}} onChange={this.handleChange}>
                         <Option value="wzType">物资类别</Option>
                         <Option value="wzName">物资名称</Option>
                         <Option value="csbz">测算标准</Option>
                         <Option value="wzNum">数量</Option>
-                    </Select>
-                        <Search style={{width: 300}}
-                        placeholder="请输入查询内容"
+                    </Select> */}
+                        <Search size="large" style={{width: 325}}
+                        placeholder="请输入物资名称/测算标准"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
                     </span>
-                    <span className="table_button ht">
-                        <Button icon="plus" onClick={()=>{this.handleOperate('add')}}>添加</Button>
-                        <Button icon="form" onClick={()=>{this.handleOperate('edit')}}>修改</Button>
-                        <Button icon="delete" onClick={this.handleDelete}>删除</Button>    
+                    <span className="table_button ht" >
+                        <Button icon="plus" ghost type="primary" onClick={()=>{this.handleOperate('add')}}>添加</Button>
+                        <Button icon="form" ghost type="primary" onClick={()=>{this.handleOperate('edit')}}>修改</Button>
+                        <Button icon="delete" ghost type="primary" onClick={this.handleDelete}>删除</Button>    
                     </span>   
                     </div>
-                    
-                    <ETable
-                        columns={columns}
-                        updateSelectedItem={Utils.updateSelectedItem.bind(this)}
-                        dataSource={this.state.list}
-                        selectedRowKeys={this.state.selectedRowKeys}
-                        selectedIds={this.state.selectedIds}
-                        selectedItem={this.state.selectedItem}
-                        rowSelection={rowCheckSelection}
-                        pagination={this.state.pagination}
-                    />
-                
+                    <div className="ft">
+                        <ETable
+                            columns={columns}
+                            updateSelectedItem={Utils.updateSelectedItem.bind(this)}
+                            dataSource={this.state.list}
+                            selectedRowKeys={this.state.selectedRowKeys}
+                            selectedIds={this.state.selectedIds}
+                            selectedItem={this.state.selectedItem}
+                            rowSelection={rowCheckSelection}
+                            pagination={this.state.pagination}
+                            
+                        />
+                    </div>
                 </Content>
                 <Modal
                     title={this.state.title}
@@ -240,8 +237,12 @@ class OpenFormTable extends React.Component{
                         })(
                             <Select defaultValue=""  style={{ width: 200 }} >
                                 <Option value="" >请选择物资类别</Option>
-                                <Option value="1">编号1</Option>
-                                <Option value="2">编号2</Option>
+                                <Option value="1">电力工程抢险</Option>
+                                <Option value="2">通信工程抢险</Option>
+                                <Option value="3">动物疫情处置</Option>
+                                <Option value="4">基本生活物资保障</Option>
+                                <Option value="5">网络安全保障</Option>
+                                <Option value="6">成品油</Option>
                             </Select>
                         )
                     }

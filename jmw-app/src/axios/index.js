@@ -3,9 +3,10 @@ import axios from 'axios'
 import Utils from './../utils/utils'
 import { Modal } from 'antd'
 export default class Axios {
-    static requestList(_this,url,method,params){
+    static requestList(_this,url,method,params,isShowLoading){
         var data = {
-            params:params
+            params:params,
+            isShowLoading
         }
         this.ajax({
             url:url,
@@ -50,11 +51,16 @@ export default class Axios {
             loading = document.getElementById('ajaxLoading');
             loading.style.display = 'block';
         }
-        let baseApi = 'https://www.easy-mock.com/mock/5b922ca67d8f0d08304e7468/jmwapi';
+        let baseApi = '';
+        if(options.baseApi){
+            baseApi = options.baseApi;
+        }else{
+            baseApi = 'https://www.easy-mock.com/mock/5b922ca67d8f0d08304e7468/jmwapi'; 
+        }
         return new Promise((resolve,reject)=>{
             axios({
                 url:options.url,
-                method:'get',
+                method:options.method,
                 baseURL:baseApi,
                 timeout:5000,
                 params: (options.data && options.data.params) || ''

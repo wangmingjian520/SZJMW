@@ -22,11 +22,11 @@ export default class IRouter extends React.Component{
                         <Index_main>
                         <Switch>
                             {/* 应急资源管理 */}
-                            <Route path="/main/yjzygl/wzcbgl/wzmlgl" component={Wzmlgl}></Route>
-                            <Route path="/main/yjzygl/wzcbgl/wzcbkdgl" component={Wzcbkdgl}></Route>
+                            <Route path="/wzmlgl" component={Wzmlgl}></Route>
+                            <Route path="/wzcbkdgl" component={Wzcbkdgl}></Route>
 
-                            <Route path="/main/yjsjcl/yjsjla" component={Yjsjla}></Route>
-                            <Redirect to="/main/yjzygl/wzcbgl/wzmlgl" />
+                            <Route path="/yjsjla" component={Yjsjla}></Route>
+                            <Redirect to="/wzmlgl" />
                             <Route component={NoMatch}></Route>
                         </Switch>
                         </Index_main>

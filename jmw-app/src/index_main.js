@@ -18,7 +18,7 @@ export default class Index_main extends React.Component{
                     <Sider className="nav-left"> 
                     <NavLeft/>
                     </Sider>
-                    <Layout style={{ padding: '0 20px 20px' }}>
+                    <Layout style={{background:'#fff'}}>
                         
                         {this.props.children}
                     </Layout>

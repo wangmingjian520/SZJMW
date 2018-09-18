@@ -10,7 +10,6 @@ const { SubMenu } = Menu;
 
 class NavLeft extends React.Component{
     state = {
-        currentKey:['/wzmlgl'],
         openKeys:['/yjzygl','/wzcbgl']
     }
     
@@ -26,34 +25,24 @@ class NavLeft extends React.Component{
     }
 
     componentWillMount(){   
-        let menuNodes = "";
-        // axios.jsonp({
-        //     url:FaceUrl.bdApi+FaceUrl.menuUrl,
-        // },function (res) {
-        //     if (res.code == '1') {
-        //         menuNodes = this.renderMenu(res.data);
-        //     } 
-        // })
-        // axios.ajax({
-        //     url:FaceUrl.menuUrl,
-        //     method:FaceUrl.GET,
-        //     baseApi:FaceUrl.bdApi,
-        //     data:{
-        //         isShowLoading:true
-        //     }
-        // }).then((res)=>{
-        //     if(res.code === 0) {
-        //         menuNodes = this.renderMenu(res.data);
-        //     }
-        // })
-
-        const menuTreeNode = this.renderMenu(MenuConfig);
         let currentKey = window.location.hash.replace(/#|\?.*$/g,'');
         
-        console.log(currentKey);
-        this.setState({
-            currentKey,
-            menuTreeNode
+        axios.ajax({
+            url:FaceUrl.menuUrl,
+            method:FaceUrl.GET,
+            baseApi:FaceUrl.bdApi,
+            data:{
+                isShowLoading:true
+            }
+        }).then((res)=>{
+            if(res.code == '1') {
+                const menuTreeNode = this.renderMenu(res.data);
+                    this.setState({
+                        currentKey,
+                        menuTreeNode
+                    })
+                    console.log(currentKey);
+            }
         })
     }
     // 菜单渲染
@@ -78,11 +67,11 @@ class NavLeft extends React.Component{
                    <Menu
                         theme="light"
                         mode="inline"
-                        style={{ height: '100%', borderLeft: 2 }}
+                        style={{ height: '100%', borderLeft: 1 }}
                         onClick={this.handleClick}
-                        defaultSelectedKeys={[this.state.currentKey]}
+                        selectedKeys={[this.state.currentKey]}
                         defaultOpenKeys={this.state.openKeys}
-                        
+                        inlineIndent="15"
                         >
                         {this.state.menuTreeNode}
                     </Menu>
