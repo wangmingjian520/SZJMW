@@ -3,7 +3,7 @@ import {  Button , Table ,Form , Breadcrumb , Modal , message ,Input ,Layout ,Se
 import axios from '../../../axios'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import InterfaceUrl from '../../../utils/apiAndInterfaceUrl'
+import FaceUrl from '../../../utils/apiAndInterfaceUrl'
 const Content = Layout;
 const { TextArea ,Search} = Input;
 // const Search = Input.Search;
@@ -40,7 +40,7 @@ class Yjsjla extends React.Component{
         //         console.log(error);
         //     })
         let _this =this;
-        axios.requestList(_this,InterfaceUrl.yjsjla,this.params);
+        axios.requestList(_this,FaceUrl.yjsjla,FaceUrl.POST,this.params,true);
     }
     
     //点击表单行
@@ -63,7 +63,7 @@ class Yjsjla extends React.Component{
                 searchInfo: value
             }
         })
-        axios.requestList(_this,InterfaceUrl.yjsjla,this.params);
+        axios.requestList(_this,FaceUrl.yjsjla,FaceUrl.POST,this.params,true);
     }
 
     //选择框改变属性
@@ -133,7 +133,7 @@ class Yjsjla extends React.Component{
             },
             {
                 title:'应急事件编号',
-                dataIndex:'yjsjbh',
+                dataIndex:'wztype1',
                 align:'center'
              },
             {
@@ -260,7 +260,7 @@ class OpenAddForm extends React.Component{
                
                 <FormItem label="应急事件编号" {...formItemLayout}>
                     {
-                        getFieldDecorator('yjsjbh',{
+                        getFieldDecorator('wztype',{
                             initialValue:'',
                             rules:[
                                 {
