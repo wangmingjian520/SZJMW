@@ -6,7 +6,7 @@ import Login from './pages/login'
 import NoMatch from './pages/noMatch'
 import Wzmlgl from './pages/yjzygl/wzcbgl/wzmlgl'
 import Wzcbkdgl from './pages/yjzygl/wzcbgl/wzcbkdgl'
-
+import Wzcbxx from './pages/yjzygl/wzcbgl/wzcbxx'
 import Yjsjla from './pages/yjsjcl/yjsjla'
 
 export default class IRouter extends React.Component{
@@ -24,7 +24,7 @@ export default class IRouter extends React.Component{
                             {/* 应急资源管理 */}
                             <Route path="/wzmlgl" component={Wzmlgl}></Route>
                             <Route path="/wzcbkdgl" component={Wzcbkdgl}></Route>
-
+                            <Route path="/wzcbxx" component={Wzcbxx}></Route>
                             <Route path="/yjsjla" component={Yjsjla}></Route>
                             <Redirect to="/wzmlgl" />
                             <Route component={NoMatch}></Route>
