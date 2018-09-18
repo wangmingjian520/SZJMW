@@ -94,17 +94,6 @@ export default class Wzmlgl extends React.Component{
         })
             
         });
-        // let _this =this;
-        // let addInfo = this.modalForm.props.form.getFieldsValue();
-        // console.log(addInfo);
-        // if(addInfo){
-        //     this.setState({
-        //         params:{
-        //             addFromInfo:addInfo
-        //         }
-        //     })
-        //     axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params,true);
-        // }
     }
 
     //删除操作
