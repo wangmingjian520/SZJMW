@@ -3,16 +3,12 @@ import axios from 'axios'
 import Utils from './../utils/utils'
 import { Modal } from 'antd'
 export default class Axios {
-    static requestList(_this,url,method,params,isShowLoading){
-        var data = {
-            params:params,
-            isShowLoading
-
-        }
+    static requestList(_this,url,method,bdApi,params){
         this.ajax({
             url:url,
             method:method,
-            data:data
+            data:params,
+            baseApi:bdApi
         }).then((data)=>{
             if(data && data.data){
                 let list = data.data.content.map((item,index)=>{
@@ -24,7 +20,7 @@ export default class Axios {
                     selectedRowKeys:[],
                     selectedRows:null,
                     pagination:Utils.pagination(data,(current)=>{
-                        _this.params.page = current;
+                        _this.params.currentPage = current;
                         _this.requestList();
                     })
                 }
@@ -64,7 +60,9 @@ export default class Axios {
                 method:options.method,
                 baseURL:baseApi,
                 timeout:5000,
-                params: (options.data && options.data.params) || ''
+                data:options.data ? options.data : '',
+                //params: options.data.params?options.data.params : '',
+                headers: {'Content-Type': 'application/json'},
             }).then((response)=>{
                 if (options.data && options.data.isShowLoading !== false) {
                     loading = document.getElementById('ajaxLoading');

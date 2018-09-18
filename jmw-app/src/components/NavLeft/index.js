@@ -26,7 +26,6 @@ class NavLeft extends React.Component{
 
     componentWillMount(){   
         let currentKey = window.location.hash.replace(/#|\?.*$/g,'');
-        
         axios.ajax({
             url:FaceUrl.menuUrl,
             method:FaceUrl.GET,

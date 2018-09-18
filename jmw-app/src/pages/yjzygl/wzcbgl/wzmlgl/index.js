@@ -27,20 +27,18 @@ export default class Wzmlgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params,true);
+        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
-        let type = "";
         this.setState({
             params:{
-                searchInfo : value,
-                searchType : type
+                query:{searchInfo : value,}
             }
         })
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params,true);
+        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params);
     }
 
     //打开添加编辑删除
@@ -69,17 +67,44 @@ export default class Wzmlgl extends React.Component{
 
     //提交
     handleSubmit =()=>{
-        let _this =this;
-        let addInfo = this.modalForm.props.form.getFieldsValue();
-        console.log(addInfo);
-        if(addInfo){
-            this.setState({
-                params:{
-                    addFromInfo:addInfo
-                }
-            })
-            axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params,true);
+        const form = this.modalForm.props.form;
+        form.validateFields((err, values) => {
+        if (err) {
+            return;
         }
+        console.log('form: ', values);
+        //提交到add接口
+        axios.ajax({
+            url:FaceUrl.wzmlAdd,
+            method:FaceUrl.POST,
+            baseApi:FaceUrl.bdApi,
+            data:{
+                ...values,
+                isShowLoading:true
+            }
+        }).then((res)=>{
+            if(res.code == '1') {
+                form.resetFields();
+                this.setState({ 
+                    isVisible: false 
+                });
+                this.requestList();
+                message.success('添加成功！');
+            }
+        })
+            
+        });
+        // let _this =this;
+        // let addInfo = this.modalForm.props.form.getFieldsValue();
+        // console.log(addInfo);
+        // if(addInfo){
+        //     this.setState({
+        //         params:{
+        //             addFromInfo:addInfo
+        //         }
+        //     })
+        //     axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params,true);
+        // }
     }
 
     //删除操作
@@ -96,7 +121,7 @@ export default class Wzmlgl extends React.Component{
                 onOk:()=>{
                     let _this =this;
                     axios.requestList(_this,FaceUrl.wzmlgl,this.params);
-                    message.success('删除成功');
+                    message.success('删除成功！');
                 }
             })
         }else{
@@ -138,22 +163,9 @@ export default class Wzmlgl extends React.Component{
              }
          ]
 
-       // const selectedRowKeys =this.state.selectedRowKeys
         //多选框
         const rowSelection = {
             type: 'checkbox',
-            // selectedRowKeys,
-            // onChange:(selectedRowKeys,selectedRows)=>{
-            //     let ids = [];
-            //     selectedRows.map((item)=>{
-            //         ids.push(item.id)
-            //     })
-            //     this.setState({
-            //         selectedRowKeys,
-            //         selectedRows,
-            //         selectedIds:ids
-            //     })
-            // }
         }
 
         return (
@@ -167,12 +179,6 @@ export default class Wzmlgl extends React.Component{
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
-                    {/* <Select defaultValue="wzName" size="large" style={{ width:120,borderRadius:0}} onChange={this.handleChange}>
-                        <Option value="wzType">物资类别</Option>
-                        <Option value="wzName">物资名称</Option>
-                        <Option value="csbz">测算标准</Option>
-                        <Option value="wzNum">数量</Option>
-                    </Select> */}
                         <Search size="large" style={{width: 325}}
                         placeholder="请输入物资名称/测算标准"
                         onSearch={value => this.handleSearchTable(value)}
@@ -209,7 +215,7 @@ export default class Wzmlgl extends React.Component{
                     }}
                     onOk={this.handleSubmit}
                 >
-                <OpenFormTable type={this.state.type} tibleInfo={this.state.tibleInfo}
+                <OpenFormTable type={this.state.type} tableInfo={this.state.tableInfo}
                  wrappedComponentRef={(inst)=>{this.modalForm = inst;}}/>
                 </Modal>
             </div>
@@ -220,7 +226,7 @@ export default class Wzmlgl extends React.Component{
 class OpenFormTable extends React.Component{
     render(){
         let type = this.props.type;
-        let tibleInfo =this.props.tibleInfo || {};
+        let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
             labelCol:{
                 span:6
@@ -235,7 +241,7 @@ class OpenFormTable extends React.Component{
                <FormItem label="物资类别" {...formItemLayout}>
                     {
                         getFieldDecorator('wzType',{
-                            initialValue:tibleInfo.wzType,
+                            initialValue:tableInfo.wzType,
                             rules:[
                                 {
                                     required: true,
@@ -243,7 +249,7 @@ class OpenFormTable extends React.Component{
                                 }
                             ]
                         })(
-                            <Select defaultValue=""  style={{ width: 200 }} >
+                            <Select style={{ width: 280 }} >
                                 <Option value="" >请选择物资类别</Option>
                                 <Option value="1">电力工程抢险</Option>
                                 <Option value="2">通信工程抢险</Option>
@@ -258,7 +264,7 @@ class OpenFormTable extends React.Component{
                 <FormItem label="物资名称" {...formItemLayout}>
                     {
                         getFieldDecorator('wzName',{
-                            initialValue:'',
+                            initialValue:tableInfo.wzName,
                             rules:[
                                 {
                                     required: true,
@@ -272,7 +278,7 @@ class OpenFormTable extends React.Component{
                 </FormItem>
                 <FormItem label="测算标准" {...formItemLayout}>
                    { getFieldDecorator('csbz',{
-                            initialValue:'',
+                            initialValue:tableInfo.csbz,
                             rules:[
                                 {
                                     required: true,
@@ -288,7 +294,7 @@ class OpenFormTable extends React.Component{
                 <FormItem label="数量" {...formItemLayout}>
                     {
                         getFieldDecorator('wzNum',{
-                            initialValue:'',
+                            initialValue:tableInfo.wzNum,
                             rules:[]
                         })(
                         <Input placeholder="请输入数量" />
@@ -298,7 +304,7 @@ class OpenFormTable extends React.Component{
                 <FormItem label="规格品质要求" {...formItemLayout}>
                     {
                         getFieldDecorator('ggpzReq',{
-                            initialValue:'',
+                            initialValue:tableInfo.ggpzReq,
                             rules:[]
                         })(
                         <TextArea

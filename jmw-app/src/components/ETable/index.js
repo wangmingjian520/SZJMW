@@ -8,13 +8,13 @@ export default class ETable extends React.Component {
     //处理行点击事件
     onRowClick = (record, index) => {
         let rowSelection = this.props.rowSelection;
-        if(rowSelection.type == 'checkbox'){
+        if(rowSelection.type === 'checkbox'){
             let selectedRowKeys = this.props.selectedRowKeys;
             let selectedIds = this.props.selectedIds;
             let selectedItem = this.props.selectedItem || [];
             if (selectedIds) {
                 const i = selectedIds.indexOf(record.kid);
-                if (i == -1) {//避免重复添加
+                if (i === -1) {//避免重复添加
                     selectedIds.push(record.kid)
                     selectedRowKeys.push(index);
                     selectedItem.push(record);
@@ -32,7 +32,7 @@ export default class ETable extends React.Component {
         }else{
             let selectKey = [index];
             const selectedRowKeys = this.props.selectedRowKeys;
-            if (selectedRowKeys && selectedRowKeys[0] == index){
+            if (selectedRowKeys && selectedRowKeys[0] === index){
                 return;
             }
             this.props.updateSelectedItem(selectKey,record || {});
@@ -43,7 +43,7 @@ export default class ETable extends React.Component {
     onSelectChange = (selectedRowKeys, selectedRows) => {
         let rowSelection = this.props.rowSelection;
         const selectedIds = [];
-        if(rowSelection.type == 'checkbox'){
+        if(rowSelection.type === 'checkbox'){
             selectedRows.map((item)=>{
                 selectedIds.push(item.kid);
             });
@@ -67,7 +67,7 @@ export default class ETable extends React.Component {
     }
 
     getOptions = () => {
-        let p = this.props;
+        //let p = this.props;
         let row_selection = this.props.rowSelection;
         const { selectedRowKeys } = this.props;
         const rowSelection = {
@@ -83,7 +83,7 @@ export default class ETable extends React.Component {
         // 当属性为false或者null时，说明没有单选或者复选列
         if(row_selection===false || row_selection === null){
             row_selection = false;
-        }else if(row_selection.type == 'checkbox'){
+        }else if(row_selection.type === 'checkbox'){
             //设置类型为复选框
             rowSelection.type = 'checkbox';
         }else{
