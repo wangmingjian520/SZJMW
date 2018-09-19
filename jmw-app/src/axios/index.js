@@ -1,7 +1,7 @@
 import JsonP from 'jsonp'
 import axios from 'axios'
 import Utils from './../utils/utils'
-import { Modal } from 'antd'
+import { Modal , message} from 'antd'
 export default class Axios {
     static requestList(_this,url,method,bdApi,params){
         this.ajax({
@@ -19,6 +19,8 @@ export default class Axios {
                     list,
                     selectedRowKeys:[],
                     selectedRows:null,
+                    selectedItem:[],
+                    selectedIds:null,
                     pagination:Utils.pagination(data,(current)=>{
                         _this.params.currentPage = current;
                         _this.requestList();
@@ -81,7 +83,12 @@ export default class Axios {
                 }else{
                     reject(response.data);
                 }
-            })
+            }).catch(function (error) {
+                loading = document.getElementById('ajaxLoading');
+                loading.style.display = 'none';
+                console.log(error.response.data)
+                message.error(error.response.data.message);
+              })
         });
     }
 }

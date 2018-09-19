@@ -1,10 +1,11 @@
 import React from 'react';
-import {  Button , Form , Breadcrumb , Modal , message ,Input ,Layout ,Select ,DatePicker} from  'antd';
+import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
 import axios from './../../../../axios'
 import Utils from './../../../../utils/utils'
 import ETable from './../../../../components/ETable/index'
 import moment from 'moment'
 import FaceUrl from '../../../../utils/apiAndInterfaceUrl'
+import Dictionary from '../../../../utils/dictionary'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
@@ -19,6 +20,7 @@ export default class Wzmlgl extends React.Component{
     params={
         currentPage:1,
         pageSize:10,
+        query:{},
     }
 
     componentDidMount(){
@@ -33,15 +35,11 @@ export default class Wzmlgl extends React.Component{
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
-        this.setState({
-            params:{
-                query:{searchInfo : value,}
-            }
-        })
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,this.params);
+        this.params.query = {"searchInfo":value}
+        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
-    //打开添加编辑删除
+    //打开添加编辑
     handleOperate =(type)=>{
         let item = this.state.selectedItem
         if(type==='add'){
@@ -55,7 +53,8 @@ export default class Wzmlgl extends React.Component{
                 this.setState({
                     type:type,
                     isVisible:true,
-                    title:'修改'
+                    title:'修改',
+                    tableInfo:item[0]
                })  
             }else{
                 message.error('请选择一条需要修改的项！');
@@ -67,13 +66,20 @@ export default class Wzmlgl extends React.Component{
 
     //提交
     handleSubmit =()=>{
+        let type = this.state.type;
         const form = this.modalForm.props.form;
         form.validateFields((err, values) => {
         if (err) {
             return;
         }
-        console.log('form: ', values);
-        //提交到add接口
+        //console.log('form: ', values);
+            let message = "";
+            if(type=="add"){
+                message="添加成功";
+            }if(type=="edit"){
+                message="修改成功";
+            }
+            //提交or修改
             axios.ajax({
                 url:FaceUrl.wzmlAdd,
                 method:FaceUrl.POST,
@@ -89,7 +95,7 @@ export default class Wzmlgl extends React.Component{
                         isVisible: false 
                     });
                     this.requestList();
-                    message.success('添加成功！');
+                    message.success(message);
                 }
             })
         });
@@ -105,7 +111,7 @@ export default class Wzmlgl extends React.Component{
             })
             Modal.confirm({
                 title:'提示',
-                content:`您确定要删除 ${ids.join(',')}`,
+                content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
                         url:FaceUrl.wzmlDel,
@@ -132,7 +138,11 @@ export default class Wzmlgl extends React.Component{
                  title:'物资类型',
                  dataIndex:'wzType',
                  key:'wzType',
-                 align:'center'
+                 align:'center',
+                 render(wzType){
+                    let config = Dictionary.wzType
+                    return config[wzType];
+                }
               },
              {
                  title:'物资名称',
@@ -177,6 +187,7 @@ export default class Wzmlgl extends React.Component{
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
+                        name="searchInfo"
                         placeholder="请输入物资名称/测算标准"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
@@ -207,7 +218,9 @@ export default class Wzmlgl extends React.Component{
                     onCancel={()=>{
                         this.modalForm.props.form.resetFields();
                         this.setState({
-                            isVisible:false
+                            isVisible:false,
+                            tableInfo:[],
+                            type:''
                         })
                     }}
                     onOk={this.handleSubmit}
@@ -222,7 +235,6 @@ export default class Wzmlgl extends React.Component{
 }
 class OpenFormTable extends React.Component{
     render(){
-        let type = this.props.type;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
             labelCol:{
@@ -235,10 +247,17 @@ class OpenFormTable extends React.Component{
         const { getFieldDecorator }  =this.props.form;
         return (
             <Form layout="horizontal">
+                    {
+                        getFieldDecorator('kid',{
+                            initialValue:tableInfo.kid,
+                        })
+                         (<Input type="hidden" />
+                         )
+                    }
                <FormItem label="物资类别" {...formItemLayout}>
                     {
                         getFieldDecorator('wzType',{
-                            initialValue:tableInfo.wzType,
+                            initialValue:tableInfo.wzType ? tableInfo.wzType : '1',
                             rules:[
                                 {
                                     required: true,
@@ -247,7 +266,7 @@ class OpenFormTable extends React.Component{
                             ]
                         })(
                             <Select style={{ width: 280 }} >
-                                <Option value="" >请选择物资类别</Option>
+                                
                                 <Option value="1">电力工程抢险</Option>
                                 <Option value="2">通信工程抢险</Option>
                                 <Option value="3">动物疫情处置</Option>
@@ -294,7 +313,8 @@ class OpenFormTable extends React.Component{
                             initialValue:tableInfo.wzNum,
                             rules:[]
                         })(
-                        <Input placeholder="请输入数量" />
+                        <InputNumber />    
+                        
                         )
                     }
                 </FormItem>

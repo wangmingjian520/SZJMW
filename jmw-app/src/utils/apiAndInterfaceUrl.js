@@ -1,7 +1,7 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.29:8050/yj";
+    static bdApi = "http://localhost:8050/yj";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //物资目录管理
@@ -11,6 +11,10 @@ export default class ApiAndInterfaceUrl {
     static wzmlDel = '/wzml/delete';
     //物资储备库点管理
     static wzcbkdgl = '/wzkd/list';
+    static wzcbAdd = '/wzcb/save';
+    static wzcbEdit = '/wzcb/findById';
+    static wzcbDel = '/wzcb/delete';
+
     static wzcbxxgl = '/wzcb/list';
 
     //应急事件处理-应急事件立案
