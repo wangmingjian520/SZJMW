@@ -74,25 +74,24 @@ export default class Wzmlgl extends React.Component{
         }
         console.log('form: ', values);
         //提交到add接口
-        axios.ajax({
-            url:FaceUrl.wzmlAdd,
-            method:FaceUrl.POST,
-            baseApi:FaceUrl.bdApi,
-            data:{
-                ...values,
-                isShowLoading:true
-            }
-        }).then((res)=>{
-            if(res.code == '1') {
-                form.resetFields();
-                this.setState({ 
-                    isVisible: false 
-                });
-                this.requestList();
-                message.success('添加成功！');
-            }
-        })
-            
+            axios.ajax({
+                url:FaceUrl.wzmlAdd,
+                method:FaceUrl.POST,
+                baseApi:FaceUrl.bdApi,
+                data:{
+                    ...values,
+                    isShowLoading:true
+                }
+            }).then((res)=>{
+                if(res.code == '1') {
+                    form.resetFields();
+                    this.setState({ 
+                        isVisible: false 
+                    });
+                    this.requestList();
+                    message.success('添加成功！');
+                }
+            })
         });
     }
 
@@ -108,9 +107,18 @@ export default class Wzmlgl extends React.Component{
                 title:'提示',
                 content:`您确定要删除 ${ids.join(',')}`,
                 onOk:()=>{
-                    let _this =this;
-                    axios.requestList(_this,FaceUrl.wzmlgl,this.params);
-                    message.success('删除成功！');
+                    axios.ajax({
+                        url:FaceUrl.wzmlDel,
+                        method:FaceUrl.POST,
+                        baseApi:FaceUrl.bdApi,
+                        data:ids
+                    }).then((res)=>{
+                        if(res.code == '1') {
+                            this.requestList();
+                            message.success('删除成功！');
+                        }
+                    })
+                   
                 }
             })
         }else{
