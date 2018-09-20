@@ -86,9 +86,10 @@ export default class Axios {
             }).catch(function (error) {
                 loading = document.getElementById('ajaxLoading');
                 loading.style.display = 'none';
-                console.log(error.response.data)
-                message.error(error.response.data.message);
-              })
+                if(error.response&&error.response.data){
+                    message.error(error.response.data.message);
+                }
+            })
         });
     }
 }

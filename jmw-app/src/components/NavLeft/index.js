@@ -15,7 +15,6 @@ class NavLeft extends React.Component{
     
     
     handleClick= ({item})=>{
-        console.log(item);
         const { dispatch } = this.props;
         dispatch(switchMenu(item.props.title))
         this.setState({

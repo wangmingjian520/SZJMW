@@ -1,17 +1,16 @@
 import React from 'react';
 import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
-import axios from './../../../../axios'
-import Utils from './../../../../utils/utils'
-import ETable from './../../../../components/ETable/index'
+import axios from './../../../../../axios'
+import Utils from './../../../../../utils/utils'
+import ETable from './../../../../../components/ETable/index'
 import moment from 'moment'
-import FaceUrl from '../../../../utils/apiAndInterfaceUrl'
-import Dictionary from '../../../../utils/dictionary'
+import FaceUrl from '../../../../../utils/apiAndInterfaceUrl'
 
 const Content = Layout;
-const { TextArea ,Search} = Input;
+const { Search } = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Wzmlgl extends React.Component{
+export default class Fwjggl extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -29,14 +28,14 @@ export default class Wzmlgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.fwjggl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.fwjggl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -99,7 +98,7 @@ export default class Wzmlgl extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.wzmlAdd,
+                url:FaceUrl.fwjgAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -133,7 +132,7 @@ export default class Wzmlgl extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.wzmlDel,
+                        url:FaceUrl.fwjgDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -155,42 +154,59 @@ export default class Wzmlgl extends React.Component{
     render(){
         const columns = [
             {
-                 title:'物资名称',
-                 dataIndex:'wzName',
-                 key:'wzName',
+                 title:'单位名称',
+                 dataIndex:'dwName',
+                 key:'dwName',
                  align:'center',
-                 render:(wzName,record)=>{
-                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{wzName}</a>;
+                 render:(dwName,record)=>{
+                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{dwName}</a>;
                 }
              },
              {
-                title:'物资类型',
-                dataIndex:'wzType',
-                key:'wzType',
+                title:'物资目录分类',
+                dataIndex:'dirType',
+                key:'dirType',
                 align:'center',
-                render(wzType){
-                   let config = Dictionary.wzType
-                   return config[wzType];
-               }
+            },
+             {
+                 title:'资质有限期',
+                 dataIndex:'limtDate',
+                 key:'limtDate',
+                 align:'center',
+                 render(limtDate){
+                    return moment(limtDate).format('YYYY-MM-DD')
+                 }
              },
              {
-                 title:'测算标准',
-                 dataIndex:'csbz',
-                 key:'csbz',
-                 align:'center'
+                 title:'年度审核',
+                 dataIndex:'shflag',
+                 key:'shflag',
+                 align:'center',
+                 render(shflag){
+                    return shflag=='1' ? '已审核':'未审核'
+                 }
              },
              {
-                 title:'数量',
-                 dataIndex:'wzNum',
-                 key:'wzNum',
-                 align:'center'
+                 title:'状态',
+                 dataIndex:'stat',
+                 key:'stat',
+                 align:'center',
+                 render(stat){
+                    return stat=='1' ? '管理中':'退出管理'
+                 }
              },
              {
-                 title:'规格品质要求',
-                 dataIndex:'ggpzReq',
-                 key:'ggpzReq',
-                 align:'center'
-             }
+                title:'资质名称',
+                dataIndex:'wzName',
+                key:'wzName',
+                align:'center'
+            },
+            {
+                title:'资质认证',
+                dataIndex:'zzrz',
+                key:'zzrz',
+                align:'center'
+            }
          ]
         let footer = {}
         if(this.state.type=='detail'){
@@ -211,14 +227,15 @@ export default class Wzmlgl extends React.Component{
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
                     <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
                     <Breadcrumb.Item>物资储备管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资目录管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>服务机构管理</Breadcrumb.Item>
+                    
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入物资名称/测算标准"
+                        placeholder="请输入单位名称/有限期/资质名称"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
@@ -264,10 +281,6 @@ export default class Wzmlgl extends React.Component{
     }
 }
 class OpenFormTable extends React.Component{
-    getState = (state)=>{
-    
-        return Dictionary.wzType[state]
-    }
     render(){
         let type = this.props.type ;
         let tableInfo =this.props.tableInfo || {};
@@ -289,86 +302,96 @@ class OpenFormTable extends React.Component{
                          (<Input type="hidden" />
                          )
                     }
+                <FormItem label="单位名称" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.dwName: 
+                        getFieldDecorator('dwName',{
+                            initialValue:tableInfo.dwName,
+                            rules:[
+                                {
+                                    required: true,
+                                    message:'单位名称不能为空！'
+                                }
+                            ]
+                        })
+                         (<Input placeholder="请输入单位名称" />
+                         )
+                    }
+                </FormItem>
+                <FormItem label="物资目录分类" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.dirType: 
+                        getFieldDecorator('dirType',{
+                            initialValue:tableInfo.dirType, 
+                            rules:[
+                                {
+                                    required: true,
+                                    message:'请选择物资目录分类'
+                                }
+                            ]
+                        })(
+                            <Input placeholder="请输入物资目录分类" />
+                        )
+                    }
+                </FormItem>
+                <FormItem label="资质有限期" {...formItemLayout}>
+                   { 
+                       tableInfo && type=='detail'? tableInfo.limtDate: 
+                       getFieldDecorator('limtDate',{
+                        initialValue:moment(tableInfo.limtDate),
+                    })
+                        (<DatePicker  />
+                        )
+                    }
+
+                </FormItem>
+                <FormItem label="年度审核" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.shflag: 
+                        getFieldDecorator('shflag',{
+                            initialValue:tableInfo.shflag? tableInfo.shflag : '1',
+                            rules:[]
+                        })(
+                            <Select style={{ width: 280 }} >
+                                <Option value="1">已审核</Option>
+                                <Option value="0">未审核</Option>
+                            </Select>
+                        )
+                    }
+                </FormItem>
+                <FormItem label="状态" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.stat: 
+                        getFieldDecorator('stat',{
+                            initialValue:tableInfo.stat? tableInfo.stat : '1',
+                            rules:[]
+                        })(
+                            <Select style={{ width: 280 }} >
+                                <Option value="1">管理中</Option>
+                                <Option value="0">退出管理</Option>
+                            </Select>
+                        )
+                    }
+                </FormItem>
                 <FormItem label="物资名称" {...formItemLayout}>
                     {   
                         tableInfo && type=='detail'? tableInfo.wzName: 
                         getFieldDecorator('wzName',{
                             initialValue:tableInfo.wzName,
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'物资名称不能为空！'
-                                }
-                            ]
-                        })
-                         (<Input placeholder="请输入物资名称" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="物资类别" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? this.getState(tableInfo.wzType): 
-                        getFieldDecorator('wzType',{
-                            initialValue:tableInfo.wzType ? tableInfo.wzType : '1',
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'请选择物资类别'
-                                }
-                            ]
-                        })(
-                            <Select style={{ width: 280 }} >
-                                
-                                <Option value="1">电力工程抢险</Option>
-                                <Option value="2">通信工程抢险</Option>
-                                <Option value="3">动物疫情处置</Option>
-                                <Option value="4">基本生活物资保障</Option>
-                                <Option value="5">网络安全保障</Option>
-                                <Option value="6">成品油</Option>
-                            </Select>
-                        )
-                    }
-                </FormItem>
-                <FormItem label="测算标准" {...formItemLayout}>
-                   { 
-                       tableInfo && type=='detail'? tableInfo.csbz: 
-                       getFieldDecorator('csbz',{
-                            initialValue:tableInfo.csbz,
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'测算标准不能为空！'
-                                }
-                            ]
-                        })(
-                        <Input placeholder="请输入测算标准" />
-                        )
-                    }
-
-                </FormItem>
-                <FormItem label="数量" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.wzNum: 
-                        getFieldDecorator('wzNum',{
-                            initialValue:tableInfo.wzNum,
                             rules:[]
                         })(
-                        <InputNumber />    
-                        
+                        <Input placeholder="请输入物资名称" />
                         )
                     }
                 </FormItem>
-                <FormItem label="规格品质要求" {...formItemLayout}>
+                <FormItem label="资质认证" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.ggpzReq: 
-                        getFieldDecorator('ggpzReq',{
-                            initialValue:tableInfo.ggpzReq,
+                        tableInfo && type=='detail'? tableInfo.zzrz: 
+                        getFieldDecorator('zzrz',{
+                            initialValue:tableInfo.zzrz,
                             rules:[]
                         })(
-                        <TextArea
-                        autosize={{minRows:3}}
-                        placeholder="请输入规格品质要求" 
-                            />
+                        <Input placeholder="请输入资质认证" />
                         )
                     }
                 </FormItem>

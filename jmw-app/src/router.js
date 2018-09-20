@@ -8,7 +8,9 @@ import Wzmlgl from './pages/yjzygl/wzcbgl/wzmlgl'
 import Wzcbkdgl from './pages/yjzygl/wzcbgl/wzcbkdgl'
 import Wzcbxx from './pages/yjzygl/wzcbgl/wzcbxx'
 import Yjsjla from './pages/yjsjcl/yjsjla'
-
+import Fwjggl from './pages/yjzygl/wzcbgl/fwjg/fwjggl';
+import Fwjghtgl from './pages/yjzygl/wzcbgl/fwjg/fwjghtgl';
+import InfoDetail from './pages/infoDetail';
 export default class IRouter extends React.Component{
 
     render(){
@@ -21,11 +23,14 @@ export default class IRouter extends React.Component{
                     <Route  path="/" render={()=>
                         <Index_main>
                         <Switch>
+                            <Route path="/infoDetail/:detailId" component={InfoDetail} />
                             {/* 应急资源管理 */}
                             <Route path="/wzmlgl" component={Wzmlgl}></Route>
                             <Route path="/wzcbkdgl" component={Wzcbkdgl}></Route>
                             <Route path="/wzcbxx" component={Wzcbxx}></Route>
                             <Route path="/yjsjla" component={Yjsjla}></Route>
+                            <Route path="/fwjggl" component={Fwjggl}></Route>
+                            <Route path="/fwjghtgl" component={Fwjghtgl}></Route>
                             <Redirect to="/wzmlgl" />
                             <Route component={NoMatch}></Route>
                         </Switch>

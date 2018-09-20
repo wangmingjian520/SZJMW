@@ -1,17 +1,16 @@
 import React from 'react';
-import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
-import axios from './../../../../axios'
-import Utils from './../../../../utils/utils'
-import ETable from './../../../../components/ETable/index'
+import { Button , Form , Breadcrumb , Modal , message ,Input  , Layout , Select , DatePicker } from  'antd';
+import axios from './../../../../../axios'
+import Utils from './../../../../../utils/utils'
+import ETable from './../../../../../components/ETable/index'
 import moment from 'moment'
-import FaceUrl from '../../../../utils/apiAndInterfaceUrl'
-import Dictionary from '../../../../utils/dictionary'
+import FaceUrl from '../../../../../utils/apiAndInterfaceUrl'
 
 const Content = Layout;
-const { TextArea ,Search} = Input;
+const { TextArea,Search } = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Wzmlgl extends React.Component{
+export default class Fwjghtgl extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -29,14 +28,14 @@ export default class Wzmlgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.fwjghtgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.fwjghtgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -60,7 +59,6 @@ export default class Wzmlgl extends React.Component{
                 message.error('请选择一条需要修改的项！');
                 
             }
-            
         }
     }
 
@@ -99,7 +97,7 @@ export default class Wzmlgl extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.wzmlAdd,
+                url:FaceUrl.fwjghtAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -133,7 +131,7 @@ export default class Wzmlgl extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.wzmlDel,
+                        url:FaceUrl.fwjghtDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -155,42 +153,63 @@ export default class Wzmlgl extends React.Component{
     render(){
         const columns = [
             {
-                 title:'物资名称',
-                 dataIndex:'wzName',
-                 key:'wzName',
+                 title:'合同名称',
+                 dataIndex:'htName',
+                 key:'htName',
                  align:'center',
-                 render:(wzName,record)=>{
-                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{wzName}</a>;
+                 render:(htName,record)=>{
+                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{htName}</a>;
                 }
              },
              {
-                title:'物资类型',
-                dataIndex:'wzType',
-                key:'wzType',
+                title:'合同类容',
+                dataIndex:'htDetail',
+                key:'htDetail',
                 align:'center',
-                render(wzType){
-                   let config = Dictionary.wzType
-                   return config[wzType];
-               }
+            },
+             {
+                 title:'合同签订日期',
+                 dataIndex:'htSignDate',
+                 key:'htSignDate',
+                 align:'center',
+                 render(htSignDate){
+                    return moment(htSignDate).format('YYYY-MM-DD')
+                 }
              },
              {
-                 title:'测算标准',
-                 dataIndex:'csbz',
-                 key:'csbz',
-                 align:'center'
+                 title:'合同联系人',
+                 dataIndex:'htLink',
+                 key:'htLink',
+                 align:'center',
+            },
+            {
+                title:'合同期限',
+                dataIndex:'htEndDate',
+                key:'htEndDate',
+                align:'center',
+                render(htEndDate){
+                   return moment(htEndDate).format('YYYY-MM-DD')
+                }
+            },
+             {
+                 title:'合同提醒',
+                 dataIndex:'htNote',
+                 key:'htNote',
+                 align:'center',
+                 
              },
              {
-                 title:'数量',
-                 dataIndex:'wzNum',
-                 key:'wzNum',
-                 align:'center'
-             },
-             {
-                 title:'规格品质要求',
-                 dataIndex:'ggpzReq',
-                 key:'ggpzReq',
-                 align:'center'
-             }
+                title:'合同续签',
+                dataIndex:'htXq',
+                key:'htXq',
+                align:'center'
+            },
+            {
+                title:'合同审计',
+                dataIndex:'htSj',
+                key:'htSj',
+                align:'center'
+            }
          ]
         let footer = {}
         if(this.state.type=='detail'){
@@ -211,14 +230,15 @@ export default class Wzmlgl extends React.Component{
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
                     <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
                     <Breadcrumb.Item>物资储备管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资目录管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>服务机构管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>服务机构合同管理</Breadcrumb.Item>
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入物资名称/测算标准"
+                        placeholder="请输入合同名称/内容/联系人"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
@@ -264,10 +284,6 @@ export default class Wzmlgl extends React.Component{
     }
 }
 class OpenFormTable extends React.Component{
-    getState = (state)=>{
-    
-        return Dictionary.wzType[state]
-    }
     render(){
         let type = this.props.type ;
         let tableInfo =this.props.tableInfo || {};
@@ -289,86 +305,106 @@ class OpenFormTable extends React.Component{
                          (<Input type="hidden" />
                          )
                     }
-                <FormItem label="物资名称" {...formItemLayout}>
+                <FormItem label="合同名称" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.wzName: 
-                        getFieldDecorator('wzName',{
-                            initialValue:tableInfo.wzName,
+                        tableInfo && type=='detail'? tableInfo.htName: 
+                        getFieldDecorator('htName',{
+                            initialValue:tableInfo.htName,
                             rules:[
                                 {
                                     required: true,
-                                    message:'物资名称不能为空！'
+                                    message:'合同名称不能为空！'
                                 }
                             ]
                         })
-                         (<Input placeholder="请输入物资名称" />
+                         (<Input placeholder="请输入合同名称" />
                          )
                     }
                 </FormItem>
-                <FormItem label="物资类别" {...formItemLayout}>
+                <FormItem label="合同内容" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? this.getState(tableInfo.wzType): 
-                        getFieldDecorator('wzType',{
-                            initialValue:tableInfo.wzType ? tableInfo.wzType : '1',
+                        tableInfo && type=='detail'? tableInfo.htDetail: 
+                        getFieldDecorator('htDetail',{
+                            initialValue:tableInfo.htDetail, 
                             rules:[
                                 {
                                     required: true,
-                                    message:'请选择物资类别'
+                                    message:'请输入合同内容'
                                 }
                             ]
                         })(
-                            <Select style={{ width: 280 }} >
-                                
-                                <Option value="1">电力工程抢险</Option>
-                                <Option value="2">通信工程抢险</Option>
-                                <Option value="3">动物疫情处置</Option>
-                                <Option value="4">基本生活物资保障</Option>
-                                <Option value="5">网络安全保障</Option>
-                                <Option value="6">成品油</Option>
-                            </Select>
+                            <Input placeholder="请输入合同内容" />
                         )
                     }
                 </FormItem>
-                <FormItem label="测算标准" {...formItemLayout}>
+                <FormItem label="合同签订日期" {...formItemLayout}>
                    { 
-                       tableInfo && type=='detail'? tableInfo.csbz: 
-                       getFieldDecorator('csbz',{
-                            initialValue:tableInfo.csbz,
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'测算标准不能为空！'
-                                }
-                            ]
-                        })(
-                        <Input placeholder="请输入测算标准" />
+                       tableInfo && type=='detail'? tableInfo.htSignDate: 
+                       getFieldDecorator('htSignDate',{
+                        initialValue:moment(tableInfo.htSignDate),
+                    })
+                        (<DatePicker  />
                         )
                     }
 
                 </FormItem>
-                <FormItem label="数量" {...formItemLayout}>
+                <FormItem label="合同联系人" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.wzNum: 
-                        getFieldDecorator('wzNum',{
-                            initialValue:tableInfo.wzNum,
+                        tableInfo && type=='detail'? tableInfo.htLink: 
+                        getFieldDecorator('htLink',{
+                            initialValue:tableInfo.htLink,
                             rules:[]
                         })(
-                        <InputNumber />    
-                        
+                            <Input placeholder="请输入合同联系人" />
                         )
                     }
                 </FormItem>
-                <FormItem label="规格品质要求" {...formItemLayout}>
+                <FormItem label="合同期限" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.ggpzReq: 
-                        getFieldDecorator('ggpzReq',{
-                            initialValue:tableInfo.ggpzReq,
+                        tableInfo && type=='detail'? tableInfo.htEndDate: 
+                        getFieldDecorator('htEndDate',{
+                            initialValue:moment(tableInfo.htEndDate),
+                    })
+                        (<DatePicker  />
+                        )
+                    }
+                </FormItem>
+                <FormItem label="合同提醒" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.htNote: 
+                        getFieldDecorator('htNote',{
+                            initialValue:tableInfo.htNote,
                             rules:[]
                         })(
-                        <TextArea
-                        autosize={{minRows:3}}
-                        placeholder="请输入规格品质要求" 
-                            />
+                            <TextArea
+                            autosize={{minRows:3}}
+                            placeholder="请输入合同提醒" 
+                                />
+                            )
+                    }
+                </FormItem>
+                <FormItem label="合同续签" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.htXq: 
+                        getFieldDecorator('htXq',{
+                            initialValue:tableInfo.htXq,
+                            rules:[]
+                        })(
+                            <TextArea
+                            autosize={{minRows:3}}
+                            placeholder="请输入合同续签" 
+                                />
+                            )
+                    }
+                </FormItem>
+                <FormItem label="合同审计" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.htSj: 
+                        getFieldDecorator('htSj',{
+                            initialValue:tableInfo.htSj,
+                            rules:[]
+                        })(
+                        <Input placeholder="请输入合同审计" />
                         )
                     }
                 </FormItem>

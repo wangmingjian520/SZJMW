@@ -15,6 +15,7 @@ const Option = Select.Option;
 export default class Wzcbjgl extends React.Component{
     state={
         dataSource:[],
+        footer:'',
     }
 
     params={
@@ -29,14 +30,32 @@ export default class Wzcbjgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.wzcbkdgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.wzkdkdgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.wzcbkdgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.wzkdkdgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+    }
+
+     //打开详情
+     handleDetail = (value)=>{
+        this.setState({
+            type:"detail",
+            isVisible:true,
+            title:'查看详情',
+            tableInfo:value,
+       })  
+    }
+    //关闭详情
+    handleCancel = () => {
+        this.setState({ 
+            isVisible: false,
+            tableInfo:{} 
+        });
+        this.requestList(); 
     }
 
     //打开添加编辑
@@ -72,7 +91,6 @@ export default class Wzcbjgl extends React.Component{
         if (err) {
             return;
         }
-        //console.log('form: ', values);
             let message = "";
             if(type=="add"){
                 message="添加成功";
@@ -81,7 +99,7 @@ export default class Wzcbjgl extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.wzcbAdd,
+                url:FaceUrl.wzkdAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -92,7 +110,8 @@ export default class Wzcbjgl extends React.Component{
                 if(res.code == '1') {
                     form.resetFields();
                     this.setState({ 
-                        isVisible: false 
+                        isVisible: false,
+                        tableInfo:{}  
                     });
                     this.requestList();
                     message.success(message);
@@ -114,7 +133,7 @@ export default class Wzcbjgl extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.wzcbDel,
+                        url:FaceUrl.wzkdDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -139,7 +158,10 @@ export default class Wzcbjgl extends React.Component{
                  title:'库点名称',
                  dataIndex:'cbkName',
                  key:'cbkName',
-                 align:'center'
+                 align:'center',
+                 render:(cbkName,record)=>{
+                    return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{cbkName}</a>;
+               }
              },
              {
                 title:'编号',
@@ -186,15 +208,24 @@ export default class Wzcbjgl extends React.Component{
                 key:'fzrMob',
                 align:'center',
                 
-             },,{
+             },{
                 title:'投入使用时间',
                 dataIndex:'syDate',
                 key:'syDate',
                 align:'center',
-                
+                render(syDate){
+                   return moment(syDate).format('YYYY-MM-DD')
+                }
              }
          ]
-
+        
+        let footer = {}
+        if(this.state.type=='detail'){
+            footer={
+               footer: <Button key="关闭" onClick={this.handleCancel.bind(this)}>关闭</Button>,
+            }
+            
+        }
         //多选框
         const rowSelection = {
             type: 'checkbox',
@@ -249,6 +280,7 @@ export default class Wzcbjgl extends React.Component{
                         })
                     }}
                     onOk={this.handleSubmit}
+                    {...footer}
                 >
                 <OpenFormTable type={this.state.type} tableInfo={this.state.tableInfo}
                  wrappedComponentRef={(inst)=>{this.modalForm = inst;}}/>
@@ -260,6 +292,7 @@ export default class Wzcbjgl extends React.Component{
 }
 class OpenFormTable extends React.Component{
     render(){
+        let type = this.props.type;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
             labelCol:{
@@ -280,7 +313,8 @@ class OpenFormTable extends React.Component{
                          )
                     }
                 <FormItem label="库点名称" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.cbkName: 
                         getFieldDecorator('cbkName',{
                             initialValue:tableInfo.cbkName,
                             rules:[
@@ -295,7 +329,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="编号" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.cbkCode: 
                         getFieldDecorator('cbkCode',{
                             initialValue:tableInfo.cbkCode,
                             rules:[
@@ -310,7 +345,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                <FormItem label="库点分类" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.cbkType: 
                         getFieldDecorator('cbkType',{
                             initialValue:tableInfo.cbkType ? tableInfo.cbkType : '1',
                             rules:[
@@ -333,34 +369,46 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="级别" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.cbkGrade:
                         getFieldDecorator('cbkGrade',{
                             initialValue:tableInfo.cbkGrade,
+                            rules:[
+                                {
+                                    required: true,
+                                    message:'级别不能为空！'
+                                }
+                            ]
                         })
                          (<Input placeholder="请输入级别名称" />
                          )
                     }
                 </FormItem>
                 <FormItem label="储备物资" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.cbwz:
                         getFieldDecorator('cbwz',{
                             initialValue:tableInfo.cbwz,
                         })
-                         (<Input placeholder="请输入储备物资" />
+                         (<TextArea
+                            autosize={{minRows:3}}
+                            placeholder="请输入储备物资" 
+                            />
                          )
                     }
                 </FormItem>
                 <FormItem label="面积" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.area:
                         getFieldDecorator('area',{
                             initialValue:tableInfo.area,
                         })
-                         (<Input placeholder="请输入面积" />
-                         )
+                        (<InputNumber />)    
                     }
                 </FormItem>
                 <FormItem label="行政区划" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.areaCode:
                         getFieldDecorator('areaCode',{
                             initialValue:tableInfo.areaCode,
                         })
@@ -369,7 +417,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="库点地址" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.cbkAdd:
                         getFieldDecorator('cbkAdd',{
                             initialValue:tableInfo.cbkAdd,
                         })
@@ -378,16 +427,18 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="库容" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.kr:
                         getFieldDecorator('kr',{
                             initialValue:tableInfo.kr,
                         })
-                         (<Input placeholder="请输入库容" />
+                         (<InputNumber />    
                          )
                     }
                 </FormItem>
                 <FormItem label="负责人" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.fzrName:
                         getFieldDecorator('fzrName',{
                             initialValue:tableInfo.fzrName,
                         })
@@ -396,7 +447,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="办公电话" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.fzrOffTel:
                         getFieldDecorator('fzrOffTel',{
                             initialValue:tableInfo.fzrOffTel,
                         })
@@ -405,7 +457,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="联系电话" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.fzrMob:
                         getFieldDecorator('fzrMob',{
                             initialValue:tableInfo.fzrMob,
                         })
@@ -414,7 +467,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="联系人" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.linkName:
                         getFieldDecorator('linkName',{
                             initialValue:tableInfo.linkName,
                         })
@@ -423,7 +477,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="办公电话" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.linkOffTel:
                         getFieldDecorator('linkOffTel',{
                             initialValue:tableInfo.linkOffTel,
                         })
@@ -432,7 +487,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="联系电话" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.linkMob:
                         getFieldDecorator('linkMob',{
                             initialValue:tableInfo.linkMob,
                         })
@@ -441,7 +497,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="经度" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.longitude:
                         getFieldDecorator('longitude',{
                             initialValue:tableInfo.longitude,
                         })
@@ -450,7 +507,8 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="纬度" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.latitude:
                         getFieldDecorator('latitude',{
                             initialValue:tableInfo.latitude,
                         })
@@ -459,25 +517,28 @@ class OpenFormTable extends React.Component{
                     }
                 </FormItem>
                 <FormItem label="投入使用时间" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.syDate:
                         getFieldDecorator('syDate',{
-                            initialValue:tableInfo.syDate,
+                            initialValue:moment(tableInfo.syDate),
                         })
-                         (<Input placeholder="请输入投入使用时间" />
+                         (<DatePicker  />
                          )
                     }
                 </FormItem>
                 <FormItem label="设计使用年限" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.synx:
                         getFieldDecorator('synx',{
                             initialValue:tableInfo.synx,
                         })
-                         (<Input placeholder="请输入设计使用年限" />
+                         ( <InputNumber />    
                          )
                     }
                 </FormItem>
                 <FormItem label="周边交通状况" {...formItemLayout}>
-                    {
+                    {   
+                        tableInfo && type=='detail'? tableInfo.zbjt:
                         getFieldDecorator('zbjt',{
                             initialValue:tableInfo.zbjt,
                             rules:[]
