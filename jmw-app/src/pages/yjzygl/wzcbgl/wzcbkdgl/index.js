@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
+import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker ,Row, Col} from  'antd';
 import axios from './../../../../axios'
 import Utils from './../../../../utils/utils'
 import ETable from './../../../../components/ETable/index'
@@ -269,6 +269,7 @@ export default class Wzcbjgl extends React.Component{
 
                 </Content>
                 <Modal
+                    width='700px'
                     title={this.state.title}
                     visible={this.state.isVisible}
                     onCancel={()=>{
@@ -295,16 +296,16 @@ class OpenFormTable extends React.Component{
         let type = this.props.type;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
-            labelCol:{
-                span:6
-            },
-            wrapperCol:{
-                span:18
-            }
+            // labelCol:{
+            //     span:8
+            // },
+            // wrapperCol:{
+            //     span:16
+            // }
         }
         const { getFieldDecorator }  =this.props.form;
         return (
-            <Form layout="horizontal">
+            <Form layout="inline" >
                     {
                         getFieldDecorator('kid',{
                             initialValue:tableInfo.kid,
@@ -312,41 +313,54 @@ class OpenFormTable extends React.Component{
                          (<Input type="hidden" />
                          )
                     }
-                <FormItem label="库点名称" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.cbkName: 
-                        getFieldDecorator('cbkName',{
-                            initialValue:tableInfo.cbkName,
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'物资名称不能为空！'
+                <Row>
+                    <Col span={12}>
+                        <div className="gutter-box" align="left">
+                            <FormItem label="库点名称" {...formItemLayout}>
+                                {   
+                                    //tableInfo && type=='detail'? tableInfo.cbkName: 
+                                    getFieldDecorator('cbkName',{
+                                        initialValue:tableInfo.cbkName,
+                                        rules:[
+                                            {
+                                                required: true,
+                                                message:'物资名称不能为空！'
+                                            }
+                                        ]
+                                    })
+                                    (<Input placeholder="请输入库名称" style={{ width: 200 }}/>
+                                    )
                                 }
-                            ]
-                        })
-                         (<Input placeholder="请输入库名称" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="编号" {...formItemLayout}>
+                            </FormItem>
+                        </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="编号" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkCode: 
+                                getFieldDecorator('cbkCode',{
+                                    initialValue:tableInfo.cbkCode,
+                                    rules:[
+                                        {
+                                            required: true,
+                                            message:'编号不能为空！'
+                                        }
+                                    ]
+                                })
+                                (<Input placeholder="请输入编号" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="库点分类" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.cbkCode: 
-                        getFieldDecorator('cbkCode',{
-                            initialValue:tableInfo.cbkCode,
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'编号不能为空！'
-                                }
-                            ]
-                        })
-                         (<Input placeholder="请输入编号" />
-                         )
-                    }
-                </FormItem>
-               <FormItem label="库点分类" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.cbkType: 
+                        //tableInfo && type=='detail'? tableInfo.cbkType: 
                         getFieldDecorator('cbkType',{
                             initialValue:tableInfo.cbkType ? tableInfo.cbkType : '1',
                             rules:[
@@ -356,7 +370,7 @@ class OpenFormTable extends React.Component{
                                 }
                             ]
                         })(
-                            <Select style={{ width: 280 }} >
+                            <Select style={{ width: 200 }} >
                                 
                                 <Option value="1">电力工程抢险</Option>
                                 <Option value="2">通信工程抢险</Option>
@@ -368,188 +382,294 @@ class OpenFormTable extends React.Component{
                         )
                     }
                 </FormItem>
-                <FormItem label="级别" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.cbkGrade:
-                        getFieldDecorator('cbkGrade',{
-                            initialValue:tableInfo.cbkGrade,
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'级别不能为空！'
-                                }
-                            ]
-                        })
-                         (<Input placeholder="请输入级别名称" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="储备物资" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.cbwz:
-                        getFieldDecorator('cbwz',{
-                            initialValue:tableInfo.cbwz,
-                        })
-                         (<TextArea
-                            autosize={{minRows:3}}
-                            placeholder="请输入储备物资" 
-                            />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="面积" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.area:
-                        getFieldDecorator('area',{
-                            initialValue:tableInfo.area,
-                        })
-                        (<InputNumber />)    
-                    }
-                </FormItem>
-                <FormItem label="行政区划" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.areaCode:
-                        getFieldDecorator('areaCode',{
-                            initialValue:tableInfo.areaCode,
-                        })
-                         (<Input placeholder="请输入行政区划" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="库点地址" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.cbkAdd:
-                        getFieldDecorator('cbkAdd',{
-                            initialValue:tableInfo.cbkAdd,
-                        })
-                         (<Input placeholder="请输入库点地址" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="库容" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.kr:
-                        getFieldDecorator('kr',{
-                            initialValue:tableInfo.kr,
-                        })
-                         (<InputNumber />    
-                         )
-                    }
-                </FormItem>
-                <FormItem label="负责人" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.fzrName:
-                        getFieldDecorator('fzrName',{
-                            initialValue:tableInfo.fzrName,
-                        })
-                         (<Input placeholder="请输入负责人" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="办公电话" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.fzrOffTel:
-                        getFieldDecorator('fzrOffTel',{
-                            initialValue:tableInfo.fzrOffTel,
-                        })
-                         (<Input placeholder="请输入办公电话" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="联系电话" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.fzrMob:
-                        getFieldDecorator('fzrMob',{
-                            initialValue:tableInfo.fzrMob,
-                        })
-                         (<Input placeholder="请输入联系电话" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="联系人" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.linkName:
-                        getFieldDecorator('linkName',{
-                            initialValue:tableInfo.linkName,
-                        })
-                         (<Input placeholder="请输入联系人" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="办公电话" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.linkOffTel:
-                        getFieldDecorator('linkOffTel',{
-                            initialValue:tableInfo.linkOffTel,
-                        })
-                         (<Input placeholder="请输入办公电话" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="联系电话" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.linkMob:
-                        getFieldDecorator('linkMob',{
-                            initialValue:tableInfo.linkMob,
-                        })
-                         (<Input placeholder="请输入联系电话" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="经度" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.longitude:
-                        getFieldDecorator('longitude',{
-                            initialValue:tableInfo.longitude,
-                        })
-                         (<Input placeholder="请输入经度" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="纬度" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.latitude:
-                        getFieldDecorator('latitude',{
-                            initialValue:tableInfo.latitude,
-                        })
-                         (<Input placeholder="请输入纬度" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="投入使用时间" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.syDate:
-                        getFieldDecorator('syDate',{
-                            initialValue:moment(tableInfo.syDate),
-                        })
-                         (<DatePicker  />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="设计使用年限" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.synx:
-                        getFieldDecorator('synx',{
-                            initialValue:tableInfo.synx,
-                        })
-                         ( <InputNumber />    
-                         )
-                    }
-                </FormItem>
-                <FormItem label="周边交通状况" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.zbjt:
-                        getFieldDecorator('zbjt',{
-                            initialValue:tableInfo.zbjt,
-                            rules:[]
-                        })(
-                        <TextArea
-                        autosize={{minRows:3}}
-                        placeholder="请输入周边交通状况" 
-                            />
-                        )
-                    }
-                </FormItem>
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="级别" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('cbkGrade',{
+                                    initialValue:tableInfo.cbkGrade,
+                                    rules:[
+                                        {
+                                            required: true,
+                                            message:'级别不能为空！'
+                                        }
+                                    ]
+                                })
+                                (<Input placeholder="请输入级别名称" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                    <div className="gutter-box">
+                    <FormItem label="储备物资"  >
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbwz:
+                                getFieldDecorator('cbwz',{
+                                    initialValue:tableInfo.cbwz,
+                                })
+                                (<TextArea style={{ width: 526 }}
+                                    autosize={{minRows:3}}
+                                    placeholder="请输入储备物资" 
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="面积" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.area:
+                                getFieldDecorator('area',{
+                                    initialValue:tableInfo.area,
+                                })
+                                (<InputNumber style={{ width: 200 }}/>)    
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="行政区划" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.areaCode:
+                                getFieldDecorator('areaCode',{
+                                    initialValue:tableInfo.areaCode,
+                                })
+                                (<Input placeholder="请输入行政区划" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row >
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="库点地址" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkAdd:
+                                getFieldDecorator('cbkAdd',{
+                                    initialValue:tableInfo.cbkAdd,
+                                })
+                                (<Input placeholder="请输入库点地址" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="库容" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.kr:
+                                getFieldDecorator('kr',{
+                                    initialValue:tableInfo.kr,
+                                })
+                                (<InputNumber style={{ width: 200 }}/>    
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                       
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="负责人" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.fzrName:
+                                getFieldDecorator('fzrName',{
+                                    initialValue:tableInfo.fzrName,
+                                })
+                                (<Input placeholder="请输入负责人" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="办公电话" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.fzrOffTel:
+                                getFieldDecorator('fzrOffTel',{
+                                    initialValue:tableInfo.fzrOffTel,
+                                })
+                                (<Input placeholder="请输入办公电话" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row >
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="联系电话" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.fzrMob:
+                                getFieldDecorator('fzrMob',{
+                                    initialValue:tableInfo.fzrMob,
+                                })
+                                (<Input placeholder="请输入联系电话" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="联系人" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.linkName:
+                                getFieldDecorator('linkName',{
+                                    initialValue:tableInfo.linkName,
+                                })
+                                (<Input placeholder="请输入联系人" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row >
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="办公电话" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.linkOffTel:
+                                getFieldDecorator('linkOffTel',{
+                                    initialValue:tableInfo.linkOffTel,
+                                })
+                                (<Input placeholder="请输入办公电话" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="联系电话" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.linkMob:
+                                getFieldDecorator('linkMob',{
+                                    initialValue:tableInfo.linkMob,
+                                })
+                                (<Input placeholder="请输入联系电话" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row >
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="经度" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.longitude:
+                                getFieldDecorator('longitude',{
+                                    initialValue:tableInfo.longitude,
+                                })
+                                (<Input placeholder="请输入经度" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="投入使用时间" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.syDate:
+                                getFieldDecorator('syDate',{
+                                    initialValue:moment(tableInfo.syDate),
+                                })
+                                (<DatePicker  style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row >
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="纬度" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.latitude:
+                                getFieldDecorator('latitude',{
+                                    initialValue:tableInfo.latitude,
+                                })
+                                (<Input placeholder="请输入纬度" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="设计使用年限" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.synx:
+                                getFieldDecorator('synx',{
+                                    initialValue:tableInfo.synx,
+                                })
+                                ( <InputNumber style={{ width: 200 }}/>    
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row >
+                    <Col span={24}>
+                    <div className="gutter-box">
+                    <FormItem label="周边交通状况" >
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.zbjt:
+                                getFieldDecorator('zbjt',{
+                                    initialValue:tableInfo.zbjt,
+                                    rules:[]
+                                })(
+                                <TextArea style={{ width: 526 }}
+                                autosize={{minRows:3}}
+                                placeholder="请输入周边交通状况" 
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
             </Form>
         );
     }
