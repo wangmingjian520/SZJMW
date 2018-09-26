@@ -1,18 +1,17 @@
 import React from 'react';
 import { Button , Form , Breadcrumb , Modal , message ,Input , InputNumber , Layout , Select , DatePicker } from  'antd';
-import axios from './../../../../axios'
-import Utils from './../../../../utils/utils'
-import ETable from './../../../../components/ETable/index'
+import axios from '../../../axios'
+import Utils from '../../../utils/utils'
+import ETable from '../../../components/ETable'
 import moment from 'moment'
-import FaceUrl from './../../../../utils/apiAndInterfaceUrl'
-import Dictionary from './../../../../utils/dictionary'
+import FaceUrl from '../../../utils/apiAndInterfaceUrl'
+import Dictionary from '../../../utils/dictionary'
 
 const Content = Layout;
 const { TextArea,Search } = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Wzcbxx extends React.Component {
-
+export default class Sbssgl extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -28,16 +27,16 @@ export default class Wzcbxx extends React.Component {
       this.requestList()
     }
 
-    requestList = () => {
-        let _this = this;
-        axios.requestList(_this,FaceUrl.wzcbxxgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+    requestList = ()=>{
+        let _this =this;
+        axios.requestList(_this,FaceUrl.sbssgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.wzcbxxgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.sbssgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -99,7 +98,7 @@ export default class Wzcbxx extends React.Component {
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.wzcbAdd,
+                url:FaceUrl.sbssAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -133,7 +132,7 @@ export default class Wzcbxx extends React.Component {
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.wzcbDel,
+                        url:FaceUrl.sbssDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -151,55 +150,62 @@ export default class Wzcbxx extends React.Component {
         }
     }
 
-    render() {
+    
+    render(){
         const columns = [
             {
-                title: '物资名称',
-                dataIndex: 'wzName',
-                key: 'wzName',
-                align:'center',
-                render:(htName,record)=>{
-                    return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{htName}</a>;
-               }
-            },
-            {
-                title: '物资分类',
-                dataIndex: 'wzType',
-                key: 'wzType',
+                 title:'设备名称',
+                 dataIndex:'wzName',
+                 key:'wzName',
+                 align:'center',
+                 render:(wzName,record)=>{
+                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{wzName}</a>;
+                }
+             },
+             {
+                title:'设备分类',
+                dataIndex:'wzType',
+                key:'wzType',
                 align:'center',
                 render(wzType){
-                    let config = Dictionary.wzcbxxType
+                    let config = Dictionary.sbflType
                     return config[wzType];
                 }
-
+            },
+             {
+                 title:'规格参数',
+                 dataIndex:'ggParam',
+                 key:'ggParam',
+                 align:'center',
             },
             {
-                title: '物资数量',
-                dataIndex: 'wzNum',
-                key: 'wzNum',
-                align:'center'
-            },
-            {
-                title: '物资储备库点',
-                dataIndex: 'cbkCode',
-                key: 'cbkCode',
-                align:'center'
-            },
-            {
-                title: '物资属性',
-                dataIndex: 'wzFlag',
-                key: 'wzFlag',
+                title:'设备数量',
+                dataIndex:'wzNum',
+                key:'wzNum',
                 align:'center',
-                render(wzFlag){
-                    let config ={
-                        '0':'现有',
-                        '1':'可调用'
-                    }
-                    return config[wzFlag];
-                }
+           },
+           {
+                title:'使用期限',
+                dataIndex:'syqx',
+                key:'syqx',
+                align:'center',
+            },
+             {
+                 title:'购置时间',
+                 dataIndex:'gzDate',
+                 key:'gzDate',
+                 align:'center',
+                 render(gzDate){
+                    return moment(gzDate).format('YYYY-MM-DD')
+                 }
+            },
+            {
+                title:'使用机构',
+                dataIndex:'syjg',
+                key:'syjg',
+                align:'center',
             }
-        ]
-
+         ]
         let footer = {}
         if(this.state.type=='detail'){
             footer={
@@ -218,15 +224,14 @@ export default class Wzcbxx extends React.Component {
                 <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
                     <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备信息</Breadcrumb.Item>
+                    <Breadcrumb.Item>设备设施管理</Breadcrumb.Item>
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入物资名称/分类/储备库点"
+                        placeholder="请输入设备名称/分类/使用机构"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
@@ -274,9 +279,9 @@ export default class Wzcbxx extends React.Component {
 class OpenFormTable extends React.Component{
     getState = (state)=>{
     
-        return Dictionary.wzcbxxType[state]
+        return Dictionary.sbflType[state]
     }
-    render() {
+    render(){
         let type = this.props.type ;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
@@ -297,85 +302,162 @@ class OpenFormTable extends React.Component{
                          (<Input type="hidden" />
                          )
                     }
-                <FormItem label="物资名称" {...formItemLayout}>
-                    {
+                <FormItem label="设备名称" {...formItemLayout}>
+                    {   
                         tableInfo && type=='detail'? tableInfo.wzName: 
                         getFieldDecorator('wzName',{
                             initialValue:tableInfo.wzName,
                             rules:[
                                 {
                                     required: true,
-                                    message:'物资名称不能为空！'
+                                    message:'设备名称不能为空！'
                                 }
                             ]
                         })
-                            (<Input placeholder="请输入物资名称" />
+                         (<Input placeholder="请输入设备名称" />
+                         )
+                    }
+                </FormItem>
+                <FormItem label="设备分类" {...formItemLayout}>
+                    {   
+                            tableInfo && type=='detail'? this.getState(tableInfo.wzType): 
+                            getFieldDecorator('wzType',{
+                                initialValue:tableInfo.wzType ? tableInfo.wzType : 'A',
+                                rules:[
+                                    {
+                                        required: true,
+                                        message:'请选择设备分类'
+                                    }
+                                ]
+                            })(
+                                <Select style={{ width: 280 }} >
+                                    <Option value="A">重点设备（A类设备）</Option>
+                                    <Option value="B">主要设备（B类设备）</Option>
+                                    <Option value="C">一般设备（B类设备）</Option>
+                                </Select>
                             )
                     }
                 </FormItem>
-                <FormItem label="物资分类" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? this.getState(tableInfo.wzcbxxType): 
-                        getFieldDecorator('wzType',{
-                            initialValue:tableInfo.wzType ? tableInfo.wzType : 'A',
+                <FormItem label="设备数量" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.wzNum: 
+                        getFieldDecorator('wzNum',{
+                            initialValue:tableInfo.wzNum, 
                             rules:[
                                 {
                                     required: true,
-                                    message:'请选择物资类别'
+                                    message:'请输入设备数量'
                                 }
                             ]
                         })(
-                            <Select defaultValue="" style={{ width: 200 }} >
-                                <Option value="A" >A类物资</Option>
-                                <Option value="B">B类物资</Option>
-                                <Option value="C">C类物资</Option>
-                            </Select>
+                            <InputNumber />    
                         )
                     }
                 </FormItem>
-
-                <FormItem label="物资数量" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? tableInfo.wzNum: 
-                        getFieldDecorator('wzNum', {
-                            initialValue: tableInfo.wzNum,
-                            rules: []
+                <FormItem label="规格参数" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.ggParam: 
+                        getFieldDecorator('ggParam',{
+                            initialValue:tableInfo.ggParam, 
+                            rules:[
+                                {
+                                    required: true,
+                                    message:'请输入规格参数'
+                                }
+                            ]
                         })(
-                            <InputNumber placeholder="请输入物资数量" />
+                            <Input placeholder="请输入规格参数" />
                         )
                     }
                 </FormItem>
-
-                <FormItem label="物资储备库点" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? tableInfo.cbkCode:
-                        getFieldDecorator('cbkCode', {
-                        initialValue: tableInfo.cbkCode,
-                        rules: [
-                            {
-                                required: true,
-                                message: '物资储备库点不能为空！'
-                            }
-                        ]
-                    })(
-                        <Input placeholder="请输入物资储备库点" />
-                    )
+                <FormItem label="使用期限" {...formItemLayout}>
+                   { 
+                       tableInfo && type=='detail'? tableInfo.syqx: 
+                       getFieldDecorator('syqx',{
+                        initialValue:tableInfo.syqx,
+                    })
+                        (
+                        <InputNumber />    
+                        )
                     }
 
                 </FormItem>
-
-                <FormItem label="物资属性" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? tableInfo.cbkCode:
-                        getFieldDecorator('wzFlag', {
-                            initialValue: tableInfo.wzFlag ? tableInfo.wzFlag : '0',
-                            rules: []
-                        })(
-                            <Select defaultValue="" style={{ width: 200 }} >
-                                <Option value="0">现有</Option>
-                                <Option value="1">可调用</Option>
-                            </Select>
+                <FormItem label="使用机构" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.syjg: 
+                        getFieldDecorator('syjg',{
+                            initialValue:tableInfo.syjg,
+                            rules:[]
+                        })( 
+                            <Input placeholder="请输入使用机构" />
                         )
+                    }
+                </FormItem>
+                <FormItem label="责任人" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.zrr: 
+                        getFieldDecorator('zrr',{
+                            initialValue:tableInfo.zrr,
+                    })
+                        (<Input placeholder="请输入责任人" />
+                        )
+                    }
+                </FormItem>
+                <FormItem label="购置时间" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.gzDate: 
+                        getFieldDecorator('gzDate',{
+                            initialValue:moment(tableInfo.gzDate),
+                            rules:[]
+                        })( <DatePicker  />
+                            
+                        )
+                    }
+                </FormItem>
+                <FormItem label="报废" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.bf: 
+                        getFieldDecorator('bf',{
+                            initialValue:tableInfo.bf,
+                    })
+                        (<Input placeholder="请输入报废" />
+                        )
+                    }
+                </FormItem>
+                <FormItem label="改造" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.gz: 
+                        getFieldDecorator('gz',{
+                            initialValue:tableInfo.gz,
+                    })
+                        (<Input placeholder="请输入改造" />
+                        )
+                    }
+                </FormItem>
+                <FormItem label="修理" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.xl: 
+                        getFieldDecorator('xl',{
+                            initialValue:tableInfo.xl,
+                    })
+                        (<Input placeholder="请输入修理" />
+                        )
+                    }
+                </FormItem>
+                <FormItem label="设备属性" {...formItemLayout}>
+                    {   
+                            tableInfo && type=='detail'? (tableInfo.sbFlag=='0'?'现有':'可调用'): 
+                            getFieldDecorator('sbFlag',{
+                                initialValue:tableInfo.sbFlag ? tableInfo.sbFlag : '0',
+                                rules:[
+                                    
+                                ]
+                            })(
+                                <Select style={{ width: 280 }} >
+                                    <Option value="0">现有</Option>
+                                    <Option value="1">可调用</Option>
+                                </Select>
+                            )
                     }
                 </FormItem>
             </Form>

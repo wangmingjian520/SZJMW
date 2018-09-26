@@ -1,18 +1,17 @@
 import React from 'react';
-import { Button , Form , Breadcrumb , Modal , message ,Input , InputNumber , Layout , Select , DatePicker } from  'antd';
-import axios from './../../../../axios'
-import Utils from './../../../../utils/utils'
-import ETable from './../../../../components/ETable/index'
+import { Button , Form , Breadcrumb , Modal , message ,Input  , Layout , Select , DatePicker } from  'antd';
+import axios from '../../../../axios'
+import Utils from '../../../../utils/utils'
+import ETable from '../../../../components/ETable'
 import moment from 'moment'
-import FaceUrl from './../../../../utils/apiAndInterfaceUrl'
-import Dictionary from './../../../../utils/dictionary'
+import FaceUrl from '../../../../utils/apiAndInterfaceUrl'
+import Dictionary from '../../../../utils/dictionary'
 
 const Content = Layout;
 const { TextArea,Search } = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Wzcbxx extends React.Component {
-
+export default class Yjzhbgl extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -28,16 +27,16 @@ export default class Wzcbxx extends React.Component {
       this.requestList()
     }
 
-    requestList = () => {
-        let _this = this;
-        axios.requestList(_this,FaceUrl.wzcbxxgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+    requestList = ()=>{
+        let _this =this;
+        axios.requestList(_this,FaceUrl.jyzhbgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.wzcbxxgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.jyzhbgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -99,7 +98,7 @@ export default class Wzcbxx extends React.Component {
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.wzcbAdd,
+                url:FaceUrl.jyzhbAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -133,7 +132,7 @@ export default class Wzcbxx extends React.Component {
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.wzcbDel,
+                        url:FaceUrl.jyzhbDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -151,55 +150,50 @@ export default class Wzcbxx extends React.Component {
         }
     }
 
-    render() {
+    
+    render(){
         const columns = [
             {
-                title: '物资名称',
-                dataIndex: 'wzName',
-                key: 'wzName',
-                align:'center',
-                render:(htName,record)=>{
-                    return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{htName}</a>;
-               }
-            },
-            {
-                title: '物资分类',
-                dataIndex: 'wzType',
-                key: 'wzType',
-                align:'center',
-                render(wzType){
-                    let config = Dictionary.wzcbxxType
-                    return config[wzType];
+                 title:'指挥部名称',
+                 dataIndex:'zhbName',
+                 key:'zhbName',
+                 align:'center',
+                 render:(zhbName,record)=>{
+                    let config = Dictionary.yjzhbType
+                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{config[zhbName]}</a>;
                 }
-
-            },
-            {
-                title: '物资数量',
-                dataIndex: 'wzNum',
-                key: 'wzNum',
-                align:'center'
-            },
-            {
-                title: '物资储备库点',
-                dataIndex: 'cbkCode',
-                key: 'cbkCode',
-                align:'center'
-            },
-            {
-                title: '物资属性',
-                dataIndex: 'wzFlag',
-                key: 'wzFlag',
+             },
+             {
+                title:'指挥部代码',
+                dataIndex:'zhbCode',
+                key:'zhbCode',
                 align:'center',
-                render(wzFlag){
-                    let config ={
-                        '0':'现有',
-                        '1':'可调用'
-                    }
-                    return config[wzFlag];
-                }
+            },
+             {
+                 title:'负责人',
+                 dataIndex:'zrrName',
+                 key:'zrrName',
+                 align:'center',
+            },
+             {
+                 title:'联系电话',
+                 dataIndex:'zrrTel',
+                 key:'zrrTel',
+                 align:'center',
+            },
+            {
+                title:'应急负责人',
+                dataIndex:'yjName',
+                key:'yjName',
+                align:'center',
+            },
+            {
+                title:'联系电话',
+                dataIndex:'yjTel',
+                key:'yjTel',
+                align:'center',
             }
-        ]
-
+         ]
         let footer = {}
         if(this.state.type=='detail'){
             footer={
@@ -218,15 +212,15 @@ export default class Wzcbxx extends React.Component {
                 <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
                     <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备信息</Breadcrumb.Item>
+                    <Breadcrumb.Item>应急组织体系</Breadcrumb.Item>
+                    <Breadcrumb.Item>应急指挥部管理</Breadcrumb.Item>
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入物资名称/分类/储备库点"
+                        placeholder="请输入指挥部代码/负责人"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
@@ -272,11 +266,7 @@ export default class Wzcbxx extends React.Component {
     }
 }
 class OpenFormTable extends React.Component{
-    getState = (state)=>{
-    
-        return Dictionary.wzcbxxType[state]
-    }
-    render() {
+    render(){
         let type = this.props.type ;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
@@ -297,84 +287,90 @@ class OpenFormTable extends React.Component{
                          (<Input type="hidden" />
                          )
                     }
-                <FormItem label="物资名称" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? tableInfo.wzName: 
-                        getFieldDecorator('wzName',{
-                            initialValue:tableInfo.wzName,
+                <FormItem label="应急指挥部" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.zhbName: 
+                        getFieldDecorator('zhbName',{
+                            initialValue:tableInfo.zhbName ? tableInfo.zhbName : '1',
                             rules:[
                                 {
                                     required: true,
-                                    message:'物资名称不能为空！'
+                                    message:'请选择应急指挥部'
+                                }
+                            ]
+                        })(
+                            <Select style={{ width: 200 }} >
+                                <Option value="1">市电力事故应急指挥部</Option>
+                                <Option value="2">市通讯保障应急指挥部</Option>
+                                <Option value="3">市重大动物疫情应急指挥部</Option>
+                                <Option value="4">市网络与信息安全突发事件应急指挥部</Option>
+                                <Option value="5">市生活必需品突发事件应急指挥部</Option>
+                                <Option value="6">市成品油市场供应应急指挥部</Option>
+                            </Select>
+                        )
+                    }
+                </FormItem>
+                <FormItem label="指挥部代码" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.zhbCode: 
+                        getFieldDecorator('zhbCode',{
+                            initialValue:tableInfo.zhbCode,
+                            rules:[
+                                {
+                                    required: true,
+                                    message:'指挥部代码不能为空！'
                                 }
                             ]
                         })
-                            (<Input placeholder="请输入物资名称" />
-                            )
+                         (<Input placeholder="请输入指挥部代码" />
+                         )
                     }
                 </FormItem>
-                <FormItem label="物资分类" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? this.getState(tableInfo.wzcbxxType): 
-                        getFieldDecorator('wzType',{
-                            initialValue:tableInfo.wzType ? tableInfo.wzType : 'A',
+                <FormItem label="负责人" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.zrrName: 
+                        getFieldDecorator('zrrName',{
+                            initialValue:tableInfo.zrrName, 
                             rules:[
                                 {
                                     required: true,
-                                    message:'请选择物资类别'
+                                    message:'请输入负责人'
                                 }
                             ]
                         })(
-                            <Select defaultValue="" style={{ width: 200 }} >
-                                <Option value="A" >A类物资</Option>
-                                <Option value="B">B类物资</Option>
-                                <Option value="C">C类物资</Option>
-                            </Select>
+                            <Input placeholder="请输入负责人" />
                         )
                     }
                 </FormItem>
+                <FormItem label="联系电话" {...formItemLayout}>
+                   { 
+                       tableInfo && type=='detail'? tableInfo.zrrTel: 
+                       getFieldDecorator('zrrTel',{
+                        initialValue:tableInfo.zrrTel,
+                    })
+                        (<Input placeholder="请输入联系电话" />
+                        )
+                    }
 
-                <FormItem label="物资数量" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? tableInfo.wzNum: 
-                        getFieldDecorator('wzNum', {
-                            initialValue: tableInfo.wzNum,
-                            rules: []
-                        })(
-                            <InputNumber placeholder="请输入物资数量" />
+                </FormItem>
+                <FormItem label="应急负责人" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.yjName: 
+                        getFieldDecorator('yjName',{
+                            initialValue:tableInfo.yjName,
+                            rules:[]
+                        })( 
+                            <Input placeholder="请输入应急负责人" />
                         )
                     }
                 </FormItem>
-
-                <FormItem label="物资储备库点" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? tableInfo.cbkCode:
-                        getFieldDecorator('cbkCode', {
-                        initialValue: tableInfo.cbkCode,
-                        rules: [
-                            {
-                                required: true,
-                                message: '物资储备库点不能为空！'
-                            }
-                        ]
-                    })(
-                        <Input placeholder="请输入物资储备库点" />
-                    )
-                    }
-
-                </FormItem>
-
-                <FormItem label="物资属性" {...formItemLayout}>
-                    {
-                        tableInfo && type=='detail'? tableInfo.cbkCode:
-                        getFieldDecorator('wzFlag', {
-                            initialValue: tableInfo.wzFlag ? tableInfo.wzFlag : '0',
-                            rules: []
-                        })(
-                            <Select defaultValue="" style={{ width: 200 }} >
-                                <Option value="0">现有</Option>
-                                <Option value="1">可调用</Option>
-                            </Select>
+                <FormItem label="联系电话" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.yjTel: 
+                        getFieldDecorator('yjTel',{
+                            initialValue:tableInfo.yjTel,
+                    })
+                        (<Input placeholder="请输入联系电话" />
                         )
                     }
                 </FormItem>
