@@ -324,11 +324,11 @@ class OpenFormTable extends React.Component{
                                         rules:[
                                             {
                                                 required: true,
-                                                message:'物资名称不能为空！'
+                                                message:'库点名称不能为空！'
                                             }
                                         ]
                                     })
-                                    (<Input placeholder="请输入库名称" style={{ width: 200 }}/>
+                                    (<Input placeholder="请输库点名称" style={{ width: 200 }}/>
                                     )
                                 }
                             </FormItem>
