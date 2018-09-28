@@ -1,13 +1,14 @@
 import React from 'react';
-import { Button , Form , Breadcrumb , Modal , message ,Input  , Layout , Select , DatePicker } from  'antd';
-import axios from '../../../../axios'
-import Utils from '../../../../utils/utils'
-import ETable from '../../../../components/ETable'
+import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
+import axios from './../../../axios'
+import Utils from './../../../utils/utils'
+import ETable from './../../../components/ETable/index'
 import moment from 'moment'
-import FaceUrl from '../../../../utils/apiAndInterfaceUrl'
+import FaceUrl from '../../../utils/apiAndInterfaceUrl'
+import Dictionary from '../../../utils/dictionary'
 
 const Content = Layout;
-const { TextArea,Search } = Input;
+const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
 export default class Yjtxl extends React.Component{
@@ -28,14 +29,14 @@ export default class Yjtxl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.jcjhgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.qytxl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.jcjhgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.qytxl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -59,6 +60,7 @@ export default class Yjtxl extends React.Component{
                 message.error('请选择一条需要修改的项！');
                 
             }
+            
         }
     }
 
@@ -97,7 +99,7 @@ export default class Yjtxl extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.jcjhAdd,
+                url:FaceUrl.qytxlAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -131,7 +133,7 @@ export default class Yjtxl extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.jcjhDel,
+                        url:FaceUrl.qytxlDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -153,41 +155,39 @@ export default class Yjtxl extends React.Component{
     render(){
         const columns = [
             {
-                 title:'储备物资',
-                 dataIndex:'wzName',
-                 key:'wzName',
+                 title:'企业名称',
+                 dataIndex:'dwName',
+                 key:'dwName',
                  align:'center',
-                 render:(wzName,record)=>{
-                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{wzName}</a>;
+                 render:(dwName,record)=>{
+                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{dwName}</a>;
                 }
              },
              {
-                title:'库点代码',
-                dataIndex:'cbkCode',
-                key:'cbkCode',
+                title:'企业法人姓名',
+                dataIndex:'frName',
+                key:'frName',
                 align:'center',
-            },
+               
+             },
              {
-                 title:'所属企业',
-                 dataIndex:'ssqy',
-                 key:'ssqy',
-                 align:'center',
-            },
+                 title:'联系电话',
+                 dataIndex:'zrrTel',
+                 key:'zrrTel',
+                 align:'center'
+             },
              {
-                 title:'计划时间',
-                 dataIndex:'planDate',
-                 key:'planDate',
-                 align:'center',
-                 render(planDate){
-                    return moment(planDate).format('YYYY-MM-DD')
-                 }
-            },
-            {
-                title:'检查频次',
-                dataIndex:'jcpc',
-                key:'jcpc',
-                align:'center',
-            }
+                 title:'应急负责人姓名',
+                 dataIndex:'yjName',
+                 key:'yjName',
+                 align:'center'
+             },
+             {
+                 title:'联系电话',
+                 dataIndex:'yjTel',
+                 key:'yjTel',
+                 align:'center'
+             }
          ]
         let footer = {}
         if(this.state.type=='detail'){
@@ -208,13 +208,14 @@ export default class Yjtxl extends React.Component{
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
                     <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
                     <Breadcrumb.Item>应急通讯录</Breadcrumb.Item>
+
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入储备物资/库点代码/所属企业"
+                        placeholder="请输入企业名称/姓名/负责人姓名"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
@@ -260,6 +261,10 @@ export default class Yjtxl extends React.Component{
     }
 }
 class OpenFormTable extends React.Component{
+    getState = (state)=>{
+    
+        return Dictionary.wzType[state]
+    }
     render(){
         let type = this.props.type ;
         let tableInfo =this.props.tableInfo || {};
@@ -281,67 +286,74 @@ class OpenFormTable extends React.Component{
                          (<Input type="hidden" />
                          )
                     }
-                <FormItem label="储备物资" {...formItemLayout}>
+                <FormItem label="企业名称" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.wzName: 
-                        getFieldDecorator('wzName',{
-                            initialValue:tableInfo.wzName,
+                        tableInfo && type=='detail'? tableInfo.dwName: 
+                        getFieldDecorator('dwName',{
+                            initialValue:tableInfo.dwName,
                             rules:[
                                 {
                                     required: true,
-                                    message:'储备物资不能为空！'
+                                    message:'企业名称不能为空！'
                                 }
                             ]
                         })
-                         (<Input placeholder="请输入储备物资" />
+                         (<Input placeholder="请输入企业名称" />
                          )
                     }
                 </FormItem>
-                <FormItem label="库点代码" {...formItemLayout}>
+                <FormItem label="企业法人姓名" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.cbkCode: 
-                        getFieldDecorator('cbkCode',{
-                            initialValue:tableInfo.cbkCode, 
+                        tableInfo && type=='detail'? this.getState(tableInfo.frName): 
+                        getFieldDecorator('frName',{
+                            initialValue:tableInfo.frName ,
                             rules:[
                                 {
                                     required: true,
-                                    message:'请输入库点代码'
+                                    message:'请选择企业法人姓名'
                                 }
                             ]
                         })(
-                            <Input placeholder="请输入库点代码" />
+                            <Input placeholder="请输入企业法人姓名" maxlength="20"/>
                         )
                     }
                 </FormItem>
-                <FormItem label="所属企业" {...formItemLayout}>
+                <FormItem label="联系电话" {...formItemLayout}>
                    { 
-                       tableInfo && type=='detail'? tableInfo.ssqy: 
-                       getFieldDecorator('ssqy',{
-                        initialValue:tableInfo.ssqy,
-                    })
-                        (<Input placeholder="请输入所属企业" />
+                       tableInfo && type=='detail'? tableInfo.zrrTel: 
+                       getFieldDecorator('zrrTel',{
+                            initialValue:tableInfo.zrrTel,
+                            rules:[
+                                {
+                                    required: true,
+                                    message:'联系电话不能为空！'
+                                }
+                            ]
+                        })(
+                        <Input placeholder="请输入联系电话" maxlength="20"/>
                         )
                     }
 
                 </FormItem>
-                <FormItem label="计划时间" {...formItemLayout}>
+                <FormItem label="负责人姓名" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.planDate: 
-                        getFieldDecorator('planDate',{
-                            initialValue:moment(tableInfo.planDate),
+                        tableInfo && type=='detail'? tableInfo.yjName: 
+                        getFieldDecorator('yjName',{
+                            initialValue:tableInfo.yjName,
                             rules:[]
-                        })( <DatePicker  />
-                            
+                        })(
+                            <Input placeholder="请输入负责人姓名" maxlength="20"/>
                         )
                     }
                 </FormItem>
-                <FormItem label="检查频次" {...formItemLayout}>
+                <FormItem label="联系电话" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.jcpc: 
-                        getFieldDecorator('jcpc',{
-                            initialValue:tableInfo.jcpc,
-                    })
-                        (<Input placeholder="请输入检查频次" />
+                        tableInfo && type=='detail'? tableInfo.yjTel: 
+                        getFieldDecorator('yjTel',{
+                            initialValue:tableInfo.yjTel,
+                            rules:[]
+                        })(
+                            <Input placeholder="请输入联系电话" maxlength="20"/>
                         )
                     }
                 </FormItem>

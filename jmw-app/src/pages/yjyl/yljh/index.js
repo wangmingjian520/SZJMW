@@ -1,16 +1,17 @@
 import React from 'react';
-import { Button , Form , Breadcrumb , Modal , message ,Input  , Layout , Select , DatePicker } from  'antd';
-import axios from '../../../../../axios'
-import Utils from '../../../../../utils/utils'
-import ETable from '../../../../../components/ETable'
+import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
+import axios from './../../../axios'
+import Utils from './../../../utils/utils'
+import ETable from './../../../components/ETable/index'
 import moment from 'moment'
-import FaceUrl from '../../../../../utils/apiAndInterfaceUrl'
+import FaceUrl from '../../../utils/apiAndInterfaceUrl'
+import Dictionary from '../../../utils/dictionary'
 
 const Content = Layout;
-const { TextArea,Search } = Input;
+const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Jcjlgl extends React.Component{
+export default class Yljh extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -28,14 +29,14 @@ export default class Jcjlgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.jcjl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.yljh,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.jcjl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.yljh,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -59,6 +60,7 @@ export default class Jcjlgl extends React.Component{
                 message.error('请选择一条需要修改的项！');
                 
             }
+            
         }
     }
 
@@ -97,7 +99,7 @@ export default class Jcjlgl extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.jcjlAdd,
+                url:FaceUrl.yljhAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -131,7 +133,7 @@ export default class Jcjlgl extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.jcjlDel,
+                        url:FaceUrl.yljhDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -153,55 +155,42 @@ export default class Jcjlgl extends React.Component{
     render(){
         const columns = [
             {
-                 title:'检查单位',
-                 dataIndex:'jcDwName',
-                 key:'jcDwName',
+                 title:'预案名称',
+                 dataIndex:'yaName',
+                 key:'yaName',
                  align:'center',
-                 render:(jcDwName,record)=>{
-                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{jcDwName}</a>;
+                 render:(yaName,record)=>{
+                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{yaName}</a>;
                 }
              },
              {
-                title:'检查时间',
-                dataIndex:'jcTime',
-                key:'jcTime',
+                title:'演练时间',
+                dataIndex:'ylTime',
+                key:'ylTime',
                 align:'center',
-                render(jcTime){
-                    return moment(jcTime).format('YYYY-MM-DD')
+                render(ylTime){
+                    return moment(ylTime).format('YYYY-MM-DD')
                  }
             },
              {
-                 title:'被检查单位及库点',
-                 dataIndex:'bjcDw',
-                 key:'bjcDw',
-                 align:'center',
-            },
-             {
-                 title:'检查内容',
-                 dataIndex:'jcnr',
-                 key:'jcnr',
+                 title:'演练地点',
+                 dataIndex:'ylAddr',
+                 key:'ylAddr',
                  align:'center',
                  
-            },
-            {
-                title:'存在的问题',
-                dataIndex:'czwt',
-                key:'czwt',
-                align:'center',
-            },
-            {
-                title:'整改措施',
-                dataIndex:'zgcs',
-                key:'zgcs',
-                align:'center',
-                
-           },
-           {
-               title:'检查结论',
-               dataIndex:'jcjl',
-               key:'jcjl',
-               align:'center',
-           }
+             },
+             {
+                 title:'演练要求',
+                 dataIndex:'ylyq',
+                 key:'ylyq',
+                 align:'center',
+             },
+             {
+                 title:'备注',
+                 dataIndex:'remark',
+                 key:'remark',
+                 align:'center'
+             }
          ]
         let footer = {}
         if(this.state.type=='detail'){
@@ -220,17 +209,16 @@ export default class Jcjlgl extends React.Component{
             <div>
                 <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
-                    <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备检查</Breadcrumb.Item>
-                    <Breadcrumb.Item>检查登记</Breadcrumb.Item>
+                    <Breadcrumb.Item>应急演练</Breadcrumb.Item>
+                    <Breadcrumb.Item>演练计划</Breadcrumb.Item>
+
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入检查单位/被检查单位/内容"
+                        placeholder="请输入预案名称/演练地点/演练要求"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
@@ -276,15 +264,16 @@ export default class Jcjlgl extends React.Component{
     }
 }
 class OpenFormTable extends React.Component{
+
     render(){
         let type = this.props.type ;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
             labelCol:{
-                span:7
+                span:6
             },
             wrapperCol:{
-                span:17
+                span:18
             }
         }
         const { getFieldDecorator }  =this.props.form;
@@ -297,126 +286,73 @@ class OpenFormTable extends React.Component{
                          (<Input type="hidden" />
                          )
                     }
-                <FormItem label="检查单位" {...formItemLayout}>
+                <FormItem label="预案名称" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.jcDwName: 
-                        getFieldDecorator('jcDwName',{
-                            initialValue:tableInfo.jcDwName,
+                        tableInfo && type=='detail'? tableInfo.yaName: 
+                        getFieldDecorator('yaName',{
+                            initialValue:tableInfo.yaName,
                             rules:[
                                 {
                                     required: true,
-                                    message:'检查单位不能为空！'
+                                    message:'编制机构不能为空！'
                                 }
                             ]
                         })
-                         (<Input placeholder="请输入检查单位" />
+                         (<Input placeholder="请输入编制机构" maxlength="200"/>
                          )
                     }
                 </FormItem>
-                <FormItem label="检查时间" {...formItemLayout}>
+                <FormItem label="演练时间" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.jcTime: 
-                        getFieldDecorator('jcTime',{
-                            initialValue:moment(tableInfo.jcTime),
-                            rules:[]
-                        })( <DatePicker  />
+                        tableInfo && type=='detail'? tableInfo.ylTime: 
+                        getFieldDecorator('ylTime',{
+                            initialValue:moment(tableInfo.ylTime),
                             
-                        )
-                    }
-                </FormItem>
-                <FormItem label="被检查单位及库点" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.bjcDw: 
-                        getFieldDecorator('bjcDw',{
-                            initialValue:tableInfo.bjcDw, 
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'请输入被检查单位及库点'
-                                }
-                            ]
                         })(
-                            <Input placeholder="请输入被检查单位及库点" maxlength="200"/>
+                            <DatePicker  />
                         )
                     }
                 </FormItem>
-                <FormItem label="检查内容" {...formItemLayout}>
+                <FormItem label="演练地点" {...formItemLayout}>
                    { 
-                       tableInfo && type=='detail'? tableInfo.jcnr: 
-                       getFieldDecorator('jcnr',{
-                        initialValue:tableInfo.jcnr,
+                       tableInfo && type=='detail'? tableInfo.ylAddr: 
+                       getFieldDecorator('ylAddr',{
+                        initialValue:tableInfo.ylAddr,
+                        rules:[
+                            {
+                                required: true,
+                                message:'请输入演练地点'
+                            }
+                        ]
                     })
-                        (<TextArea style={{ width: 526 }}
-                            autosize={{minRows:2}}
-                            placeholder="请输入检查内容" 
-                                />
+                        (<Input placeholder="请输入演练地点" maxlength="200"/>
                         )
                     }
 
                 </FormItem>
-                <FormItem label="存在的问题" {...formItemLayout}>
-                            {   
-                                tableInfo && type=='detail'? tableInfo.czwt:
-                                getFieldDecorator('czwt',{
-                                    initialValue:tableInfo.czwt,
-                                    rules:[]
-                                })(
-                                <TextArea style={{ width: 526 }}
-                                autosize={{minRows:2}}
-                                placeholder="请输入存在的问题" 
-                                    />
-                                )
-                            }
+                <FormItem label="演练要求" {...formItemLayout}>
+                   { 
+                       tableInfo && type=='detail'? tableInfo.ylyq: 
+                       getFieldDecorator('ylyq',{
+                            initialValue:tableInfo.ylyq,
+                            
+                        })(
+                        <Input placeholder="请输入演练要求" maxlength="200"/>
+                        )
+                    }
+
                 </FormItem>
-                <FormItem label="整改措施" {...formItemLayout}>
-                            {   
-                                tableInfo && type=='detail'? tableInfo.zgcs:
-                                getFieldDecorator('zgcs',{
-                                    initialValue:tableInfo.zgcs,
-                                    rules:[]
-                                })(
-                                <TextArea style={{ width: 526 }}
-                                autosize={{minRows:2}}
-                                placeholder="请输入整改措施" 
-                                    />
-                                )
-                            }
-                </FormItem>
-                <FormItem label="检查结论" {...formItemLayout}>
-                            {   
-                                tableInfo && type=='detail'? tableInfo.jcjl:
-                                getFieldDecorator('jcjl',{
-                                    initialValue:tableInfo.jcjl,
-                                    rules:[]
-                                })(
-                                <TextArea style={{ width: 526 }}
-                                autosize={{minRows:2}}
-                                placeholder="请输入检查结论" 
-                                    />
-                                )
-                            }
-                </FormItem>
-                <FormItem label="检查组成员" {...formItemLayout}>
-                            {   
-                                tableInfo && type=='detail'? tableInfo.jccy:
-                                getFieldDecorator('jccy',{
-                                    initialValue:tableInfo.jccy,
-                                    rules:[]
-                                })(
-                                <TextArea style={{ width: 526 }}
-                                autosize={{minRows:2}}
-                                placeholder="请输入检查结论" 
-                                    />
-                                )
-                            }
-                </FormItem>           
-                <FormItem label="被检查单位负责人" {...formItemLayout}>
+                <FormItem label="备注" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.bjcFzr: 
-                        getFieldDecorator('bjcFzr',{
-                            initialValue:tableInfo.bjcFzr,
-                    })
-                        (<Input placeholder="请输入被检查单位负责人" maxlength="50"/>
+                        tableInfo && type=='detail'? tableInfo.remark: 
+                        getFieldDecorator('remark',{
+                            initialValue:tableInfo.remark,
+                            rules:[]
+                        })(
+                            <TextArea
+                            autosize={{minRows:3}}
+                            placeholder="请输入备注" 
+                                />
                         )
                     }
                 </FormItem>

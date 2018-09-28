@@ -18,9 +18,18 @@ import Sbssgl from './pages/yjzygl/sbssgl';
 import Yjzzjbxx from './pages/yjzygl/yjzztx/yjzzjbxx';
 import Yjzhbgl from './pages/yjzygl/yjzztx/yjzhbgl';
 import Yjjydw from './pages/yjzygl/yjjydw';
-import Zjkxxwh from './pages/yjzygl/yjzj/zjkxxwh';
-import Zjxxcx from './pages/yjzygl/yjzj/zjxxcx';
 import Yjzj from './pages/yjzygl/yjzj';
+import Yjtxl from './pages/yjzygl/yjtxl';
+import Yabz from './pages/yjya/yabz';
+import Yascxd from './pages/yjya/yascxd';
+import Yadjjba from './pages/yjya/yadjjba';
+import Ylgc from './pages/yjyl/ylgc';
+import Ylzj from './pages/yjyl/ylzj';
+import Yljh from './pages/yjyl/yljh';
+import Yjsjsl from './pages/yjsjcl/yjsjsl';
+import Yjsjja from './pages/yjsjcl/yjsjja';
+import Fxyxxgl from './pages/yjdlxxxt/fxyxxgl';
+
 export default class IRouter extends React.Component{
 
     render(){
@@ -38,12 +47,11 @@ export default class IRouter extends React.Component{
                             <Route path="/wzmlgl" component={Wzmlgl}></Route>
                             <Route path="/wzcbkdgl" component={Wzcbkdgl}></Route>
                             <Route path="/wzcbxx" component={Wzcbxx}></Route>
-                            <Route path="/yjsjla" component={Yjsjla}></Route>
                             <Route path="/fwjggl" component={Fwjggl}></Route>
                             <Route path="/fwjghtgl" component={Fwjghtgl}></Route>
                             <Route path="/jcjhgl" component={Jcjhgl}></Route>
-                            <Route path="/jcjlgl" component={Jcjlgl}></Route>
-                            <Route path="/jczggl" component={Jczggl}></Route>
+                            <Route path="/jcdj" component={Jcjlgl}></Route>
+                            <Route path="/wtzg" component={Jczggl}></Route>
 
                             <Route path="/sbssgl" component={Sbssgl}></Route>
                             <Route path="/yjzzjbxx" component={Yjzzjbxx}></Route>
@@ -51,7 +59,24 @@ export default class IRouter extends React.Component{
                             <Route path="/sbssgl" component={Sbssgl}></Route>
                             <Route path="/yjjydw" component={Yjjydw}></Route>
                             <Route path="/yjzj" component={Yjzj}></Route>
-                            <Route path="/zjxxcx" component={Zjxxcx}></Route>
+                            <Route path="/yjtxl" component={Yjtxl}></Route>
+                            {/* 应急预案 */}
+                            <Route path="/yabz" component={Yabz}></Route>
+                            <Route path="/yascxd" component={Yascxd}></Route>
+                            <Route path="/yadjjba" component={Yadjjba}></Route>
+                            {/* 应急事件处理 */}
+                            <Route path="/yjsjsl" component={Yjsjsl}></Route>
+                            <Route path="/yjsjja" component={Yjsjja}></Route>
+                            <Route path="/yjsjla" component={Yjsjla}></Route>
+
+                            {/* 应急演练 */}
+                            <Route path="/yljh" component={Yljh}></Route>
+                            <Route path="/ylgc" component={Ylgc}></Route>
+                            <Route path="/ylzj" component={Ylzj}></Route>
+
+                            {/* 应急地理信息系统 */}
+                            <Route path="/fxyxxgl" component={Fxyxxgl}></Route>
+                            {/* <Route path="/ylgc" component={Ylgc}></Route> */}
 
                             <Redirect to="/wzmlgl" />
                             <Route component={NoMatch}></Route>

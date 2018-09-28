@@ -10,7 +10,8 @@ const { SubMenu } = Menu;
 
 class NavLeft extends React.Component{
     state = {
-        openKeys:['/yjzygl','/wzcbgl']
+        //openKeys:['/yjzygl','/wzcbgl']
+        openKeys:[]
     }
     
     

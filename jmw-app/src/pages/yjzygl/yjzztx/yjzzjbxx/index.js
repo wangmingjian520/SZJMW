@@ -183,9 +183,9 @@ export default class Yjzzjbxx extends React.Component{
                 dataIndex:'jgType',
                 key:'jgType',
                 align:'center',
-                render(jydwType){
-                    let config = Dictionary.jydwType
-                    return config[jydwType];
+                render(jgType){
+                    let config = Dictionary.jyzzType
+                    return config[jgType];
                 }
             },
             {

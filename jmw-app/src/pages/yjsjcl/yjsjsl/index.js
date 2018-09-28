@@ -11,7 +11,7 @@ const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Yjzj extends React.Component{
+export default class Yjsjsl extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -29,14 +29,14 @@ export default class Yjzj extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.zjxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.sjsl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.zjxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.sjsl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -98,7 +98,7 @@ export default class Yjzj extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.zjxxAdd,
+                url:FaceUrl.sjslAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -132,7 +132,7 @@ export default class Yjzj extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.zjxxDel,
+                        url:FaceUrl.sjslDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -154,7 +154,7 @@ export default class Yjzj extends React.Component{
     render(){
         const columns = [
             {
-                 title:'专家名称',
+                 title:'信息标题',
                  dataIndex:'jydwName',
                  key:'jydwName',
                  align:'center',
@@ -163,54 +163,49 @@ export default class Yjzj extends React.Component{
                 }
              },
              {
-                title:'专家编号',
+                title:'接报编号',
                 dataIndex:'jydwCode',
                 key:'jydwCode',
                 align:'center',
             },
              {
-                 title:'密级',
+                 title:'事件',
                  dataIndex:'mj',
                  key:'mj',
                  align:'center',
             },
              {
-                 title:'类型',
+                 title:'报送时间',
                  dataIndex:'jydwType',
                  key:'jydwType',
                  align:'center',
-                 render(jydwType){
-                    let config = Dictionary.jyzjType
-                    return config[jydwType];
-                }
+                 render(jaDate){
+                    return moment(jaDate).format('YYYY-MM-DD')
+                 }
             },
             {
-                title:'职称',
+                title:'报送单位',
                 dataIndex:'zc',
                 key:'zc',
                 align:'center',
             },
             {
-                title:'专业类型',
+                title:'报送人',
                 dataIndex:'zyType',
                 key:'zyType',
                 align:'center',
            },
            {
-               title:'特长描述',
+               title:'报送方式',
                dataIndex:'zytc',
                key:'zytc',
                align:'center',
            },
            {
-            title:'所在专家组 ',
+            title:'事件类型 ',
             dataIndex:'szzjz',
             key:'szzjz',
             align:'center',
-            render(szzjz){
-                let config = Dictionary.zjzType
-                return config[szzjz];
-            }
             }
          ]
         let footer = {}
@@ -230,15 +225,15 @@ export default class Yjzj extends React.Component{
             <div>
                 <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
-                    <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>应急专家</Breadcrumb.Item>
+                    <Breadcrumb.Item>应急事件处理</Breadcrumb.Item>
+                    <Breadcrumb.Item>应急事件受理</Breadcrumb.Item>
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入专家姓名/所在专家组/专长"
+                        placeholder="请输入信息标题/事件/报送人"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  

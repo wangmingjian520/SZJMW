@@ -1,16 +1,17 @@
 import React from 'react';
-import { Button , Form , Breadcrumb , Modal , message ,Input  , Layout , Select , DatePicker } from  'antd';
-import axios from '../../../../../axios'
-import Utils from '../../../../../utils/utils'
-import ETable from '../../../../../components/ETable'
+import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
+import axios from '../../../axios'
+import Utils from '../../../utils/utils'
+import ETable from '../../../components/ETable'
 import moment from 'moment'
-import FaceUrl from '../../../../../utils/apiAndInterfaceUrl'
+import FaceUrl from '../../../utils/apiAndInterfaceUrl'
+import Dictionary from '../../../utils/dictionary'
 
 const Content = Layout;
-const { TextArea,Search } = Input;
+const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Jcjlgl extends React.Component{
+export default class Fxyxxgl extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -28,14 +29,14 @@ export default class Jcjlgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.jcjl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.fxyxgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.jcjl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.fxyxgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -59,6 +60,7 @@ export default class Jcjlgl extends React.Component{
                 message.error('请选择一条需要修改的项！');
                 
             }
+            
         }
     }
 
@@ -97,7 +99,7 @@ export default class Jcjlgl extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.jcjlAdd,
+                url:FaceUrl.fxyAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -131,7 +133,7 @@ export default class Jcjlgl extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.jcjlDel,
+                        url:FaceUrl.fxyDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -153,55 +155,52 @@ export default class Jcjlgl extends React.Component{
     render(){
         const columns = [
             {
-                 title:'检查单位',
-                 dataIndex:'jcDwName',
-                 key:'jcDwName',
+                 title:'风险源名称',
+                 dataIndex:'fxyName',
+                 key:'fxyName',
                  align:'center',
-                 render:(jcDwName,record)=>{
-                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{jcDwName}</a>;
+                 render:(fxyName,record)=>{
+                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{fxyName}</a>;
                 }
              },
              {
-                title:'检查时间',
-                dataIndex:'jcTime',
-                key:'jcTime',
+                title:'风险类别',
+                dataIndex:'fxType',
+                key:'fxType',
                 align:'center',
-                render(jcTime){
-                    return moment(jcTime).format('YYYY-MM-DD')
-                 }
-            },
+               
+             },
              {
-                 title:'被检查单位及库点',
-                 dataIndex:'bjcDw',
-                 key:'bjcDw',
+                 title:'单位',
+                 dataIndex:'dw',
+                 key:'dw',
                  align:'center',
             },
-             {
-                 title:'检查内容',
-                 dataIndex:'jcnr',
-                 key:'jcnr',
-                 align:'center',
-                 
-            },
             {
-                title:'存在的问题',
-                dataIndex:'czwt',
-                key:'czwt',
+                title:'人数',
+                dataIndex:'rsNum',
+                key:'rsNum',
                 align:'center',
-            },
-            {
-                title:'整改措施',
-                dataIndex:'zgcs',
-                key:'zgcs',
+           },
+             {
+                 title:'责任单位',
+                 dataIndex:'zrdw',
+                 key:'zrdw',
+                 align:'center'
+             },
+             {
+                 title:'责任人',
+                 dataIndex:'zrr',
+                 key:'zrr',
+                 align:'center'
+             },
+             {
+                title:'管控措施',
+                dataIndex:'gkcs',
+                key:'gkcs',
                 align:'center',
                 
-           },
-           {
-               title:'检查结论',
-               dataIndex:'jcjl',
-               key:'jcjl',
-               align:'center',
-           }
+            }
          ]
         let footer = {}
         if(this.state.type=='detail'){
@@ -220,17 +219,15 @@ export default class Jcjlgl extends React.Component{
             <div>
                 <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
-                    <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备检查</Breadcrumb.Item>
-                    <Breadcrumb.Item>检查登记</Breadcrumb.Item>
+                    <Breadcrumb.Item>应急地理信息系统</Breadcrumb.Item>
+                    <Breadcrumb.Item>风险源信息管理</Breadcrumb.Item>
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入检查单位/被检查单位/内容"
+                        placeholder="请输入风险源名称/单位/责任人"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
@@ -276,15 +273,16 @@ export default class Jcjlgl extends React.Component{
     }
 }
 class OpenFormTable extends React.Component{
+
     render(){
         let type = this.props.type ;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
             labelCol:{
-                span:7
+                span:6
             },
             wrapperCol:{
-                span:17
+                span:18
             }
         }
         const { getFieldDecorator }  =this.props.form;
@@ -297,128 +295,120 @@ class OpenFormTable extends React.Component{
                          (<Input type="hidden" />
                          )
                     }
-                <FormItem label="检查单位" {...formItemLayout}>
+                <FormItem label="风险源名称" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.jcDwName: 
-                        getFieldDecorator('jcDwName',{
-                            initialValue:tableInfo.jcDwName,
+                        tableInfo && type=='detail'? tableInfo.fxyName: 
+                        getFieldDecorator('fxyName',{
+                            initialValue:tableInfo.fxyName,
                             rules:[
                                 {
                                     required: true,
-                                    message:'检查单位不能为空！'
+                                    message:'风险源名称不能为空！'
                                 }
                             ]
                         })
-                         (<Input placeholder="请输入检查单位" />
+                         (<Input placeholder="请输入风险源名称" maxlength="100"/>
                          )
                     }
                 </FormItem>
-                <FormItem label="检查时间" {...formItemLayout}>
+                <FormItem label="风险类别" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.jcTime: 
-                        getFieldDecorator('jcTime',{
-                            initialValue:moment(tableInfo.jcTime),
-                            rules:[]
-                        })( <DatePicker  />
-                            
-                        )
-                    }
-                </FormItem>
-                <FormItem label="被检查单位及库点" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.bjcDw: 
-                        getFieldDecorator('bjcDw',{
-                            initialValue:tableInfo.bjcDw, 
+                        tableInfo && type=='detail'? tableInfo.fxType: 
+                        getFieldDecorator('fxType',{
+                            initialValue:tableInfo.fxType,
                             rules:[
                                 {
                                     required: true,
-                                    message:'请输入被检查单位及库点'
+                                    message:'请输入风险类别'
                                 }
                             ]
                         })(
-                            <Input placeholder="请输入被检查单位及库点" maxlength="200"/>
+                            <Input placeholder="请输入风险类别" maxlength="20"/>
                         )
                     }
                 </FormItem>
-                <FormItem label="检查内容" {...formItemLayout}>
+                <FormItem label="单位" {...formItemLayout}>
                    { 
-                       tableInfo && type=='detail'? tableInfo.jcnr: 
-                       getFieldDecorator('jcnr',{
-                        initialValue:tableInfo.jcnr,
+                       tableInfo && type=='detail'? tableInfo.dw: 
+                       getFieldDecorator('dw',{
+                        initialValue:tableInfo.dw,
                     })
-                        (<TextArea style={{ width: 526 }}
-                            autosize={{minRows:2}}
-                            placeholder="请输入检查内容" 
-                                />
+                        (<Input placeholder="请输入单位" maxlength="200"/>
                         )
                     }
 
                 </FormItem>
-                <FormItem label="存在的问题" {...formItemLayout}>
-                            {   
-                                tableInfo && type=='detail'? tableInfo.czwt:
-                                getFieldDecorator('czwt',{
-                                    initialValue:tableInfo.czwt,
-                                    rules:[]
-                                })(
-                                <TextArea style={{ width: 526 }}
-                                autosize={{minRows:2}}
-                                placeholder="请输入存在的问题" 
-                                    />
-                                )
-                            }
-                </FormItem>
-                <FormItem label="整改措施" {...formItemLayout}>
-                            {   
-                                tableInfo && type=='detail'? tableInfo.zgcs:
-                                getFieldDecorator('zgcs',{
-                                    initialValue:tableInfo.zgcs,
-                                    rules:[]
-                                })(
-                                <TextArea style={{ width: 526 }}
-                                autosize={{minRows:2}}
-                                placeholder="请输入整改措施" 
-                                    />
-                                )
-                            }
-                </FormItem>
-                <FormItem label="检查结论" {...formItemLayout}>
-                            {   
-                                tableInfo && type=='detail'? tableInfo.jcjl:
-                                getFieldDecorator('jcjl',{
-                                    initialValue:tableInfo.jcjl,
-                                    rules:[]
-                                })(
-                                <TextArea style={{ width: 526 }}
-                                autosize={{minRows:2}}
-                                placeholder="请输入检查结论" 
-                                    />
-                                )
-                            }
-                </FormItem>
-                <FormItem label="检查组成员" {...formItemLayout}>
-                            {   
-                                tableInfo && type=='detail'? tableInfo.jccy:
-                                getFieldDecorator('jccy',{
-                                    initialValue:tableInfo.jccy,
-                                    rules:[]
-                                })(
-                                <TextArea style={{ width: 526 }}
-                                autosize={{minRows:2}}
-                                placeholder="请输入检查结论" 
-                                    />
-                                )
-                            }
-                </FormItem>           
-                <FormItem label="被检查单位负责人" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.bjcFzr: 
-                        getFieldDecorator('bjcFzr',{
-                            initialValue:tableInfo.bjcFzr,
-                    })
-                        (<Input placeholder="请输入被检查单位负责人" maxlength="50"/>
+                <FormItem label="人数" {...formItemLayout}>
+                   { 
+                       tableInfo && type=='detail'? tableInfo.rsNum: 
+                       getFieldDecorator('rsNum',{
+                            initialValue:tableInfo.rsNum,
+                            
+                        })(
+                        <InputNumber placeholder="请输入人数" style={{ width: 200 }}/>
                         )
                     }
+
+                </FormItem>
+                <FormItem label="经度" {...formItemLayout}>
+                   { 
+                       tableInfo && type=='detail'? tableInfo.longitude: 
+                       getFieldDecorator('longitude',{
+                            initialValue:tableInfo.longitude,
+                            
+                        })(
+                        <InputNumber placeholder="请输入经度" style={{ width: 200 }}/>
+                        )
+                    }
+
+                </FormItem>
+                <FormItem label="纬度" {...formItemLayout}>
+                   { 
+                       tableInfo && type=='detail'? tableInfo.latitude: 
+                       getFieldDecorator('latitude',{
+                            initialValue:tableInfo.latitude,
+                            
+                        })(
+                        <InputNumber placeholder="请输入纬度" style={{ width: 200 }}/>
+                        )
+                    }
+
+                </FormItem>
+                <FormItem label="责任单位" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.zrdw: 
+                        getFieldDecorator('zrdw',{
+                            initialValue:tableInfo.zrdw,
+                            rules:[]
+                        })(
+                            <Input placeholder="请输入责任单位" maxlength="200"/>
+                        )
+                    }
+                </FormItem>
+                 <FormItem label="责任人" {...formItemLayout}>
+                    {   
+                        tableInfo && type=='detail'? tableInfo.zrr: 
+                        getFieldDecorator('zrr',{
+                            initialValue:tableInfo.zrr,
+                            rules:[]
+                        })(
+                            <Input placeholder="请输入责任人" maxlength="20"/>
+                        )
+                    }
+                </FormItem>
+                <FormItem label="管控措施" {...formItemLayout}>
+                            {   
+                                tableInfo && type=='detail'? tableInfo.gkcs:
+                                getFieldDecorator('gkcs',{
+                                    initialValue:tableInfo.gkcs,
+                                    rules:[]
+                                })(
+                                <TextArea
+                                autosize={{minRows:2}}
+                                placeholder="请输入管控措施" 
+                                    />
+                                )
+                            }
                 </FormItem>
             </Form>
         );
