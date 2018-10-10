@@ -1,4 +1,23 @@
 export default class Dictionary {
+    //预算计划/计划类别
+    static jhType = {
+        '0':'大额资金项目支出计划',
+        '1':'培训/会议计划',
+        '2':'课题计划'
+    }
+    //预算计划/状态
+    static staflag = {
+        '0':'未上报',
+        '1':'已上报'
+    }
+    //预算计划/审批状态
+    static spStatus = {
+        '1':'初核',
+        '2':'复核',
+        '3':'退回',
+        '4':'调整',
+        '5':'终审'
+    }
     //性别
     static xbType = {
         '1':'男',
@@ -6,7 +25,7 @@ export default class Dictionary {
         '0':'未知',
         '9':'未说明的性别',
     }
-
+   
     //应急目录管理/物资类别
     static wzType = {
         '1':'电力工程抢险',

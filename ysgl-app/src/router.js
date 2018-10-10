@@ -9,8 +9,11 @@ import Xmjbxx from './pages/ysbz/xmjbxx'
 import Bmzjys from './pages/ysbz/bmzjys'
 
 
-import InfoDetail from './pages/infoDetail';
+import InfoDetail from './pages/infoDetail'
 
+import Ystzsq from './pages/ystz/ystzsq'
+import Ysjhgl from './pages/ysjh/ysjhgl'
+import Ysjhsp from './pages/ysjh/ysjhsp'
 
 export default class IRouter extends React.Component{
 
@@ -31,9 +34,10 @@ export default class IRouter extends React.Component{
                             <Route path="/bmzjys" component={Bmzjys}></Route>
 
                             {/* 预算调整管理 */}
-                            
-
-                            
+                            <Route path="/ystzsq" component={Ystzsq}></Route>
+                            {/* 预算计划管理 */}
+                            <Route path="/ysjhgl" component={Ysjhgl}></Route>
+                            <Route path="/ysjhsp" component={Ysjhsp}></Route>
 
                             <Redirect to="/zfgmfwxm" />
                             <Route component={NoMatch}></Route>
