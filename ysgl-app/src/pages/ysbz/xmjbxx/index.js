@@ -1,17 +1,17 @@
 import React from 'react';
 import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
-import axios from './../../../../axios'
-import Utils from './../../../../utils/utils'
-import ETable from './../../../../components/ETable/index'
+import axios from './../../../axios'
+import Utils from './../../../utils/utils'
+import ETable from './../../../components/ETable/index'
 import moment from 'moment'
-import FaceUrl from '../../../../utils/apiAndInterfaceUrl'
-import Dictionary from '../../../../utils/dictionary'
+import FaceUrl from '../../../utils/apiAndInterfaceUrl'
+import Dictionary from '../../../utils/dictionary'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Wzmlgl extends React.Component{
+export default class Xmjbxx extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -29,14 +29,14 @@ export default class Wzmlgl extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.gmfwgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.wzmlgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.gmfwgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -99,7 +99,7 @@ export default class Wzmlgl extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.wzmlAdd,
+                url:FaceUrl.gmfwAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -133,7 +133,7 @@ export default class Wzmlgl extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.wzmlDel,
+                        url:FaceUrl.gmfwDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -209,9 +209,8 @@ export default class Wzmlgl extends React.Component{
             <div>
                 <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
-                    <Breadcrumb.Item>应急资源管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资储备管理</Breadcrumb.Item>
-                    <Breadcrumb.Item>物资目录管理</Breadcrumb.Item>
+                    <Breadcrumb.Item>预算编制</Breadcrumb.Item>
+                    <Breadcrumb.Item>项目基本信息</Breadcrumb.Item>
                 </Breadcrumb>
                 <Content className="content-wrap">
                     <div >

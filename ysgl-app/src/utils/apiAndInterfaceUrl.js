@@ -1,14 +1,14 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.29:8050/emergency";
+    static bdApi = "http://192.168.50.29:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
-    //物资目录管理
-    static wzmlgl = '/wzml/list';
-    static wzmlAdd = '/wzml/save';
-    static wzmlDetail = '/wzml/findById';
-    static wzmlDel = '/wzml/delete';
+    //预算编制-政府购买服务项目管理
+    static gmfwgl = '/gmfw/list';
+    static gmfwAdd = '/gmfw/save';
+    static gmfwDetail = '/gmfw/findById';
+    static gmfwDel = '/gmfw/delete';
     //物资储备库点管理
     static wzkdkdgl = '/wzkd/list';
     static wzkdAdd = '/wzkd/save';

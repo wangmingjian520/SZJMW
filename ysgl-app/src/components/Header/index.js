@@ -7,7 +7,7 @@ export default class Header extends React.Component{
     state={}
     componentWillMount(){
         this.setState({
-            typeName:'应急管理系统'
+            typeName:'预算管理系统'
         })
     }
 
