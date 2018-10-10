@@ -41,10 +41,10 @@ export default class ApiAndInterfaceUrl {
     static jcjlDetail = '/jcjl/findById';
     static jcjlDel = '/jcjl/delete';
     //物资储备检查-问题整改
-    static wtzggl = '/wtzg/list';
-    static wtzgAdd = '/wtzg/save';
-    static wtzgDetail = '/wtzg/findById';
-    static wtzgDel = '/wtzg/delete';
+    static zgqkgl = '/zgqk/list';
+    static zgqkAdd = '/zgqk/save';
+    static zgqkDetail = '/zgqk/findById';
+    static zgqkDel = '/zgqk/delete';
     //设备设施管理
     static sbssgl = '/sbss/list';
     static sbssAdd = '/sbss/save';
