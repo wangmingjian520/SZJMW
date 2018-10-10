@@ -29,7 +29,7 @@ import Yljh from './pages/yjyl/yljh';
 import Yjsjsl from './pages/yjsjcl/yjsjsl';
 import Yjsjja from './pages/yjsjcl/yjsjja';
 import Fxyxxgl from './pages/yjdlxxxt/fxyxxgl';
-
+import Yjzygisgl from './pages/yjdlxxxt/yjzygisgl';
 export default class IRouter extends React.Component{
 
     render(){
@@ -76,7 +76,8 @@ export default class IRouter extends React.Component{
 
                             {/* 应急地理信息系统 */}
                             <Route path="/fxyxxgl" component={Fxyxxgl}></Route>
-                            {/* <Route path="/ylgc" component={Ylgc}></Route> */}
+                            <Route path="/yjzygisgl" component={Yjzygisgl}></Route>
+							{/* <Route path="/ylgc" component={Ylgc}></Route> */}
 
                             <Redirect to="/wzmlgl" />
                             <Route component={NoMatch}></Route>

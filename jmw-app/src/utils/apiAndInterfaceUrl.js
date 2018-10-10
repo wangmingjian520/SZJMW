@@ -11,6 +11,7 @@ export default class ApiAndInterfaceUrl {
     static wzmlDel = '/wzml/delete';
     //物资储备库点管理
     static wzkdkdgl = '/wzkd/list';
+	static wzkdFindPosition = '/wzkd/findPosition';
     static wzkdAdd = '/wzkd/save';
     static wzkdDetail = '/wzkd/findById';
     static wzkdDel = '/wzkd/delete';
