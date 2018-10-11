@@ -9,16 +9,23 @@ export default class ApiAndInterfaceUrl {
     static gmfwAdd = '/gmfw/save';
     static gmfwDetail = '/gmfw/findById';
     static gmfwDel = '/gmfw/delete';
-    //预算编制-项目基本信息
-    static xmjbxx = '/xmxx/list';
-    static xmxxAdd = '/xmxx/save';
-    static xmxxDetail = '/xmxx/findById';
-    static xmxxDel = '/xmxx/delete';
-     //服务机构管理
-     static fwjggl = '/fwjg/list';
-     static fwjgAdd = '/fwjg/save';
-     static fwjgDetail = '/fwjg/findById';
-     static fwjgDel = '/fwjg/delete';
+
+    //预算调整-预算调整申请管理
+    static ystzsqgl = '/ystz/list';
+    static ystzsqAdd = '/ystz/save';
+    static ystzsqDetail = '/ystz/findById';
+    static ystzsqDel = '/ystz/delete';
+     //预算计划-预算计划管理
+     static ysjhgl = '/ysjh/list';
+     static ysjhAdd = '/ysjh/save';
+     static ysjhDetail = '/ysjh/findById';
+     static ysjhDel = '/ysjh/delete';
+     //预算计划-预算计划审批
+     static ysjhspgl = '/yssp/list';
+     static ysjhspAdd = '/yssp/save';
+     static ysjhspDetail = '/yssp/findById';
+     static ysjhspDel = '/yssp/delete';
+
     //服务机构合同管理
     static fwjghtgl = '/fwjght/list';
     static fwjghtAdd = '/fwjght/save';
