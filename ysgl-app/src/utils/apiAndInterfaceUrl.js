@@ -1,7 +1,7 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.29:8060/bud";
+    static bdApi = "http://192.168.50.182:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //预算编制-政府购买服务项目管理
@@ -9,16 +9,21 @@ export default class ApiAndInterfaceUrl {
     static gmfwAdd = '/gmfw/save';
     static gmfwDetail = '/gmfw/findById';
     static gmfwDel = '/gmfw/delete';
-    //物资储备库点管理
-    static wzkdkdgl = '/wzkd/list';
-    static wzkdAdd = '/wzkd/save';
-    static wzkdDetail = '/wzkd/findById';
-    static wzkdDel = '/wzkd/delete';
-     //服务机构管理
-     static fwjggl = '/fwjg/list';
-     static fwjgAdd = '/fwjg/save';
-     static fwjgDetail = '/fwjg/findById';
-     static fwjgDel = '/fwjg/delete';
+    //预算调整-预算调整申请管理
+    static ystzsqgl = '/ystz/list';
+    static ystzsqAdd = '/ystz/save';
+    static ystzsqDetail = '/ystz/findById';
+    static ystzsqDel = '/ystz/delete';
+     //预算计划-预算计划管理
+     static ysjhgl = '/ysjh/list';
+     static ysjhAdd = '/ysjh/save';
+     static ysjhDetail = '/ysjh/findById';
+     static ysjhDel = '/ysjh/delete';
+     //预算计划-预算计划审批
+     static ysjhspgl = '/yssp/list';
+     static ysjhspAdd = '/yssp/save';
+     static ysjhspDetail = '/yssp/findById';
+     static ysjhspDel = '/yssp/delete';
     //服务机构合同管理
     static fwjghtgl = '/fwjght/list';
     static fwjghtAdd = '/fwjght/save';
