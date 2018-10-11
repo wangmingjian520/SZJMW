@@ -1,7 +1,7 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.182:8060/bud";
+    static bdApi = "http://192.168.50.29:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //预算编制-政府购买服务项目管理
@@ -9,6 +9,7 @@ export default class ApiAndInterfaceUrl {
     static gmfwAdd = '/gmfw/save';
     static gmfwDetail = '/gmfw/findById';
     static gmfwDel = '/gmfw/delete';
+
     //预算调整-预算调整申请管理
     static ystzsqgl = '/ystz/list';
     static ystzsqAdd = '/ystz/save';
@@ -24,6 +25,7 @@ export default class ApiAndInterfaceUrl {
      static ysjhspAdd = '/yssp/save';
      static ysjhspDetail = '/yssp/findById';
      static ysjhspDel = '/yssp/delete';
+
     //服务机构合同管理
     static fwjghtgl = '/fwjght/list';
     static fwjghtAdd = '/fwjght/save';
