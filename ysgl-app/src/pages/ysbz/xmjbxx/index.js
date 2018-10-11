@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker} from  'antd';
+import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker ,Row, Col} from  'antd';
 import axios from './../../../axios'
 import Utils from './../../../utils/utils'
 import ETable from './../../../components/ETable/index'
@@ -29,14 +29,14 @@ export default class Xmjbxx extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.gmfwgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.gmfwgl,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -60,7 +60,6 @@ export default class Xmjbxx extends React.Component{
                 message.error('请选择一条需要修改的项！');
                 
             }
-            
         }
     }
 
@@ -99,7 +98,7 @@ export default class Xmjbxx extends React.Component{
             }
             //提交or修改
             axios.ajax({
-                url:FaceUrl.gmfwAdd,
+                url:FaceUrl.xmxxAdd,
                 method:FaceUrl.POST,
                 baseApi:FaceUrl.bdApi,
                 data:{
@@ -133,7 +132,7 @@ export default class Xmjbxx extends React.Component{
                 content:`您确定要删除这${ids.length}项吗？`,
                 onOk:()=>{
                     axios.ajax({
-                        url:FaceUrl.gmfwDel,
+                        url:FaceUrl.xmxxDel,
                         method:FaceUrl.POST,
                         baseApi:FaceUrl.bdApi,
                         data:ids
@@ -155,42 +154,63 @@ export default class Xmjbxx extends React.Component{
     render(){
         const columns = [
             {
-                 title:'物资名称',
-                 dataIndex:'wzName',
-                 key:'wzName',
+                 title:'项目名称',
+                 dataIndex:'xmname',
+                 key:'xmname',
                  align:'center',
-                 render:(wzName,record)=>{
-                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{wzName}</a>;
+                 render:(xmname,record)=>{
+                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{xmname}</a>;
                 }
              },
              {
-                title:'物资类型',
-                dataIndex:'wzType',
-                key:'wzType',
+                title:'项目属性名称',
+                dataIndex:'xmsxname',
+                key:'xmsxname',
                 align:'center',
-                render(wzType){
-                   let config = Dictionary.wzType
-                   return config[wzType];
-               }
-             },
+            },
              {
-                 title:'测算标准',
-                 dataIndex:'csbz',
-                 key:'csbz',
-                 align:'center'
-             },
+                 title:'资金保障类型名称',
+                 dataIndex:'zjbztypename',
+                 key:'zjbztypename',
+                 align:'center',
+            },
              {
-                 title:'数量',
-                 dataIndex:'wzNum',
-                 key:'wzNum',
-                 align:'center'
-             },
-             {
-                 title:'规格品质要求',
-                 dataIndex:'ggpzReq',
-                 key:'ggpzReq',
-                 align:'center'
+                 title:'项目类别名称 ',
+                 dataIndex:'xmtypename',
+                 key:'xmtypename',
+                 align:'center',
+                
+            },
+            {
+                title:'项目负责人',
+                dataIndex:'xmfzrname',
+                key:'xmfzrname',
+                align:'center',
+            },
+            {
+                title:'负责人联系方式',
+                dataIndex:'link',
+                key:'link',
+                align:'center',
+           },
+           {
+               title:'起始年月',
+               dataIndex:'begdate',
+               key:'begdate',
+               align:'center',
+               render(begdate){
+                return moment(begdate).format('YYYY-MM-DD')
              }
+           },
+           {
+            title:'结束年月',
+            dataIndex:'enddate',
+            key:'enddate',
+            align:'center',
+            render(enddate){
+                return moment(enddate).format('YYYY-MM-DD')
+             }
+            }
          ]
         let footer = {}
         if(this.state.type=='detail'){
@@ -217,7 +237,7 @@ export default class Xmjbxx extends React.Component{
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入物资名称/测算标准"
+                        placeholder="请输入项目名称/属性名称/负责人"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
@@ -241,6 +261,7 @@ export default class Xmjbxx extends React.Component{
 
                 </Content>
                 <Modal
+                    width='760px'
                     title={this.state.title}
                     visible={this.state.isVisible}
                     onCancel={()=>{
@@ -263,114 +284,578 @@ export default class Xmjbxx extends React.Component{
     }
 }
 class OpenFormTable extends React.Component{
-    getState = (state)=>{
-    
-        return Dictionary.wzType[state]
-    }
     render(){
-        let type = this.props.type ;
+        let type = this.props.type;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
-            labelCol:{
-                span:6
-            },
-            wrapperCol:{
-                span:18
-            }
+            // labelCol:{
+            //     span:8
+            // },
+            // wrapperCol:{
+            //     span:16
+            // }
         }
         const { getFieldDecorator }  =this.props.form;
         return (
-            <Form layout="horizontal">
-                    {   
+            <Form layout="inline" >
+                    {
                         getFieldDecorator('kid',{
                             initialValue:tableInfo.kid,
                         })
                          (<Input type="hidden" />
                          )
                     }
-                <FormItem label="物资名称" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.wzName: 
-                        getFieldDecorator('wzName',{
-                            initialValue:tableInfo.wzName,
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'物资名称不能为空！'
+                <Row>
+                    <Col span={24}>
+                        <div className="gutter-box" align="left">
+                            <FormItem label="项目名称" {...formItemLayout}>
+                                {   
+                                    //tableInfo && type=='detail'? tableInfo.cbkName: 
+                                    getFieldDecorator('xmname',{
+                                        initialValue:tableInfo.xmname,
+                                        rules:[
+                                            {
+                                                required: true,
+                                                message:'项目名称不能为空！'
+                                            }
+                                        ]
+                                    })
+                                    (<Input placeholder="请输入项目名称"  maxlength="200" style={{ width: 556 }}/>
+                                    )
                                 }
-                            ]
-                        })
-                         (<Input placeholder="请输入物资名称" />
-                         )
-                    }
-                </FormItem>
-                <FormItem label="物资类别" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? this.getState(tableInfo.wzType): 
-                        getFieldDecorator('wzType',{
-                            initialValue:tableInfo.wzType ? tableInfo.wzType : '1',
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'请选择物资类别'
-                                }
-                            ]
-                        })(
-                            <Select style={{ width: 280 }} >
+                            </FormItem>
+                        </div>
+                    </Col>
+                    
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="单位编码" {...formItemLayout}>
+                        {   
+                            //tableInfo && type=='detail'? tableInfo.cbkType: 
+                            getFieldDecorator('dwcode',{
+                                initialValue:tableInfo.dwcode,
                                 
-                                <Option value="1">电力工程抢险</Option>
-                                <Option value="2">通信工程抢险</Option>
-                                <Option value="3">动物疫情处置</Option>
-                                <Option value="4">基本生活物资保障</Option>
-                                <Option value="5">网络安全保障</Option>
-                                <Option value="6">成品油</Option>
+                            })(
+                                <Input placeholder="请输入单位编码"  maxlength="20" style={{ width: 200 }}/>
+                            )
+                        }
+                    </FormItem>
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="单位名称" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('dwname',{
+                                    initialValue:tableInfo.dwname,
+                                    rules:[
+                                        {
+                                            required: true,
+                                            message:'单位名称不能为空！'
+                                        }
+                                    ]
+                                })
+                                (<Input placeholder="请输入单位名称" maxlength="200" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="支出功能分类编码" {...formItemLayout}>
+                    {   
+                        //tableInfo && type=='detail'? tableInfo.cbkType: 
+                        getFieldDecorator('zctypecode',{
+                            initialValue:tableInfo.zctypecode,
+                            
+                        })(
+                            <Select style={{ width: 200 }} >
+                               <Option value="001">001</Option>
+                                <Option value="002">002</Option>
+                                <Option value="003">003</Option>
                             </Select>
                         )
                     }
                 </FormItem>
-                <FormItem label="测算标准" {...formItemLayout}>
-                   { 
-                       tableInfo && type=='detail'? tableInfo.csbz: 
-                       getFieldDecorator('csbz',{
-                            initialValue:tableInfo.csbz,
-                            rules:[
-                                {
-                                    required: true,
-                                    message:'测算标准不能为空！'
-                                }
-                            ]
-                        })(
-                        <Input placeholder="请输入测算标准" />
-                        )
-                    }
-
-                </FormItem>
-                <FormItem label="数量" {...formItemLayout}>
-                    {   
-                        tableInfo && type=='detail'? tableInfo.wzNum: 
-                        getFieldDecorator('wzNum',{
-                            initialValue:tableInfo.wzNum,
-                            rules:[]
-                        })(
-                        <InputNumber />    
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="支出功能分类名称" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('zctypename',{
+                                    initialValue:tableInfo.zctypename,
+                                    
+                                })
+                                (<Select style={{ width: 200 }} >
+                                    <Option value="新增项目">新增项目</Option>
+                                    <Option value="上年延续">上年延续</Option>
+                                    <Option value="上年结转">上年结转</Option>
+                                </Select>
+                                )
+                            }
+                        </FormItem>
+                    </div>
                         
-                        )
-                    }
-                </FormItem>
-                <FormItem label="规格品质要求" {...formItemLayout}>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="项目属性编码" {...formItemLayout}>
                     {   
-                        tableInfo && type=='detail'? tableInfo.ggpzReq: 
-                        getFieldDecorator('ggpzReq',{
-                            initialValue:tableInfo.ggpzReq,
-                            rules:[]
+                        //tableInfo && type=='detail'? tableInfo.cbkType: 
+                        getFieldDecorator('xmsxcode',{
+                            initialValue:tableInfo.xmsxcode,
+                            
                         })(
-                        <TextArea
-                        autosize={{minRows:3}}
-                        placeholder="请输入规格品质要求" 
-                            />
+                            <Select style={{ width: 200 }} >
+                               <Option value="001">001</Option>
+                                <Option value="002">002</Option>
+                                <Option value="003">003</Option>
+                            </Select>
                         )
                     }
                 </FormItem>
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="项目属性名称" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('xmsxname',{
+                                    initialValue:tableInfo.xmsxname,
+                                    rules:[
+                                        {
+                                            required: true,
+                                            message:'请选择项目属性名称！'
+                                        }
+                                    ]
+                                })
+                                (<Select style={{ width: 200 }} >
+                                     <Option value="新增项目">新增项目</Option>
+                                     <Option value="上年延续">上年延续</Option>
+                                     <Option value="上年结转">上年结转</Option>
+                                 </Select>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="存续属性编码" {...formItemLayout}>
+                        {   
+                            //tableInfo && type=='detail'? tableInfo.cbkType: 
+                            getFieldDecorator('cxsxcode',{
+                                initialValue:tableInfo.cxsxcode,
+                                
+                            })(
+                                <Select style={{ width: 200 }} >
+                                    <Option value="01">01</Option>
+                                    <Option value="02">02</Option>
+                                </Select>
+                            )
+                        }
+                    </FormItem>
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="存续属性名称" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('cxsxname',{
+                                    initialValue:tableInfo.cxsxname,
+                                    
+                                })
+                                (<Select style={{ width: 200 }} >
+                                    <Option value="经常性项目">经常性项目</Option>
+                                    <Option value="一次性项目">一次性项目</Option>
+                                 </Select>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="资金保障类型编码" {...formItemLayout}>
+                        {   
+                            //tableInfo && type=='detail'? tableInfo.cbkType: 
+                            getFieldDecorator('zjbztypecode',{
+                                initialValue:tableInfo.zjbztypecode,
+                                
+                            })(
+                                <Select style={{ width: 200 }} >
+                                    <Option value="01">01</Option>
+                                    <Option value="02">02</Option>
+                                </Select>
+                            )
+                        }
+                    </FormItem>
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="资金保障类型名称" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('zjbztypename',{
+                                    initialValue:tableInfo.zjbztypename,
+                                    
+                                })
+                                (<Select style={{ width: 200 }} >
+                                    <Option value="刚性项目">刚性项目</Option>
+                                    <Option value="弹性项目">弹性项目</Option>
+                                 </Select>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="支出方向编码" {...formItemLayout}>
+                        {   
+                            //tableInfo && type=='detail'? tableInfo.cbkType: 
+                            getFieldDecorator('zcfxcode',{
+                                initialValue:tableInfo.zcfxcode,
+                                
+                            })(
+                                <Select style={{ width: 200 }} >
+                                    <Option value="01">01</Option>
+                                    <Option value="02">02</Option>
+                                    <Option value="03">03</Option>
+                                </Select>
+                            )
+                        }
+                    </FormItem>
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="支出方向名称" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('zcfxname',{
+                                    initialValue:tableInfo.zcfxname,
+                                    
+                                })
+                                (<Select style={{ width: 200 }} >
+                                    <Option value="机构运行保障类项目">机构运行保障类项目</Option>
+                                    <Option value="重点民生事业类项目">重点民生事业类项目</Option>
+                                    <Option value="一般事业发展性项目">一般事业发展性项目</Option>
+                                 </Select>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="项目类别编码" {...formItemLayout}>
+                        {   
+                            //tableInfo && type=='detail'? tableInfo.cbkType: 
+                            getFieldDecorator('xmtypecode',{
+                                initialValue:tableInfo.xmtypecode,
+                                
+                            })(
+                                <Select style={{ width: 200 }} >
+                                    <Option value="01">01</Option>
+                                    <Option value="02">02</Option>
+                                    <Option value="03">03</Option>
+                                    <Option value="04">04</Option>
+                                    <Option value="05">05</Option>
+                                </Select>
+                            )
+                        }
+                    </FormItem>
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="项目类别名称" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('xmtypename',{
+                                    initialValue:tableInfo.xmtypename,
+                                    
+                                })
+                                (<Select style={{ width: 200 }} >
+                                    <Option value="制度及法定增长类">制度及法定增长类</Option>
+                                    <Option value="开办费类">开办费类</Option>
+                                    <Option value="发改投资项目后续运维类">发改投资项目后续运维类</Option>
+                                    <Option value="水电物管类">水电物管类</Option>
+                                    <Option value="其他类">其他类</Option>
+                                 </Select>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="项目依据类型编码" {...formItemLayout}>
+                        {   
+                            //tableInfo && type=='detail'? tableInfo.cbkType: 
+                            getFieldDecorator('xmyjtypecode',{
+                                initialValue:tableInfo.xmyjtypecode,
+                                
+                            })(
+                                <Select style={{ width: 200 }} >
+                                    <Option value="001">001</Option>
+                                    <Option value="002">002</Option>
+                                    <Option value="003">003</Option>
+                                    <Option value="004">004</Option>
+                                </Select>
+                            )
+                        }
+                    </FormItem>
+                    </div>
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="项目依据类型名称" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbkGrade:
+                                getFieldDecorator('xmyjtypename',{
+                                    initialValue:tableInfo.xmyjtypename,
+                                    
+                                })
+                                (<Select style={{ width: 200 }} >
+                                    <Option value="单位履职需要的项目">单位履职需要的项目</Option>
+                                    <Option value="市委市政府确定的项目">市委市政府确定的项目</Option>
+                                    <Option value="中央安排的项目">中央安排的项目</Option>
+                                    <Option value="省级安排的项目">省级安排的项目</Option>
+                                 </Select>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="是否跨年支付项目" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.area:
+                                getFieldDecorator('knzfflag',{
+                                    initialValue:tableInfo.knzfflag,
+                                    rules:[
+                                        {
+                                            required: true,
+                                            message:'请选择是否跨年支付项目！'
+                                        }
+                                    ]
+                                })
+                                (<Select style={{ width: 200 }} >
+                                    <Option value="0">否</Option>
+                                    <Option value="1">是</Option>
+                                </Select>)    
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="政府采购服务类型" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.areaCode:
+                                getFieldDecorator('zfcgfwtype',{
+                                    initialValue:tableInfo.zfcgfwtype,
+                                })
+                                (<Input placeholder="请输入政府采购服务类型"  maxlength="10" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="起始年月" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.area:
+                                getFieldDecorator('begdate',{
+                                    initialValue:moment(tableInfo.begdate),
+                                })
+                                (<DatePicker  style={{ width: 200 }}/>)   
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="结束年月" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.areaCode:
+                                getFieldDecorator('enddate',{
+                                    initialValue:moment(tableInfo.enddate),
+                                })
+                                (<DatePicker  style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="项目负责人" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.area:
+                                getFieldDecorator('xmfzrname',{
+                                    initialValue:tableInfo.xmfzrname,
+                                })
+                                (<Input placeholder="请输入项目负责人"  maxlength="30" style={{ width: 200 }}/>)    
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                    <Col span={12}>
+                    <div className="gutter-box">
+                    <FormItem label="负责人联系方式" {...formItemLayout}>
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.areaCode:
+                                getFieldDecorator('link',{
+                                    initialValue:tableInfo.link,
+                                })
+                                (<Input placeholder="请输入政府采购服务类型"  maxlength="50" style={{ width: 200 }}/>
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                        
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                    <div className="gutter-box">
+                    <FormItem label="项目概况"  >
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbwz:
+                                getFieldDecorator('xmdet',{
+                                    initialValue:tableInfo.xmdet,
+                                    rules:[
+                                        {
+                                            required: true,
+                                            message:'项目概况不能为空！'
+                                        }
+                                    ]
+                                })
+                                (<TextArea style={{ width: 556 }}
+                                    autosize={{minRows:2}}
+                                    placeholder="请输入项目概况" 
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                    <div className="gutter-box">
+                    <FormItem label="项目申报依据"  >
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbwz:
+                                getFieldDecorator('xmsbyj',{
+                                    initialValue:tableInfo.xmsbyj,
+                                    rules:[
+                                        {
+                                            required: true,
+                                            message:'项目申报依据不能为空！'
+                                        }
+                                    ]
+                                })
+                                (<TextArea style={{ width: 556 }}
+                                    autosize={{minRows:2}}
+                                    placeholder="请输入项目申报依据" 
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                    <div className="gutter-box">
+                    <FormItem label="项目测算标准"  >
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbwz:
+                                getFieldDecorator('xmcsbz',{
+                                    initialValue:tableInfo.xmcsbz,
+                                    rules:[
+                                        {
+                                            required: true,
+                                            message:'项目测算标准不能为空'
+                                        }
+                                    ]
+                                })
+                                (<TextArea style={{ width: 556 }}
+                                    autosize={{minRows:2}}
+                                    placeholder="请输入项目测算标准" 
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                    <div className="gutter-box">
+                    <FormItem label="专家论证情况"  >
+                            {   
+                                //tableInfo && type=='detail'? tableInfo.cbwz:
+                                getFieldDecorator('zjlzdet',{
+                                    initialValue:tableInfo.zjlzdet,
+                                })
+                                (<TextArea style={{ width: 556 }}
+                                    autosize={{minRows:2}}
+                                    placeholder="请输入专家论证情况" 
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </div>
+                    </Col>
+                </Row>
+                
             </Form>
         );
     }

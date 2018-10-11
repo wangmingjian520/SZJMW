@@ -9,11 +9,11 @@ export default class ApiAndInterfaceUrl {
     static gmfwAdd = '/gmfw/save';
     static gmfwDetail = '/gmfw/findById';
     static gmfwDel = '/gmfw/delete';
-    //物资储备库点管理
-    static wzkdkdgl = '/wzkd/list';
-    static wzkdAdd = '/wzkd/save';
-    static wzkdDetail = '/wzkd/findById';
-    static wzkdDel = '/wzkd/delete';
+    //预算编制-项目基本信息
+    static xmjbxx = '/xmxx/list';
+    static xmxxAdd = '/xmxx/save';
+    static xmxxDetail = '/xmxx/findById';
+    static xmxxDel = '/xmxx/delete';
      //服务机构管理
      static fwjggl = '/fwjg/list';
      static fwjgAdd = '/fwjg/save';
