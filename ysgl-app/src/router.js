@@ -14,6 +14,8 @@ import InfoDetail from './pages/infoDetail'
 import Ystzsq from './pages/ystz/ystzsq'
 import Ysjhgl from './pages/ysjh/ysjhgl'
 import Ysjhsp from './pages/ysjh/ysjhsp'
+import Jjflkm from './pages/jjflkm'
+import Yszxqk from './pages/yszxjk/yszxqk'
 
 export default class IRouter extends React.Component{
 
@@ -38,6 +40,11 @@ export default class IRouter extends React.Component{
                             {/* 预算计划管理 */}
                             <Route path="/ysjhgl" component={Ysjhgl}></Route>
                             <Route path="/ysjhsp" component={Ysjhsp}></Route>
+                            {/* 预算支出 */}
+                            <Route path="/yszc" component={Jjflkm}></Route>
+                            {/* 预算执行与监控 */}
+                            <Route path="/yszxqk" component={Yszxqk}></Route>
+                            
 
                             <Redirect to="/zfgmfwxm" />
                             <Route component={NoMatch}></Route>

@@ -1,7 +1,7 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.29:8060/bud";
+    static bdApi = "http://192.168.50.180:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //预算编制-政府购买服务项目管理
@@ -25,12 +25,17 @@ export default class ApiAndInterfaceUrl {
      static ysjhspAdd = '/yssp/save';
      static ysjhspDetail = '/yssp/findById';
      static ysjhspDel = '/yssp/delete';
+     //预算支出
+    static jjflkmgl = '/jjflkm/list';
+    static jjflkmAdd = '/jjflkm/save';
+    static jjflkmDetail = '/jjflkm/findById';
+    static jjflkmDel = '/jjflkm/delete';
 
-    //服务机构合同管理
-    static fwjghtgl = '/fwjght/list';
-    static fwjghtAdd = '/fwjght/save';
-    static fwjghtDetail = '/fwjght/findById';
-    static fwjghtDel = '/fwjght/delete';
+    //预算执行与监控-预算执行情况
+    static zxqkgl = '/zxqk/list';
+    static zxqkAdd = '/zxqk/save';
+    static zxqkDetail = '/zxqk/findById';
+    static zxqkDel = '/zxqk/delete';
     //物资储备信息管理控制器
     static wzcbxxgl = '/wzcb/list';
     static wzcbAdd = '/wzcb/save';
