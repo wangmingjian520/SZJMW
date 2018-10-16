@@ -16,7 +16,7 @@ import Ysjhgl from './pages/ysjh/ysjhgl'
 import Ysjhsp from './pages/ysjh/ysjhsp'
 import Jjflkm from './pages/jjflkm'
 import Yszxqk from './pages/yszxjk/yszxqk'
-
+import Excel from './pages/excel'
 export default class IRouter extends React.Component{
 
     render(){
@@ -44,7 +44,8 @@ export default class IRouter extends React.Component{
                             <Route path="/yszc" component={Jjflkm}></Route>
                             {/* 预算执行与监控 */}
                             <Route path="/yszxqk" component={Yszxqk}></Route>
-                            
+                             {/*Excel的导入导出 */}
+                             <Route path="/yscxtj" component={Excel}></Route>
 
                             <Redirect to="/zfgmfwxm" />
                             <Route component={NoMatch}></Route>
