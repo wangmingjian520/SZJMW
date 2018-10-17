@@ -36,16 +36,18 @@ export default class ApiAndInterfaceUrl {
     static zxqkAdd = '/zxqk/save';
     static zxqkDetail = '/zxqk/findById';
     static zxqkDel = '/zxqk/delete';
-    //物资储备信息管理控制器
-    static wzcbxxgl = '/wzcb/list';
-    static wzcbAdd = '/wzcb/save';
-    static wzcbDetail = '/wzcb/findById';
-    static wzcbDel = '/wzcb/delete';
-    //物资储备检查-检查计划
-    static jcjhgl = '/jcjh/list';
-    static jcjhAdd = '/jcjh/save';
-    static jcjhDetail = '/jcjh/findById';
-    static jcjhDel = '/jcjh/delete';
+    //预算经济分类-政府预算经济分类
+    static zfysjjflgl = '/gov/page';
+    static zfysjjflList = '/gov/list';
+    static zfysjjflAdd = '/gov/save';
+    static zfysjjflDetail = '/gov/findById';
+    static zfysjjflDel = '/gov/delete';
+    //预算经济分类-部门预算经济分类
+    static depysjjflgl = '/dep/page';
+    static depysjjflAdd = '/dep/save';
+    static depysjjflDetail = '/dep/findById';
+    static depysjjflDel = '/dep/delete';
+
     //物资储备检查-检查记录
     static jcjl = '/jcjl/list';
     static jcjlAdd = '/jcjl/save';
