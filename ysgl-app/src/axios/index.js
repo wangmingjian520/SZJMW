@@ -45,6 +45,7 @@ export default class Axios {
     }
 
     static ajax(options){
+
         let loading;
         if (options.data && options.data.isShowLoading !== false){
             loading = document.getElementById('ajaxLoading');
@@ -53,10 +54,15 @@ export default class Axios {
         let baseApi = '';
         if(options.baseApi){
             baseApi = options.baseApi;
-        }else{
-            baseApi = 'https://www.easy-mock.com/mock/5b922ca67d8f0d08304e7468/jmwapi'; 
+        }
+        let userId ='';
+        //往header里存放用户ID
+        if(options.data && options.data.userId){
+            userId = options.data.userId;
+            axios.defaults.headers.common['userId'] = userId;
         }
         return new Promise((resolve,reject)=>{
+            
             axios({
                 url:options.url,
                 method:options.method,

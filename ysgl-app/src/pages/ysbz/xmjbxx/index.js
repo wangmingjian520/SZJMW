@@ -6,12 +6,13 @@ import ETable from './../../../components/ETable/index'
 import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
 import Dictionary from '../../../utils/dictionary'
+import { connect } from 'react-redux'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default class Xmjbxx extends React.Component{
+class Xmjbxx extends React.Component{
     state={
         dataSource:[],
         footer:'',
@@ -29,11 +30,15 @@ export default class Xmjbxx extends React.Component{
 
     requestList = ()=>{
         let _this =this;
+        const { userId } = this.props;
+        this.params = {userId}
         axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
+        const { userId } = this.props;
+        this.params = {userId}
         let _this =this;
         this.params.query = {"searchInfo":value}
         axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
@@ -861,3 +866,10 @@ class OpenFormTable extends React.Component{
     }
 }
 OpenFormTable = Form.create({})(OpenFormTable);
+
+const mapStateToProps = state => {
+    return {
+        userId: state.userId
+    }
+};
+export default connect(mapStateToProps)(Xmjbxx)

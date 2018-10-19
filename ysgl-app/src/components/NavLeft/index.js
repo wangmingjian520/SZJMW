@@ -36,11 +36,13 @@ class NavLeft extends React.Component{
 
     componentWillMount(){   
         let currentKey = window.location.hash.replace(/#|\?.*$/g,'');
+        const { userId } = this.props;
         axios.ajax({
             url:FaceUrl.menuUrl,
             method:FaceUrl.GET,
             baseApi:FaceUrl.bdApi,
             data:{
+                userId,
                 isShowLoading:true
             }
         }).then((res)=>{
@@ -91,5 +93,9 @@ class NavLeft extends React.Component{
         
     } 
 }
-
-export default  connect()(NavLeft)
+const mapStateToProps = state => {
+    return {
+        userId: state.userId
+    }
+};
+export default connect(mapStateToProps)(NavLeft)

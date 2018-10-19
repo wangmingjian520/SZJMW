@@ -1,9 +1,18 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.180:8060/bud";
+    static bdApi = "http://192.168.50.29:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
+    //userInfo接口
+    static webApi = "http://192.168.50.29:8888/budget-web/";
+    static userInfoUrl = '/api/user/info';
+    //预算编制-政府购买服务项目管理
+    static xmjbxx = '/xmxx/list';
+    static xmxxAdd = '/xmxx/save';
+    static xmxxDetail = '/xmxx/findById';
+    static xmxxDel = '/xmxx/delete';
+
     //预算编制-政府购买服务项目管理
     static gmfwgl = '/gmfw/list';
     static gmfwAdd = '/gmfw/save';

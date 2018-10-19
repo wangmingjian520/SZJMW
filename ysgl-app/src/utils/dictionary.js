@@ -1,4 +1,17 @@
 export default class Dictionary {
+    static userInfo = {
+        "bureauID":"{B0FF7BE0-B4C0-E940-A1FA-9C27F19D884B}",
+        "bureauName":"综合办公室",
+        "dN":"cn=OA系统技术支持,ou=信息中心,ou=综合办公室,ou=区直部门,o=光明新区",
+        "deptID":"{AC18B3FB-0000-0000-7C6D-3E7800000002}",
+        "deptName":"信息中心",
+        "loginName":"jszc",
+        "loginTime":1539918037950,
+        "mobile":"13715039080",
+        "name":"OA系统技术支持",
+        "officePhone":"88211337",
+        "userID":"{AC18B3FB-0000-0000-7BF1-451A00000001}"
+    }
     //预算计划/计划类别
     static jhType = {
         '0':'大额资金项目支出计划',
