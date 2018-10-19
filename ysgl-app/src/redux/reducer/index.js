@@ -11,6 +11,12 @@ const ebikeData = (state, action) => {
                 ...state,
                 menuName:action.menuName
             };
+        
+        case type.ADD_USERID:
+            return {
+                ...state,
+                userId:action.userId
+            };
         default:
             return {...state};
     }

@@ -5,7 +5,9 @@ import reducer from './../reducer';
 // 安装redux-devtools-extension的可视化工具。
 
 const initialState = {
-    menuName: ''
+    menuName: '',
+    userName:'',
+    userId:'',
 }
 const configureStore = () => createStore(reducer, initialState);
 
