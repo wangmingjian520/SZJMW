@@ -1,7 +1,7 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.29:8060/bud";
+    static bdApi = "http://192.168.50.181:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //userInfo接口
@@ -57,6 +57,13 @@ export default class ApiAndInterfaceUrl {
     static depysjjflDetail = '/dep/findById';
     static depysjjflDel = '/dep/delete';
 
+     //政府购买服务目录
+     static zfgmfwmlTree = '/fwml/tree';
+     static zfgmfwmlAdd = '/fwml/save';
+     static zfgmfwmlDetail = '/fwml/findOne/';
+     static zfgmfwmlParent = '/fwml/childs/';
+     static zfgmfwmlDel = '/fwml/delete';
+     
     //物资储备检查-检查记录
     static jcjl = '/jcjl/list';
     static jcjlAdd = '/jcjl/save';

@@ -8,7 +8,6 @@ import Zfgmfwxm from './pages/ysbz/zfgmfwxm'
 import Xmjbxx from './pages/ysbz/xmjbxx'
 import Bmzjys from './pages/ysbz/bmzjys'
 
-
 import InfoDetail from './pages/infoDetail'
 
 import Ystzsq from './pages/ystz/ystzsq'
@@ -18,6 +17,8 @@ import Jjflkm from './pages/jjflkm'
 import Yszxqk from './pages/yszxjk/yszxqk'
 import Zfysjjfl from './pages/ysjjfl/zfysjjfl'
 import Bmysjjfl from './pages/ysjjfl/bmysjjfl'
+import Zfgmfwml from './pages/zfgmfwml'
+
 import Excel from './pages/excel'
 export default class IRouter extends React.Component{
 
@@ -52,6 +53,8 @@ export default class IRouter extends React.Component{
                               <Route path="/zfysjjfl" component={Zfysjjfl}></Route>
                               {/*部门预算经济分类*/}
                               <Route path="/bmysjjfl" component={Bmysjjfl}></Route>
+                              {/*政府购买服务目录*/}
+                              <Route path="/zfgmfwml" component={Zfgmfwml}></Route>
 
                             <Redirect to="/zfgmfwxm" />
                             <Route component={NoMatch}></Route>
