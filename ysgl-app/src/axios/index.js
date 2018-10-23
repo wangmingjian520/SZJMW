@@ -59,8 +59,8 @@ export default class Axios {
         //往header里存放用户ID
         if(options.data && options.data.userId){
             userId = options.data.userId;
-            axios.defaults.headers.common['userId'] = userId;
-        }
+           }
+        axios.defaults.headers.common['userId'] = userId
         return new Promise((resolve,reject)=>{
             
             axios({
