@@ -17,6 +17,10 @@ import Ysjhgl from './pages/ysjh/ysjhgl'
 import Ysjhsp from './pages/ysjh/ysjhsp'
 import Jjflkm from './pages/jjflkm'
 import Yszxqk from './pages/yszxjk/yszxqk'
+import Zfysjjfl from './pages/ysjjfl/zfysjjfl'
+import Bmysjjfl from './pages/ysjjfl/bmysjjfl'
+import Zfgmfwml from './pages/zfgmfwml'
+
 import Excel from './pages/excel'
 
 function isLogin(nextState, replaceState) {
@@ -60,6 +64,12 @@ export default class IRouter extends React.Component{
                             <Route path="/yszxqk" component={Yszxqk}></Route>
                              {/*Excel的导入导出 */}
                              <Route path="/yscxtj" component={Excel}></Route>
+                              {/*政府预算经济分类*/}
+                              <Route path="/zfysjjfl" component={Zfysjjfl}></Route>
+                              {/*部门预算经济分类*/}
+                              <Route path="/bmysjjfl" component={Bmysjjfl}></Route>
+                              {/*政府购买服务目录*/}
+                              <Route path="/zfgmfwml" component={Zfgmfwml}></Route>
 
                             {/* <Redirect to="/zfgmfwxm" /> */}
                             <Route component={NoMatch}></Route>
