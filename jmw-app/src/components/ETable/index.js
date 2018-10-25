@@ -57,13 +57,7 @@ export default class ETable extends React.Component {
     };
 
     onSelectAll = (selected, selectedRows, changeRows) => {
-        let selectedIds = [];
-        let selectKey = [];
-        selectedRows.forEach((item,i)=> {
-            selectedIds.push(item.id);
-            selectKey.push(i);
-        });
-        this.props.updateSelectedItem(selectKey,selectedRows[0] || {},selectedIds);
+     // this.props.updateSelectedItem(selectKey,selectedRows[0] || {},selectedIds);
     }
 
     getOptions = () => {
