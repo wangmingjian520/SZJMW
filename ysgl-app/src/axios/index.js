@@ -1,7 +1,52 @@
 import JsonP from 'jsonp'
 import axios from 'axios'
 import Utils from './../utils/utils'
+import Dictionary from './../utils/dictionary'
+import FaceUrl from './../utils/apiAndInterfaceUrl'
 import { Modal , message} from 'antd'
+
+// 配置 CORS 跨域
+// 表示跨域请求时是否需要使用凭证
+axios.defaults.withCredentials = true;
+
+axios.defaults.crossDomain = false;
+
+// 设置超时
+axios.defaults.timeout = 10000;
+
+axios.interceptors.request.use(config => {
+    //发送请求操作，统一再请求里加上userId 
+    let userid = sessionStorage.getItem('userId')
+    config.headers['userId'] = userid ? userid : '';
+    return config;
+}, error => {
+    //发送请求错误操作
+    console.log('请求失败')
+    return Promise.reject(error);
+})
+axios.interceptors.response.use(response => {
+ 
+    //对响应数据做操作
+    if(parseInt(response.data.code, 10) <= '2000000') {
+        //console.log('请求成功');
+        return response
+    }
+    if(response.data.code === '2000401' || response.data.code === 2000401) {
+        console.log('已过期重新登陆', response.data.code);
+        window.parent.location.href = FaceUrl.cas_host+FaceUrl.api_host;
+        return Promise.reject(response);
+    }
+    else {
+        console.log('请求失败', response.data.code);
+        alert(response.data.message);
+        return Promise.reject(response);
+    }
+}, error => {
+    //对响应数据错误做操作
+    console.log('请求error', error.message);
+    return Promise.reject(error);
+})
+
 export default class Axios {
     static requestList(_this,url,method,bdApi,params){
         this.ajax({
@@ -55,12 +100,12 @@ export default class Axios {
         if(options.baseApi){
             baseApi = options.baseApi;
         }
-        let userId ='';
+        //let userId ='';
         //往header里存放用户ID
-        if(options.data && options.data.userId){
-            userId = options.data.userId;
-           }
-        axios.defaults.headers.common['userId'] = userId
+        // if(options.data && options.data.userId){
+        //     userId = options.data.userId;
+        //    }
+        // axios.defaults.headers.common['userId'] = userId
         return new Promise((resolve,reject)=>{
             
             axios({

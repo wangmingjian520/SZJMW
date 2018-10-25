@@ -2,23 +2,17 @@ import React from 'react';
 import axios from './../../axios'
 import FaceUrl from './../../utils/apiAndInterfaceUrl'
 import Dictionary from './../../utils/dictionary'
-import { connect } from 'react-redux'
 import { setUserInfo } from './../../redux/action'
-
-const {isLogin} = false; //是否登录
+import { connect } from 'react-redux';
+import { HashRouter , Route , Switch , Redirect} from 'react-router-dom'
+import NoMatch from './../../pages/noMatch'
 class Auth extends React.Component{
-    state={
-        userName:'',
-        userId:''
-    }
-    
-    //判断用户INfo是否为空
-    static login(callback){
-        const { userId } = this.props;
-        if (userId){
-            this.isLogin = true;
-            callback(); //有用户ID，则调用回调函数
-        } else {
+        
+
+        getUserId = () => {
+            let location = FaceUrl.cas_host+FaceUrl.api_host;
+            let userId = '';
+            
             const { dispatch } = this.props;
             //ID为null，通过接口获取当前用户信息，
             // axios.ajax({
@@ -30,20 +24,49 @@ class Auth extends React.Component{
             //     }
             // }).then((res)=>{
             //     if(res.code == '1') {
-            //         this.isLogin = true;
-            //         dispatch(setUserInfo(res.data.userID))
+            //         userId = res.data.userID;
+            //         dispatch(setUserInfo(userId))
+            //         sessionStorage.setItem("userId",userId)
             //         console.log("auth==="+res.data.userID);
             //     }else{
-            //         //没有登录信息跳转H1登录界面
-            //         alert("登录失败");
+            //         window.parent.location.href = location;
             //     }
             // })
-            let res = Dictionary.userInfo;
-            dispatch(setUserInfo(res.userID))
             
-        }
-    }
+            let res = Dictionary.userInfo;
+            userId = res.userID;
+            dispatch(setUserInfo(userId))
+            sessionStorage.setItem("userId",userId)
+            console.log("auth_Dictionary==="+userId);
+            
+            let { component: Component, ...rest} = this.props;
+            
+            return (
+                <Route
+                  render={props =>
+                    userId ? (
+                        <Component {...rest} />
+                      ) : (
+                        <Redirect
+                            to={NoMatch}
+                            />
+                          
+                      )
+                  }
+                  />
+                  );
 
+        }
+
+        //判断用户INfo是否为空
+        render() {
+            return (
+                <div>
+                    {this.getUserId()}
+                </div>
+            )
+          }
+      
 }
 const mapStateToProps = state => {
     return {
@@ -51,3 +74,4 @@ const mapStateToProps = state => {
     }
 };
 export default connect(mapStateToProps)(Auth)
+

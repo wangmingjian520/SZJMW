@@ -30,15 +30,11 @@ class Xmjbxx extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        const { userId } = this.props;
-        this.params = {userId}
         axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
-        const { userId } = this.props;
-        this.params = {userId}
         let _this =this;
         this.params.query = {"searchInfo":value}
         axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
