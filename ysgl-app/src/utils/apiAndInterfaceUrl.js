@@ -1,9 +1,14 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.181:8060/bud";
+    static bdApi = "http://192.168.50.29:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
+    //h1接口
+    static api_host = 'http://192.168.50.29:8888/budget-web';
+    static cas_host = "http://192.168.50.5:7066/sso/logout?service=";//sso host
+    //static cas_prefix_logout = cas_host+"/sso/logout?service="+api_host;//sso logout
+    
     //userInfo接口
     static webApi = "http://192.168.50.29:8888/budget-web/";
     static userInfoUrl = '/api/user/info';

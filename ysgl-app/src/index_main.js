@@ -3,13 +3,18 @@ import { Layout } from 'antd';
 import Header from './components/Header'
 import NavLeft from './components/NavLeft'
 
+import axios from './axios'
+import { setUserInfo } from './redux/action'
+import FaceUrl from './utils/apiAndInterfaceUrl'
+import Dictionary from './utils/dictionary'
+import { connect } from 'react-redux'
+
 import './style/common.less';
 const { Sider } = Layout;
 
 
-export default class Index_main extends React.Component{
-
-    render (){
+class Index_main extends React.Component{
+   render (){
         return(
             <Layout>
                 
@@ -29,3 +34,4 @@ export default class Index_main extends React.Component{
         );
     }
 }
+export default  connect()(Index_main)

@@ -1,7 +1,7 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.29:8050/emergency";
+    static bdApi = "http://119.147.216.208/api/live/emergency";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //物资目录管理
