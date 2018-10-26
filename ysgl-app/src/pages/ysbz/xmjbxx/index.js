@@ -289,7 +289,89 @@ class Xmjbxx extends React.Component{
     }
 }
 class OpenFormTable extends React.Component{
+ 
+    handleZcTypeCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zctypename: `${value === '001' ? '新增项目' : value === '002' ? '上年延续': '上年结转'}`,
+          });
+    }
+    handleZcTypeName =(value)=>{
+        this.props.form.setFieldsValue({
+            zctypecode: `${value === '新增项目' ? '001' : value === '上年延续' ? '002': '003'}`,
+          });
+    }
+    //项目属性编码与名称
+    handleXmsxCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmsxname: `${value === '001' ? '新增项目' : value === '002' ? '上年延续': '上年结转'}`,
+          });
+    }
+    handleXmsxNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmsxcode: `${value === '新增项目' ? '001' : value === '上年延续' ? '002': '003'}`,
+          });
+    }
+    //存续属性编码与名称
+    handleCxsxCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            cxsxname: `${value === '01' ? '经常性项目' : '一次性项目'}`,
+          });
+    }
+    handleCxsxNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            cxsxcode: `${value === '经常性项目' ? '01' : '02'}`,
+          });
+    }
+    //资金保障类型编码与名称
+    handleZjbzTypeCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zjbztypename: `${value === '01' ? '刚性项目' : '弹性项目'}`,
+          });
+    }
+    handleZjbzTypeNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zjbztypecode: `${value === '刚性项目' ? '01' : '02'}`,
+          });
+    }
+
+    //支出方向编码与名称  
+    handleZcfxCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zcfxname: `${value === '01' ? '机构运行保障类项目' : value === '02'?'重点民生事业类项目':'一般事业发展性项目'}`,
+          });
+    }
+    handleZcfxNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zcfxcode: `${value === '机构运行保障类项目' ? '01' : value === '重点民生事业类项目'?'02':'03'}`,
+          });
+    }
+
+    //项目类型编码与名称
+    handleXmtypeCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmtypename: `${value === '01' ? '制度及法定增长类' : value === '02'?'开办费类': value === '03'?'发改投资项目后续运维类':value==='04'?'水电物管类':'其他类'}`,
+          });
+    }
+    handleXmtypeNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmtypecode: `${value === '制度及法定增长类' ? '01' : value === '开办费类'?'02':value==='发改投资项目后续运维类'?'03':value==='水电物管类'?'04':'05'}`,
+          });
+    }
+    //项目依据类型编码与名称
+     handleXmyjtypeCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmyjtypename: `${value === '001' ? '单位履职需要的项目' : value === '002'?'市委市政府确定的项目': value === '003'?'中央安排的项目':'省级安排的项目'}`,
+          });
+    }
+    handleXmyjtypeNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmyjtypecode: `${value === '单位履职需要的项目' ? '001' : value === '市委市政府确定的项目'?'002':value==='中央安排的项目'?'003':'004'}`,
+          });
+    }
+
+
     render(){
+        
         let type = this.props.type;
         let tableInfo =this.props.tableInfo || {};
         const formItemLayout = {
@@ -300,6 +382,9 @@ class OpenFormTable extends React.Component{
             //     span:16
             // }
         }
+       
+        
+
         const { getFieldDecorator }  =this.props.form;
         return (
             <Form layout="inline" >
@@ -377,10 +462,10 @@ class OpenFormTable extends React.Component{
                     {   
                         //tableInfo && type=='detail'? tableInfo.cbkType: 
                         getFieldDecorator('zctypecode',{
-                            initialValue:tableInfo.zctypecode,
+                            initialValue:tableInfo.zctypecode
                             
                         })(
-                            <Select style={{ width: 200 }} >
+                            <Select style={{ width: 200 }} onChange={this.handleZcTypeCodeChange} >
                                <Option value="001">001</Option>
                                 <Option value="002">002</Option>
                                 <Option value="003">003</Option>
@@ -396,10 +481,10 @@ class OpenFormTable extends React.Component{
                             {   
                                 //tableInfo && type=='detail'? tableInfo.cbkGrade:
                                 getFieldDecorator('zctypename',{
-                                    initialValue:tableInfo.zctypename,
+                                    initialValue:tableInfo.zctypename
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleZcTypeName} >
                                     <Option value="新增项目">新增项目</Option>
                                     <Option value="上年延续">上年延续</Option>
                                     <Option value="上年结转">上年结转</Option>
@@ -421,7 +506,7 @@ class OpenFormTable extends React.Component{
                             initialValue:tableInfo.xmsxcode,
                             
                         })(
-                            <Select style={{ width: 200 }} >
+                            <Select style={{ width: 200 }} onChange={this.handleXmsxCodeChange} >
                                <Option value="001">001</Option>
                                 <Option value="002">002</Option>
                                 <Option value="003">003</Option>
@@ -445,7 +530,7 @@ class OpenFormTable extends React.Component{
                                         }
                                     ]
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleXmsxNameChange}>
                                      <Option value="新增项目">新增项目</Option>
                                      <Option value="上年延续">上年延续</Option>
                                      <Option value="上年结转">上年结转</Option>
@@ -467,7 +552,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.cxsxcode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleCxsxCodeChange}>
                                     <Option value="01">01</Option>
                                     <Option value="02">02</Option>
                                 </Select>
@@ -485,7 +570,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.cxsxname,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleCxsxNameChange} >
                                     <Option value="经常性项目">经常性项目</Option>
                                     <Option value="一次性项目">一次性项目</Option>
                                  </Select>
@@ -506,7 +591,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.zjbztypecode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleZjbzTypeCodeChange}>
                                     <Option value="01">01</Option>
                                     <Option value="02">02</Option>
                                 </Select>
@@ -524,7 +609,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.zjbztypename,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleZjbzTypeNameChange} >
                                     <Option value="刚性项目">刚性项目</Option>
                                     <Option value="弹性项目">弹性项目</Option>
                                  </Select>
@@ -545,7 +630,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.zcfxcode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleZcfxCodeChange} >
                                     <Option value="01">01</Option>
                                     <Option value="02">02</Option>
                                     <Option value="03">03</Option>
@@ -564,7 +649,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.zcfxname,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleZcfxNameChange}>
                                     <Option value="机构运行保障类项目">机构运行保障类项目</Option>
                                     <Option value="重点民生事业类项目">重点民生事业类项目</Option>
                                     <Option value="一般事业发展性项目">一般事业发展性项目</Option>
@@ -586,7 +671,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.xmtypecode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleXmtypeCodeChange} >
                                     <Option value="01">01</Option>
                                     <Option value="02">02</Option>
                                     <Option value="03">03</Option>
@@ -607,7 +692,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.xmtypename,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleXmtypeNameChange}>
                                     <Option value="制度及法定增长类">制度及法定增长类</Option>
                                     <Option value="开办费类">开办费类</Option>
                                     <Option value="发改投资项目后续运维类">发改投资项目后续运维类</Option>
@@ -631,7 +716,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.xmyjtypecode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleXmyjtypeCodeChange}>
                                     <Option value="001">001</Option>
                                     <Option value="002">002</Option>
                                     <Option value="003">003</Option>
@@ -651,7 +736,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.xmyjtypename,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleXmyjtypeNameChange}>
                                     <Option value="单位履职需要的项目">单位履职需要的项目</Option>
                                     <Option value="市委市政府确定的项目">市委市政府确定的项目</Option>
                                     <Option value="中央安排的项目">中央安排的项目</Option>
