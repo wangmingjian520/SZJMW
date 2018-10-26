@@ -1,284 +1,217 @@
 import React from 'react';
-import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker ,Row, Col} from  'antd';
+import {  Button , Form ,  Table , Card , Popconfirm ,Input , InputNumber , Layout ,Select ,DatePicker ,Tabs ,Row, Col} from  'antd';
+import { StickyContainer, Sticky } from 'react-sticky';
 import axios from './../../../axios'
 import Utils from './../../../utils/utils'
 import ETable from './../../../components/ETable/index'
 import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
 import Dictionary from '../../../utils/dictionary'
-import { connect } from 'react-redux'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-class Xmjbxx extends React.Component{
+
+const TabPane = Tabs.TabPane;
+
+const renderTabBar = (props, DefaultTabBar) => (
+<Sticky bottomOffset={80}>
+    {({ style }) => (
+    <DefaultTabBar {...props} style={{ ...style, zIndex: 1, background: '#fff' }} />
+    )}
+</Sticky>
+);
+export default class Ysbztz extends React.Component{
     state={
         dataSource:[],
         footer:'',
     }
 
-    params={
-        currentPage:1,
-        pageSize:10,
-        query:{},
-    }
-
-    componentDidMount(){
-      this.requestList()
-    }
-
-    requestList = ()=>{
-        let _this =this;
-        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
-    }
-
-    //查询
-    handleSearchTable = (value)=>{
-        let _this =this;
-        this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
-    }
-
-    //打开添加编辑
-    handleOperate =(type)=>{
-        let item = this.state.selectedItem
-        if(type==='add'){
-            this.setState({
-                type:type,
-                isVisible:true,
-                title:'添加'
-           })
-        }else if(type==='edit'){
-            if(item&&item.length==1){
-                this.setState({
-                    type:type,
-                    isVisible:true,
-                    title:'修改',
-                    tableInfo:item[0]
-               })  
-            }else{
-                message.error('请选择一条需要修改的项！');
-                
-            }
-        }
-    }
-
-    //打开详情
-    handleDetail = (value)=>{
-        window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
-    }
-    //关闭详情
-    handleCancel = () => {
-        this.setState({ 
-            isVisible: false,
-            tableInfo:{} 
-        });
-        this.requestList(); 
-    }
-
-    //提交
-    handleSubmit =()=>{
-        let type = this.state.type;
-        const form = this.modalForm.props.form;
-        form.validateFields((err, values) => {
-        if (err) {
-            return;
-        }
-        //console.log('form: ', values);
-            let message = "";
-            if(type=="add"){
-                message="添加成功";
-            }if(type=="edit"){
-                message="修改成功";
-            }
-            //提交or修改
-            axios.ajax({
-                url:FaceUrl.xmxxAdd,
-                method:FaceUrl.POST,
-                baseApi:FaceUrl.bdApi,
-                data:{
-                    ...values,
-                    isShowLoading:true
-                }
-            }).then((res)=>{
-                if(res.code == '1') {
-                    form.resetFields();
-                    this.setState({ 
-                        isVisible: false,
-                        tableInfo:{}  
-                    });
-                    this.requestList();
-                    message.success(message);
-                }
-            })
-        });
-    }
-
-    //删除操作
-    handleDelete = ()=>{
-        let rows = this.state.selectedItem;
-        let ids = [];
-        if(rows&&rows.length){
-            rows.map((item)=>{
-                ids.push(item.kid)
-            })
-            Modal.confirm({
-                title:'提示',
-                content:`您确定要删除这${ids.length}项吗？`,
-                onOk:()=>{
-                    axios.ajax({
-                        url:FaceUrl.xmxxDel,
-                        method:FaceUrl.POST,
-                        baseApi:FaceUrl.bdApi,
-                        data:ids
-                    }).then((res)=>{
-                        if(res.code == '1') {
-                            this.requestList();
-                            message.success('删除成功！');
-                        }
-                    })
-                   
-                }
-            })
-        }else{
-            message.error('请选择需要删除的项！');
-        }
-    }
-
+    constructor(props) {
+        super(props);
+        this.columns = [{
+          title: '年度',
+          dataIndex: 'nd',
+          width: 100,
+          editable: true,
+        }, {
+          title: '经济科目编码',
+          dataIndex: 'age',
+          width: 150,
+        }, {
+          title: '经济科目名称',
+          dataIndex: 'address',
+          width: 150,
+        }, {
+            title: '是否政府采购',
+            dataIndex: 'address',
+            width: 100,
+        },{
+            title: '政府采购项目填写如下栏',
+            children:  [{
+                title: '采购品目编码',
+                dataIndex: 'building',
+                key: 'building',
+                width: 200,
+              }, {
+                title: '采购编码名称',
+                dataIndex: 'number',
+                key: 'number',
+                width: 200,
+              },
+              , {
+                title: '单价',
+                dataIndex: 'number',
+                key: 'number',
+                width: 100,
+              }, {
+                title: '数量',
+                dataIndex: 'number',
+                key: 'number',
+                width: 100,
+              }
+            ]
+        }, {
+            title: '预算金额',
+            dataIndex: 'address',
+            key: 'number',
+            width: 150,
+        }, {
+            title: '经费详细测算情况',
+            dataIndex: 'address',
+            key: 'number',
+            width: 200,
+        }, {
+          title: '操作',
+          dataIndex: 'operation',
+          width: 200,
+          render: (text, record) => {
+            return (
+              this.state.dataSource.length >= 1
+                ? (
+                  <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+                    <a href="javascript:;">删除行</a>
+                  </Popconfirm>
+                ) : null
+            );
+          },
+        }];
     
-    render(){
-        const columns = [
-            {
-                 title:'项目名称',
-                 dataIndex:'xmname',
-                 key:'xmname',
-                 align:'center',
-                 render:(xmname,record)=>{
-                     return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{xmname}</a>;
-                }
-             },
-             {
-                title:'项目属性名称',
-                dataIndex:'xmsxname',
-                key:'xmsxname',
-                align:'center',
-            },
-             {
-                 title:'资金保障类型名称',
-                 dataIndex:'zjbztypename',
-                 key:'zjbztypename',
-                 align:'center',
-            },
-             {
-                 title:'项目类别名称 ',
-                 dataIndex:'xmtypename',
-                 key:'xmtypename',
-                 align:'center',
-                
-            },
-            {
-                title:'项目负责人',
-                dataIndex:'xmfzrname',
-                key:'xmfzrname',
-                align:'center',
-            },
-            {
-                title:'负责人联系方式',
-                dataIndex:'link',
-                key:'link',
-                align:'center',
-           },
-           {
-               title:'起始年月',
-               dataIndex:'begdate',
-               key:'begdate',
-               align:'center',
-               render(begdate){
-                return moment(begdate).format('YYYY-MM-DD')
-             }
-           },
-           {
-            title:'结束年月',
-            dataIndex:'enddate',
-            key:'enddate',
-            align:'center',
-            render(enddate){
-                return moment(enddate).format('YYYY-MM-DD')
-             }
-            }
-         ]
-        let footer = {}
-        if(this.state.type=='detail'){
-            footer={
-               footer: <Button key="关闭" onClick={this.handleCancel.bind(this)}>关闭</Button>,
-            }
-            
-        }
+      }
 
-        //多选框
-        const rowSelection = {
-            type: 'checkbox',
+    onTabClick=(value)=>{
+        if(value === '1'){
+            this.setState({
+                type:'xmjbxx'
+            })
+          }
+        if(value === '2'){
+            this.setState({
+                type:'bmzjys'
+            })
+          }
+        if(value === '3'){
+            this.setState({
+                type:'zfgmfw'
+            })
         }
+    }
+
+    render(){
+        const { dataSource } = this.state;
+        // const components = {
+        // body: {
+        //     row: EditableFormRow,
+        //     cell: EditableCell,
+        // },
+        // };
+    const columns = this.columns.map((col) => {
+        if (!col.editable) {
+            return col;
+        }
+        return {
+            ...col,
+            onCell: record => ({
+            record,
+            editable: col.editable,
+            dataIndex: col.dataIndex,
+            title: col.title,
+            handleSave: this.handleSave,
+            }),
+        };
+        });
 
         return (
-            <div>
-                <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
-                    <Breadcrumb.Item>首页</Breadcrumb.Item>
-                    <Breadcrumb.Item>预算编制</Breadcrumb.Item>
-                    <Breadcrumb.Item>项目基本信息</Breadcrumb.Item>
-                </Breadcrumb>
-                <Content className="content-wrap">
-                    <div >
-                    <span className="table_input ft">
-                        <Search size="large" style={{width: 325}}
-                        name="searchInfo"
-                        placeholder="请输入项目名称/属性名称/负责人"
-                        onSearch={value => this.handleSearchTable(value)}
-                        enterButton
-                        />  
-                    </span>
-                    <span className="table_button ht" >
-                        <Button icon="plus" ghost type="primary" onClick={()=>{this.handleOperate('add')}}>添加</Button>
-                        <Button icon="form" ghost type="primary" onClick={()=>{this.handleOperate('edit')}}>修改</Button>
-                        <Button icon="delete" ghost type="primary" onClick={this.handleDelete}>删除</Button>    
-                    </span>   
-                    </div>        
-                    <ETable
-                        columns={columns}
-                        updateSelectedItem={Utils.updateSelectedItem.bind(this)}
-                        dataSource={this.state.list}
-                        selectedRowKeys={this.state.selectedRowKeys}
-                        selectedIds={this.state.selectedIds}
-                        selectedItem={this.state.selectedItem}
-                        rowSelection={rowSelection}
-                        pagination={this.state.pagination}
-                    />
 
-                </Content>
-                <Modal
-                    width='760px'
-                    title={this.state.title}
-                    visible={this.state.isVisible}
-                    onCancel={()=>{
-                        this.modalForm.props.form.resetFields();
-                        this.setState({
-                            isVisible:false,
-                            tableInfo:[],
-                            type:''
-                        })
-                    }}
-                    {...footer}
-                    onOk={this.handleSubmit}
-                >
-                <OpenFormTable type={this.state.type} tableInfo={this.state.tableInfo}
-                 wrappedComponentRef={(inst)=>{this.modalForm = inst;}}/>
-                </Modal>
-            </div>
-            
-        );
+                <StickyContainer>
+                <Tabs defaultActiveKey="1" renderTabBar={renderTabBar} onTabClick={this.onTabClick}>
+                    <TabPane tab="项目基本信息" key="1" >
+                        <OpenFormTable type={this.state.type} tableInfo={this.state.tableInfo} PtableInfo={this.PtableInfo} 
+                        clickData={this.state.clickData}  wrappedComponentRef={(inst)=>{this.modalForm = inst;}}/>
+                    </TabPane>
+                    <TabPane tab="部门资金预算" key="2">
+                        <div>
+                            <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                                新增行
+                            </Button>
+                            <table class="">
+                                <thead class="ant-table-thead">
+                                <tr>
+                                    <th class="" rowspan="2"><span>年度</span></th>
+                                    <th class="" rowspan="2"><span>经济科目编码</span></th>
+                                    <th class="" rowspan="2"><span>经济科目名称</span></th>
+                                    <th class="" rowspan="2"><span>是否政府采购</span></th>
+                                    <th class="" colspan="4"><span>政府采购项目填写如下栏</span></th>
+                                    <th class="" rowspan="2"><span>预算金额</span></th>
+                                    <th class="" rowspan="2"><span>经费详细测算情况</span></th>
+                                    <th class="" rowspan="2"><span>操作</span></th>
+                                </tr>
+                                <tr>
+                                    <th class=""><span>采购品目编码</span></th>
+                                    <th class=""><span>采购编码名称</span></th>
+                                    <th class=""><span>单价</span></th>
+                                    <th class=""><span>数量</span></th>
+                                </tr>
+                                </thead>
+                                <tbody class="ant-table-tbody">
+                                <tr>
+                                    <th class="" ><span>
+                                        <Select defaultValue="2018"  style={{ width: 80 }} >
+                                            <Option value="2018">2018</Option>
+                                            <Option value="2019">2019</Option>
+                                            <Option value="2020">2020</Option>
+                                            <Option value="2021">2021</Option>
+                                        </Select></span></th>
+                                    <th class="" ><span>30211</span></th>
+                                    <th class="" ><span>国内差旅费</span></th>
+                                    <th class="" ><span>
+                                        <Select defaultValue="否" style={{ width: 50 }} >
+                                            <Option value="否">否</Option>
+                                            <Option value="是">是</Option>
+                                        </Select>
+                                        </span></th>
+                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
+                                    <th class="" ><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
+                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
+                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
+                                    <th class="" ><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
+                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
+                                    <th class="" ><span><a href="">删除</a></span></th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </TabPane>
+                    <TabPane tab="政府购买服务项目" key="3">Content of Tab Pane 3</TabPane>
+                </Tabs>
+            </StickyContainer>
+         
+        
+      )
     }
 }
+
 class OpenFormTable extends React.Component{
     render(){
         let type = this.props.type;
@@ -293,7 +226,12 @@ class OpenFormTable extends React.Component{
         }
         const { getFieldDecorator }  =this.props.form;
         return (
-            <Form layout="inline" >
+            <Card
+            title="项目基本信息表"
+            extra={<a href="#">上报预算</a> }
+            style={{ width: 1000 }}
+            >
+            <Form layout="inline">
                     {
                         getFieldDecorator('kid',{
                             initialValue:tableInfo.kid,
@@ -316,7 +254,7 @@ class OpenFormTable extends React.Component{
                                             }
                                         ]
                                     })
-                                    (<Input placeholder="请输入项目名称"  maxlength="200" style={{ width: 556 }}/>
+                                    (<Input placeholder="请输入项目名称"  maxlength="200" style={{ width: 666 }}/>
                                     )
                                 }
                             </FormItem>
@@ -772,7 +710,7 @@ class OpenFormTable extends React.Component{
                                         }
                                     ]
                                 })
-                                (<TextArea style={{ width: 556 }}
+                                (<TextArea style={{ width: 666 }}
                                     autosize={{minRows:2}}
                                     placeholder="请输入项目概况" 
                                     />
@@ -797,7 +735,7 @@ class OpenFormTable extends React.Component{
                                         }
                                     ]
                                 })
-                                (<TextArea style={{ width: 556 }}
+                                (<TextArea style={{ width: 666 }}
                                     autosize={{minRows:2}}
                                     placeholder="请输入项目申报依据" 
                                     />
@@ -822,7 +760,7 @@ class OpenFormTable extends React.Component{
                                         }
                                     ]
                                 })
-                                (<TextArea style={{ width: 556 }}
+                                (<TextArea style={{ width: 666 }}
                                     autosize={{minRows:2}}
                                     placeholder="请输入项目测算标准" 
                                     />
@@ -841,7 +779,7 @@ class OpenFormTable extends React.Component{
                                 getFieldDecorator('zjlzdet',{
                                     initialValue:tableInfo.zjlzdet,
                                 })
-                                (<TextArea style={{ width: 556 }}
+                                (<TextArea style={{ width: 666 }}
                                     autosize={{minRows:2}}
                                     placeholder="请输入专家论证情况" 
                                     />
@@ -853,14 +791,8 @@ class OpenFormTable extends React.Component{
                 </Row>
                 
             </Form>
+            </Card>
         );
     }
 }
 OpenFormTable = Form.create({})(OpenFormTable);
-
-const mapStateToProps = state => {
-    return {
-        userId: state.userId
-    }
-};
-export default connect(mapStateToProps)(Xmjbxx)
