@@ -1,7 +1,6 @@
 import JsonP from 'jsonp'
 import axios from 'axios'
 import Utils from './../utils/utils'
-import Dictionary from './../utils/dictionary'
 import FaceUrl from './../utils/apiAndInterfaceUrl'
 import { Modal , message} from 'antd'
 

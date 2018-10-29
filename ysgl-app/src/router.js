@@ -22,6 +22,7 @@ import Bmysjjfl from './pages/ysjjfl/bmysjjfl'
 import Zfgmfwml from './pages/zfgmfwml'
 
 import Excel from './pages/excel'
+import Ysbztz from './pages/ysbz/ystz';
 
 
 
@@ -39,9 +40,10 @@ export default class IRouter extends React.Component{
                         <Switch>
                             <Route path="/infoDetail/:detailId" component={InfoDetail} />
                             {/* 预算编制管理 */}
-                            <AuthRoute path="/" exact component={Zfgmfwxm} />
+                            <AuthRoute path="/" exact component={Xmjbxx} />
                             <AuthRoute path="/zfgmfwxm" component={Zfgmfwxm} />
                             <AuthRoute path="/xmjbxx" component={Xmjbxx} />
+                            <AuthRoute path="/ysbztz/:detailId" component={Ysbztz} />
                             <AuthRoute path="/bmzjys" component={Bmzjys} />
                             
                             {/* 预算调整管理 */}
