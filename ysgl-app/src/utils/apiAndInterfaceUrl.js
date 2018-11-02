@@ -1,7 +1,7 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://119.147.216.208/api/intrl/bud";
+    static bdApi = "http://192.168.50.29:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //h1接口
@@ -15,7 +15,7 @@ export default class ApiAndInterfaceUrl {
     //预算编制-政府购买服务项目管理
     static xmjbxx = '/xmxx/list';
     static xmxxAdd = '/xmxx/save';
-    static xmxxDetail = '/xmxx/findById';
+    static xmxxDetail = '/xmxx/findById/';
     static xmxxDel = '/xmxx/delete';
 
     //预算编制-政府购买服务项目管理
@@ -69,8 +69,8 @@ export default class ApiAndInterfaceUrl {
      static zfgmfwmlParent = '/fwml/childs/';
      static zfgmfwmlDel = '/fwml/delete';
      
-    //物资储备检查-检查记录
-    static jcjl = '/jcjl/list';
+    //预算编制-流程接口
+    static ProcVo = '/proc/info/';
     static jcjlAdd = '/jcjl/save';
     static jcjlDetail = '/jcjl/findById';
     static jcjlDel = '/jcjl/delete';
