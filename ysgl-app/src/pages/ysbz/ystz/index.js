@@ -373,13 +373,10 @@ export default class Ysbztz extends React.Component{
         return data.map((col)=>{
             if(col.children){
                 //如果列有children
-                col.children=this.renderChildrenColumns(col.children);
+                col.children=this.renderColumns(col.children);
              
-            }else{
-                if (!col.editable) {
+            }else if(!col.editable) {
                     return col;
-                }
-                
             } 
 
             return {           
@@ -396,25 +393,6 @@ export default class Ysbztz extends React.Component{
         })
     }
 
-    renderChildrenColumns =(data)=>{
-        return data.map((col)=>{
-            if (!col.editable) {
-                return col;
-            }
-            return {           
-                ...col,
-                onCell: record => ({
-                record,
-                editable: col.editable,
-                dataIndex: col.dataIndex,
-                title: col.title,
-                // handleSave: this.handleSave,
-                editing: this.isEditing(record),
-                }),
-            };
-   
-        })  
-    }
     render(){
         
         const { dataSource } = this.state;
