@@ -23,7 +23,7 @@ const renderTabBar = (props, DefaultTabBar) => (
 </Sticky>
 );
 const data = [];
-for (let i = 1; i < 10; i++) {
+for (let i = 1; i <= 1; i++) {
   data.push({
     key:i.toString(),
     kid: i.toString(),
@@ -31,6 +31,9 @@ for (let i = 1; i < 10; i++) {
     jjkmCode: `code ${i}`,
     jjkmName: `名称 ${i}`,
     buyFlag :'是',
+    govCode : '0001',
+    govName :'采购编码',
+    price :'200$',
     number:` ${i}`,
   });
 }
@@ -47,22 +50,38 @@ const EditableRow = ({ form, index, ...props }) => (
 const EditableFormRow = Form.create()(EditableRow);
 
 class EditableCell extends React.Component {
-  getInput = () => {
-    if (this.props.dataIndex === 'nd') {
-      return (<Select  style={{ width: 80 }} >
-                <Option value="2018">2018</Option>
-                <Option value="2019">2019</Option>
-                <Option value="2020">2020</Option>
-                <Option value="2021">2021</Option>
-                </Select>);
-    }
-    if (this.props.dataIndex === 'buyFlag') {
-        return (<Select  style={{ width: 80 }} onChange={()=>this.handleChangBuyFlag} >
-                          <Option value="否">否</Option>
-                          <Option value="是">是</Option>  
-                  </Select>);
+    state = {
+        editing: false,
       }
-    return <Input />;
+    
+    componentDidMount() {
+        if (this.props.editable) {
+          document.addEventListener('click', this.handleClickOutside, true);
+        }
+    }
+    
+    componentWillUnmount() {
+        if (this.props.editable) {
+          document.removeEventListener('click', this.handleClickOutside, true);
+        }
+    }
+    
+    getInput = () => {
+        if (this.props.dataIndex === 'nd') {
+        return (<Select  style={{ width: 80 }} >
+                    <Option value="2018">2018</Option>
+                    <Option value="2019">2019</Option>
+                    <Option value="2020">2020</Option>
+                    <Option value="2021">2021</Option>
+                    </Select>);
+        }
+        if (this.props.dataIndex === 'buyFlag') {
+            return (<Select  style={{ width: 80 }} onChange={()=>this.handleChangBuyFlag} >
+                            <Option value="否">否</Option>
+                            <Option value="是">是</Option>  
+                    </Select>);
+        }
+        return <Input />;
   };
   //
   handleChangBuyFlag=()=>{ 
@@ -72,6 +91,7 @@ class EditableCell extends React.Component {
         price: '50',
       });
    }
+
   render() {
     const {
       editing,
@@ -86,6 +106,7 @@ class EditableCell extends React.Component {
     return (
       <EditableContext.Consumer>
         {(form) => {
+          let props = this.props;
           const { getFieldDecorator } = form;
           this.form = form;
           return (
@@ -95,13 +116,13 @@ class EditableCell extends React.Component {
                   {getFieldDecorator(dataIndex, {
                     rules: [{
                       required: true,
-                      message: `Please Input ${title}!`,
+                      //message: `Please Input ${title}!`,
                     }],
                     initialValue: record[dataIndex],
                   })(<Select  style={{ width: 80 }} onChange={this.handleChangBuyFlag} >
-                    <Option value="否">否</Option>
-                    <Option value="是">是</Option>  
-            </Select>)}
+                            <Option value="否">否</Option>
+                            <Option value="是">是</Option>  
+                    </Select>)}
                 </FormItem>
               ) :
               (
@@ -109,7 +130,7 @@ class EditableCell extends React.Component {
                   {getFieldDecorator(dataIndex, {
                     rules: [{
                       required: true,
-                      message: `Please Input ${title}!`,
+                      //message: `Please Input ${title}!`,
                     }],
                     initialValue: record[dataIndex],
                   })(this.getInput())}
@@ -172,18 +193,20 @@ export default class Ysbztz extends React.Component{
             //   },
         },{
             title: '政府采购项目填写如下栏',
+            dataIndex: 'govCode',
+            key: 'govCode',
             children:  [{
                 title: '采购品目编码',
                 dataIndex: 'govCode',
                 key: 'govCode',
                 width: 200,
-                editable: 'true',
+                
               }, {
                 title: '采购编码名称',
                 dataIndex: 'govName',
                 key: 'govName',
                 width: 200,
-                editable: 'true',
+               
               },
               , {
                 title: '单价',
@@ -197,8 +220,8 @@ export default class Ysbztz extends React.Component{
                 key: 'number',
                 width: 100,
                 editable: 'true',
-              }
-            ]
+              },
+            ],
         }, {
             title: '预算金额',
             dataIndex: 'money',
@@ -348,26 +371,49 @@ export default class Ysbztz extends React.Component{
         // 遍历列
      renderColumns =(data)=>{
         return data.map((col)=>{
+            if(col.children){
+                //如果列有children
+                col.children=this.renderChildrenColumns(col.children);
              
-           if (!col.editable) {
-               return col;
-                    }
-          return {           
-                            ...col,
-                            onCell: record => ({
-                            record,
-                            editable: col.editable,
-                            dataIndex: col.dataIndex,
-                            title: col.title,
-                           // handleSave: this.handleSave,
-                            editing: this.isEditing(record),
-                            }),
-                        };
-            
-            
-            
-            
+            }else{
+                if (!col.editable) {
+                    return col;
+                }
+                
+            } 
+
+            return {           
+                ...col,
+                onCell: record => ({
+                record,
+                editable: col.editable,
+                dataIndex: col.dataIndex,
+                title: col.title,
+                // handleSave: this.handleSave,
+                editing: this.isEditing(record),
+                }),
+            };
         })
+    }
+
+    renderChildrenColumns =(data)=>{
+        return data.map((col)=>{
+            if (!col.editable) {
+                return col;
+            }
+            return {           
+                ...col,
+                onCell: record => ({
+                record,
+                editable: col.editable,
+                dataIndex: col.dataIndex,
+                title: col.title,
+                // handleSave: this.handleSave,
+                editing: this.isEditing(record),
+                }),
+            };
+   
+        })  
     }
     render(){
         
@@ -377,13 +423,16 @@ export default class Ysbztz extends React.Component{
         let bmzjysButton =this.state.bmzjysButton;
         let zfgmfwButton= this. state.zfgmfwButton;
         const components = {
-        body: {
-            row: EditableFormRow,
-            cell: EditableCell,
-        },
+            body: {
+                row: EditableFormRow,
+                cell: EditableCell,
+            },
         };
      
         const columns = this.renderColumns(this.columns);
+        const rowKey = function(record) {
+            return record.kid;  
+          };
         console.log(11111222)
         console.log(columns)
         return (
@@ -396,8 +445,8 @@ export default class Ysbztz extends React.Component{
                        <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120}}>预审审批</Button> 
                        <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>目标下达</Button>  */}
                         {this.state.actions}
-                        {procVo && !procVo.procRecId && <Button onClick={this.handleAdddepartment} type="primary" style={{marginTop:2,marginLeft:120 }}>添加部门资金预算</Button> }
-                        {procVo && !procVo.procRecId && <Button onClick={this.handleAddzfgmfw} type="primary" style={{marginTop:2,marginLeft:120 }}>添加政府购买服务项目</Button> }
+                        {procVo && !procVo.procRecId && <Button onClick={this.handleAdddepartment} type="primary" style={{marginTop:2,marginLeft:120 }}>上报预算</Button> }
+                        {procVo && !procVo.procRecId && <Button onClick={this.handleAddzfgmfw} type="primary" style={{marginTop:2,marginLeft:120 }}>政府购买项目服务</Button> }
                        <Button onClick={this.handleGoLast} type="primary" style={{marginTop:2,marginRight:600 ,marginLeft:200}}>返回上一级</Button> 
                          
                    </div>
@@ -415,11 +464,13 @@ export default class Ysbztz extends React.Component{
                                 新增行
                             </Button>
                             <Table
+                                rowKey={rowKey}
                                 components={components}
                                 columns={columns}
                                 dataSource={this.state.dataSource}
                                 bordered
                                 size="middle"
+                                pagination={false}
                                 // onRow={(record,index) => ({
                                 //     onClick: ()=>{ 
                                 //         this.onRowClick(record,index)
