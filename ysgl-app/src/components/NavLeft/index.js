@@ -11,19 +11,38 @@ const { SubMenu } = Menu;
 class NavLeft extends React.Component{
     state = {
         //openKeys:['/yjzygl','/wzcbgl']
-        openKeys:[]
+     //  openKeys:['/ystz'],
+        currentKey:[]
     }
     
-    onOpenChange = (openKeys) => {
-        const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
-        if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-          this.setState({ openKeys });
-        } else {
-          this.setState({
-            openKeys: latestOpenKey ? [latestOpenKey] : [],
-          });
-        }
-      }
+    // onOpenChange = (openKeys) => {
+    //     const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
+    //     if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+    //       this.setState({ openKeys });
+    //     } else {
+    //       this.setState({
+    //         openKeys: latestOpenKey ? [latestOpenKey] : [],
+    //       });
+    //     }
+    //   }
+
+      getOpenkeys =(value,datelist)=>{ 
+          for(var i =0;i<datelist.length;i++){
+              if(datelist[i].children){
+                for(var j =0;j<datelist[i].children.length;j++){
+                    if(datelist[i].children[j].key.indexOf(value) !== -1){ 
+                        this.setState({
+                            openKeys :[datelist[i].key]
+                        })
+                        return ;
+                    }
+                     
+                }
+              }
+          }
+        
+
+          }
     
     handleClick= ({item})=>{
         const { dispatch } = this.props;
@@ -33,9 +52,20 @@ class NavLeft extends React.Component{
             currentKey:item.props.eventKey
         })
     }
-
-    componentWillMount(){   
-        let currentKey = window.location.hash.replace(/#|\?.*$/g,'');
+    onOpenChange =(openKeys)=>{ 
+      //  alert(openKeys)
+        this.setState({
+            openKeys
+        }) 
+    }
+    componentWillMount(){    
+        let currentKey = window.location.hash.replace(/#|\?.*$/g,''); 
+        if(currentKey ==='/'){
+            currentKey='/zfgmfwxm';
+            this.setState({ 
+                openKeys:['/ysbz']
+            })
+        }
         const { userId } = this.props;
         axios.ajax({
             url:FaceUrl.menuUrl,
@@ -47,12 +77,16 @@ class NavLeft extends React.Component{
             }
         }).then((res)=>{
             if(res.code == '1') {
-                const menuTreeNode = this.renderMenu(res.data);
+             let datelist=res.data; 
+             if(currentKey !=='/'){
+                this.getOpenkeys(currentKey,datelist);
+            } 
+                const menuTreeNode = this.renderMenu(datelist);
                     this.setState({
                         currentKey,
                         menuTreeNode
                     })
-                    console.log(currentKey);
+                    
             }
         })
     }
@@ -81,7 +115,9 @@ class NavLeft extends React.Component{
                         style={{ height: '100%', borderLeft: 1 }}
                         onClick={this.handleClick}
                         selectedKeys={[this.state.currentKey]}
-                        defaultOpenKeys={this.state.openKeys}
+                     //   defaultOpenKeys={this.state.openKeys}
+                        onOpenChange ={this.onOpenChange}
+                        openKeys ={this.state.openKeys}
                         //onOpenChange={this.onOpenChange}
                         inlineIndent="15"
                         >
