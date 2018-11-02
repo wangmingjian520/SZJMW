@@ -10,7 +10,7 @@ import Dictionary from '../../../utils/dictionary'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
-const FormItem = Form.Item;
+ 
 const Option = Select.Option;
 
 const TabPane = Tabs.TabPane;
@@ -22,84 +22,287 @@ const renderTabBar = (props, DefaultTabBar) => (
     )}
 </Sticky>
 );
+const data = [];
+for (let i = 1; i < 10; i++) {
+  data.push({
+    key:i.toString(),
+    kid: i.toString(),
+    nd: `201 ${i}`,
+    jjkmCode: `code ${i}`,
+    jjkmName: `名称 ${i}`,
+    buyFlag :'是',
+    number:` ${i}`,
+  });
+}
+
+const FormItem = Form.Item;
+const EditableContext = React.createContext();
+
+const EditableRow = ({ form, index, ...props }) => (
+  <EditableContext.Provider value={form}>
+    <tr {...props} />
+  </EditableContext.Provider>
+);
+
+const EditableFormRow = Form.create()(EditableRow);
+
+class EditableCell extends React.Component {
+  getInput = () => {
+    if (this.props.dataIndex === 'nd') {
+      return (<Select  style={{ width: 80 }} >
+                <Option value="2018">2018</Option>
+                <Option value="2019">2019</Option>
+                <Option value="2020">2020</Option>
+                <Option value="2021">2021</Option>
+                </Select>);
+    }
+    if (this.props.dataIndex === 'buyFlag') {
+        return (<Select  style={{ width: 80 }} onChange={()=>this.handleChangBuyFlag} >
+                          <Option value="否">否</Option>
+                          <Option value="是">是</Option>  
+                  </Select>);
+      }
+    return <Input />;
+  };
+  //
+  handleChangBuyFlag=()=>{ 
+      console.log(222)
+      console.log(this.form)
+    this.form.setFieldsValue({
+        price: '50',
+      });
+   }
+  render() {
+    const {
+      editing,
+      dataIndex,
+      title,
+      inputType,
+      record,
+      index,
+      ...restProps
+    } = this.props;
+      
+    return (
+      <EditableContext.Consumer>
+        {(form) => {
+          const { getFieldDecorator } = form;
+          this.form = form;
+          return (
+            <td {...restProps}>
+              {editing ? dataIndex==='buyFlag' ? (
+                <FormItem style={{ margin: 0 }}>
+                  {getFieldDecorator(dataIndex, {
+                    rules: [{
+                      required: true,
+                      message: `Please Input ${title}!`,
+                    }],
+                    initialValue: record[dataIndex],
+                  })(<Select  style={{ width: 80 }} onChange={this.handleChangBuyFlag} >
+                    <Option value="否">否</Option>
+                    <Option value="是">是</Option>  
+            </Select>)}
+                </FormItem>
+              ) :
+              (
+                <FormItem style={{ margin: 0 }}>
+                  {getFieldDecorator(dataIndex, {
+                    rules: [{
+                      required: true,
+                      message: `Please Input ${title}!`,
+                    }],
+                    initialValue: record[dataIndex],
+                  })(this.getInput())}
+                </FormItem>
+              ) : restProps.children}
+            </td>
+          );
+        }}
+      </EditableContext.Consumer>
+    );
+  }
+}
+
 export default class Ysbztz extends React.Component{
     state={
-        dataSource:[],
+        dataSource:data,
         footer:'',
+        type:'xmjbxx'
     }
-
+    
     constructor(props) {
         super(props);
         this.columns = [{
           title: '年度',
           dataIndex: 'nd',
+          key:'nd',
           width: 100,
-          editable: true,
+          editable: 'true',
         }, {
           title: '经济科目编码',
-          dataIndex: 'age',
+          dataIndex: 'jjkmCode',
+          key:'jjkmCode',
           width: 150,
+          editable: 'true',
+         
         }, {
           title: '经济科目名称',
-          dataIndex: 'address',
+          dataIndex: 'jjkmName',
+          key:'jjkmName',
           width: 150,
+          editable: 'true',
+        //   render: (text, record) => {
+        //     return (
+        //         <Input size="small" placeholder="small size" />
+        //     );
+        //   },
         }, {
             title: '是否政府采购',
-            dataIndex: 'address',
+            dataIndex: 'buyFlag',
+            key:'buyFlag',
             width: 100,
+            editable: 'true',
+            // render: (text, record) => {
+            //     return (
+            //         <Select defaultValue={text} style={{ width: 80 }} >
+            //                 <Option value="否">否</Option>
+            //                 <Option value="是">是</Option>   
+            //         </Select>
+            //     );
+            //   },
         },{
             title: '政府采购项目填写如下栏',
             children:  [{
                 title: '采购品目编码',
-                dataIndex: 'building',
-                key: 'building',
+                dataIndex: 'govCode',
+                key: 'govCode',
                 width: 200,
+                editable: 'true',
               }, {
                 title: '采购编码名称',
-                dataIndex: 'number',
-                key: 'number',
+                dataIndex: 'govName',
+                key: 'govName',
                 width: 200,
+                editable: 'true',
               },
               , {
                 title: '单价',
-                dataIndex: 'number',
-                key: 'number',
+                dataIndex: 'price',
+                key: 'price',
                 width: 100,
+                editable: 'true',
               }, {
                 title: '数量',
                 dataIndex: 'number',
                 key: 'number',
                 width: 100,
+                editable: 'true',
               }
             ]
         }, {
             title: '预算金额',
-            dataIndex: 'address',
-            key: 'number',
+            dataIndex: 'money',
+            key: 'money',
             width: 150,
+            editable: 'true',
         }, {
             title: '经费详细测算情况',
-            dataIndex: 'address',
-            key: 'number',
+            dataIndex: 'csbz',
+            key: 'csbz',
             width: 200,
+            editable: 'true',
         }, {
           title: '操作',
           dataIndex: 'operation',
+          key:'operation',
           width: 200,
           render: (text, record) => {
             return (
               this.state.dataSource.length >= 1
-                ? (
-                  <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                    <a href="javascript:;">删除行</a>
+                ? (<span>
+                  <Popconfirm title="确定删除吗?" onConfirm={() => this.handleDelete(record.kid)}>
+                    <a href="javascript:;" style={{ marginRight: 8 }}>删除</a>
                   </Popconfirm>
+                    <a onClick={() => this.edit(record.kid)}>编辑</a>
+                  </span>
                 ) : null
             );
           },
         }];
     
       }
+    
 
+      componentWillMount(){    
+        let currentKey = window.location.hash.replace(/#|\?.*$/g,'');
+        let kid= currentKey.substr(currentKey.lastIndexOf('/')+1) ;
+        axios.ajax({
+            url:FaceUrl.xmxxDetail+kid,
+            method:FaceUrl.GET,
+            baseApi:FaceUrl.bdApi
+        }).then((res)=>{
+            if(res.code == '1') {
+             let tableInfo=res.data; 
+            //   console.log(datelist)
+                    this.setState({
+                        tableInfo
+                    }) 
+            }
+        })
+        axios.ajax({
+            url:FaceUrl.ProcVo+kid,
+            method:FaceUrl.GET,
+            baseApi:FaceUrl.bdApi
+        }).then((res)=>{
+            if(res.code == '1') {
+             let procVo=res.data; 
+             //alert(11111)
+             console.log(procVo)
+            const actions= this.handleAction(procVo.actions)
+                    this.setState({
+                        procVo : procVo,
+                        actions : actions
+                    }) 
+            }
+        })
+        
+    }
+    handleSave = (row) => {
+        const newData = [...this.state.dataSource];
+        const index = newData.findIndex(item => row.kid === item.kid);
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          ...row,
+        });
+        this.setState({ dataSource: newData });
+      }
+
+    //动作执行
+    handleAction = (data) => {
+        return data.map((item) => {
+          return <Button key={item.id} type="primary" style={{marginTop:2,marginLeft:53 }}>{item.name}</Button>;
+        });
+      }
+    //返回上一级
+    handleGoLast =()=>{
+        window.history.go(-1);
+    }
+    //添加部门资金预算按钮
+    handleAdddepartment = ()=>{
+       
+        this.setState({
+            type:'bmzjys',
+            bmzjysButton:'true',
+        })
+    }
+    //添加政府服务目录
+    handleAddzfgmfw =()=>{
+        this.setState({
+            type:'zfgmfw',
+            zfgmfwButton:'true'
+        })
+    }
     onTabClick=(value)=>{
         if(value === '1'){
             this.setState({
@@ -117,45 +320,114 @@ export default class Ysbztz extends React.Component{
             })
         }
     }
-
+    //添加行
+    handleRow =()=>{
+      const row= ''; 
+     this.setState({
+        dataSource: [...this.state.dataSource, row]
+      });
+    }
+    //删除行
+    handleDelete = (key) => {
+        const dataSource = [...this.state.dataSource];
+        this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+      }
+      //点击行
+    // onRowClick = (record,index)=>{
+        
+    //     this.setState({ editingKey: record.kid });
+    //   }
+      //
+    isEditing = (record) => {
+        return record.kid === this.state.editingKey;
+      };
+      //编辑按钮
+    edit(key) {
+        this.setState({ editingKey: key });
+      }
+        // 遍历列
+     renderColumns =(data)=>{
+        return data.map((col)=>{
+             
+           if (!col.editable) {
+               return col;
+                    }
+          return {           
+                            ...col,
+                            onCell: record => ({
+                            record,
+                            editable: col.editable,
+                            dataIndex: col.dataIndex,
+                            title: col.title,
+                           // handleSave: this.handleSave,
+                            editing: this.isEditing(record),
+                            }),
+                        };
+            
+            
+            
+            
+        })
+    }
     render(){
+        
         const { dataSource } = this.state;
-        // const components = {
-        // body: {
-        //     row: EditableFormRow,
-        //     cell: EditableCell,
-        // },
-        // };
-    const columns = this.columns.map((col) => {
-        if (!col.editable) {
-            return col;
-        }
-        return {
-            ...col,
-            onCell: record => ({
-            record,
-            editable: col.editable,
-            dataIndex: col.dataIndex,
-            title: col.title,
-            handleSave: this.handleSave,
-            }),
+        let type =this.state.type;
+        let procVo=this.state.procVo;  
+        let bmzjysButton =this.state.bmzjysButton;
+        let zfgmfwButton= this. state.zfgmfwButton;
+        const components = {
+        body: {
+            row: EditableFormRow,
+            cell: EditableCell,
+        },
         };
-        });
-
+     
+        const columns = this.renderColumns(this.columns);
+        console.log(11111222)
+        console.log(columns)
         return (
 
                 <StickyContainer>
+                    <div>
+                   
+                       {/* <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:3 }}>上报预算</Button> 
+                       <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>历程查看</Button> 
+                       <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120}}>预审审批</Button> 
+                       <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>目标下达</Button>  */}
+                        {this.state.actions}
+                        {procVo && !procVo.procRecId && <Button onClick={this.handleAdddepartment} type="primary" style={{marginTop:2,marginLeft:120 }}>添加部门资金预算</Button> }
+                        {procVo && !procVo.procRecId && <Button onClick={this.handleAddzfgmfw} type="primary" style={{marginTop:2,marginLeft:120 }}>添加政府购买服务项目</Button> }
+                       <Button onClick={this.handleGoLast} type="primary" style={{marginTop:2,marginRight:600 ,marginLeft:200}}>返回上一级</Button> 
+                         
+                   </div>
+               
+                    
                 <Tabs defaultActiveKey="1" renderTabBar={renderTabBar} onTabClick={this.onTabClick}>
                     <TabPane tab="项目基本信息" key="1" >
                         <OpenFormTable type={this.state.type} tableInfo={this.state.tableInfo} PtableInfo={this.PtableInfo} 
                         clickData={this.state.clickData}  wrappedComponentRef={(inst)=>{this.modalForm = inst;}}/>
                     </TabPane>
+                    {((procVo && procVo.procRecId) || type ==='bmzjys' || bmzjysButton ==='true')  &&
                     <TabPane tab="部门资金预算" key="2">
                         <div>
-                            <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+                            <Button onClick={this.handleRow} type="primary" style={{ marginBottom: 16,marginTop:2 }}>
                                 新增行
                             </Button>
-                            <table class="">
+                            <Table
+                                components={components}
+                                columns={columns}
+                                dataSource={this.state.dataSource}
+                                bordered
+                                size="middle"
+                                // onRow={(record,index) => ({
+                                //     onClick: ()=>{ 
+                                //         this.onRowClick(record,index)
+                                //     }
+                                //   })}
+                                
+                            />
+                            {/* <table class="" style={{ border: '1px solid #e8e8e8'}} >
                                 <thead class="ant-table-thead">
                                 <tr>
                                     <th class="" rowspan="2"><span>年度</span></th>
@@ -167,7 +439,7 @@ export default class Ysbztz extends React.Component{
                                     <th class="" rowspan="2"><span>经费详细测算情况</span></th>
                                     <th class="" rowspan="2"><span>操作</span></th>
                                 </tr>
-                                <tr>
+                                <tr style={{ borderTop: '1px solid #e8e8e8'}}>
                                     <th class=""><span>采购品目编码</span></th>
                                     <th class=""><span>采购编码名称</span></th>
                                     <th class=""><span>单价</span></th>
@@ -176,34 +448,37 @@ export default class Ysbztz extends React.Component{
                                 </thead>
                                 <tbody class="ant-table-tbody">
                                 <tr>
-                                    <th class="" ><span>
+                                    <th class=""style={{ borderRight: '1px solid #e8e8e8'}} ><span>
                                         <Select defaultValue="2018"  style={{ width: 80 }} >
                                             <Option value="2018">2018</Option>
                                             <Option value="2019">2019</Option>
                                             <Option value="2020">2020</Option>
                                             <Option value="2021">2021</Option>
                                         </Select></span></th>
-                                    <th class="" ><span>30211</span></th>
-                                    <th class="" ><span>国内差旅费</span></th>
-                                    <th class="" ><span>
-                                        <Select defaultValue="否" style={{ width: 50 }} >
+                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span>30211</span></th>
+                                    <th class=""style={{ borderRight: '1px solid #e8e8e8'}} ><span>国内差旅费</span></th>
+                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span>
+                                        <Select defaultValue="否" style={{ width: 80 }} >
                                             <Option value="否">否</Option>
                                             <Option value="是">是</Option>
                                         </Select>
                                         </span></th>
+                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span><Input size="small" placeholder="small size" /></span></th>
+                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
+                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
                                     <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
                                     <th class="" ><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
                                     <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
-                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><a href="">删除</a></span></th>
+                                    <th class="" ><span><a href="" onClick={this.handleDelete} >删除</a></span></th>
                                 </tr>
+                                {this.state.dataSource}
                                 </tbody>
-                            </table>
+                            </table> */}
                         </div>
                     </TabPane>
-                    <TabPane tab="政府购买服务项目" key="3">Content of Tab Pane 3</TabPane>
+                    }
+                    {((procVo && procVo.procRecId) || type ==='zfgmfw' || zfgmfwButton ==='true')  && <TabPane tab="政府购买服务项目" key="3">Content of Tab Pane 3</TabPane>}
+                    
                 </Tabs>
             </StickyContainer>
          
@@ -213,6 +488,86 @@ export default class Ysbztz extends React.Component{
 }
 
 class OpenFormTable extends React.Component{
+
+    handleZcTypeCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zctypename: `${value === '001' ? '新增项目' : value === '002' ? '上年延续': '上年结转'}`,
+          });
+    }
+    handleZcTypeNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zctypecode: `${value === '新增项目' ? '001' : value === '上年延续' ? '002': '003'}`,
+          });
+    }
+    //项目属性编码与名称
+    handleXmsxCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmsxname: `${value === '001' ? '新增项目' : value === '002' ? '上年延续': '上年结转'}`,
+          });
+    }
+    handleXmsxNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmsxcode: `${value === '新增项目' ? '001' : value === '上年延续' ? '002': '003'}`,
+          });
+    }
+    //存续属性编码与名称
+    handleCxsxCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            cxsxname: `${value === '01' ? '经常性项目' : '一次性项目'}`,
+          });
+    }
+    handleCxsxNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            cxsxcode: `${value === '经常性项目' ? '01' : '02'}`,
+          });
+    }
+    //资金保障类型编码与名称
+    handleZjbzTypeCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zjbztypename: `${value === '01' ? '刚性项目' : '弹性项目'}`,
+          });
+    }
+    handleZjbzTypeNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zjbztypecode: `${value === '刚性项目' ? '01' : '02'}`,
+          });
+    }
+
+    //支出方向编码与名称  
+    handleZcfxCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zcfxname: `${value === '01' ? '机构运行保障类项目' : value === '02'?'重点民生事业类项目':'一般事业发展性项目'}`,
+          });
+    }
+    handleZcfxNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            zcfxcode: `${value === '机构运行保障类项目' ? '01' : value === '重点民生事业类项目'?'02':'03'}`,
+          });
+    }
+
+    //项目类型编码与名称
+    handleXmtypeCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmtypename: `${value === '01' ? '制度及法定增长类' : value === '02'?'开办费类': value === '03'?'发改投资项目后续运维类':value==='04'?'水电物管类':'其他类'}`,
+          });
+    }
+    handleXmtypeNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmtypecode: `${value === '制度及法定增长类' ? '01' : value === '开办费类'?'02':value==='发改投资项目后续运维类'?'03':value==='水电物管类'?'04':'05'}`,
+          });
+    }
+    //项目依据类型编码与名称
+     handleXmyjtypeCodeChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmyjtypename: `${value === '001' ? '单位履职需要的项目' : value === '002'?'市委市政府确定的项目': value === '003'?'中央安排的项目':'省级安排的项目'}`,
+          });
+    }
+    handleXmyjtypeNameChange =(value)=>{
+        this.props.form.setFieldsValue({
+            xmyjtypecode: `${value === '单位履职需要的项目' ? '001' : value === '市委市政府确定的项目'?'002':value==='中央安排的项目'?'003':'004'}`,
+          });
+    }
+
     render(){
         let type = this.props.type;
         let tableInfo =this.props.tableInfo || {};
@@ -309,7 +664,7 @@ class OpenFormTable extends React.Component{
                             initialValue:tableInfo.zctypecode,
                             
                         })(
-                            <Select style={{ width: 200 }} >
+                            <Select style={{ width: 200 }} onChange={this.handleZcTypeCodeChange}>
                                <Option value="001">001</Option>
                                 <Option value="002">002</Option>
                                 <Option value="003">003</Option>
@@ -328,7 +683,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.zctypename,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleZcTypeNameChange}>
                                     <Option value="新增项目">新增项目</Option>
                                     <Option value="上年延续">上年延续</Option>
                                     <Option value="上年结转">上年结转</Option>
@@ -350,7 +705,7 @@ class OpenFormTable extends React.Component{
                             initialValue:tableInfo.xmsxcode,
                             
                         })(
-                            <Select style={{ width: 200 }} >
+                            <Select style={{ width: 200 }} onChange={this.handleXmsxCodeChange}>
                                <Option value="001">001</Option>
                                 <Option value="002">002</Option>
                                 <Option value="003">003</Option>
@@ -374,7 +729,7 @@ class OpenFormTable extends React.Component{
                                         }
                                     ]
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleXmsxNameChange}>
                                      <Option value="新增项目">新增项目</Option>
                                      <Option value="上年延续">上年延续</Option>
                                      <Option value="上年结转">上年结转</Option>
@@ -396,7 +751,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.cxsxcode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleCxsxCodeChange}>
                                     <Option value="01">01</Option>
                                     <Option value="02">02</Option>
                                 </Select>
@@ -414,7 +769,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.cxsxname,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleCxsxNameChange}>
                                     <Option value="经常性项目">经常性项目</Option>
                                     <Option value="一次性项目">一次性项目</Option>
                                  </Select>
@@ -435,7 +790,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.zjbztypecode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleZjbzTypeCodeChange}>
                                     <Option value="01">01</Option>
                                     <Option value="02">02</Option>
                                 </Select>
@@ -453,7 +808,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.zjbztypename,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleZjbzTypeNameChange}>
                                     <Option value="刚性项目">刚性项目</Option>
                                     <Option value="弹性项目">弹性项目</Option>
                                  </Select>
@@ -474,7 +829,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.zcfxcode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleZcfxCodeChange}>
                                     <Option value="01">01</Option>
                                     <Option value="02">02</Option>
                                     <Option value="03">03</Option>
@@ -493,7 +848,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.zcfxname,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleZcfxNameChange}>
                                     <Option value="机构运行保障类项目">机构运行保障类项目</Option>
                                     <Option value="重点民生事业类项目">重点民生事业类项目</Option>
                                     <Option value="一般事业发展性项目">一般事业发展性项目</Option>
@@ -515,7 +870,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.xmtypecode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleXmtypeCodeChange}>
                                     <Option value="01">01</Option>
                                     <Option value="02">02</Option>
                                     <Option value="03">03</Option>
@@ -536,7 +891,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.xmtypename,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleXmtypeNameChange}>
                                     <Option value="制度及法定增长类">制度及法定增长类</Option>
                                     <Option value="开办费类">开办费类</Option>
                                     <Option value="发改投资项目后续运维类">发改投资项目后续运维类</Option>
@@ -560,7 +915,7 @@ class OpenFormTable extends React.Component{
                                 initialValue:tableInfo.xmyjtypecode,
                                 
                             })(
-                                <Select style={{ width: 200 }} >
+                                <Select style={{ width: 200 }} onChange={this.handleXmyjtypeCodeChange}>
                                     <Option value="001">001</Option>
                                     <Option value="002">002</Option>
                                     <Option value="003">003</Option>
@@ -580,7 +935,7 @@ class OpenFormTable extends React.Component{
                                     initialValue:tableInfo.xmyjtypename,
                                     
                                 })
-                                (<Select style={{ width: 200 }} >
+                                (<Select style={{ width: 200 }} onChange={this.handleXmyjtypeNameChange}>
                                     <Option value="单位履职需要的项目">单位履职需要的项目</Option>
                                     <Option value="市委市政府确定的项目">市委市政府确定的项目</Option>
                                     <Option value="中央安排的项目">中央安排的项目</Option>
