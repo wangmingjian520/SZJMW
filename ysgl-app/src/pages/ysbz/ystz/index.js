@@ -1,9 +1,9 @@
 import React from 'react';
 import {  Button , Form ,  Table , Card , Popconfirm ,Input , InputNumber , Layout ,Select ,DatePicker ,Tabs ,Row, Col} from  'antd';
 import { StickyContainer, Sticky } from 'react-sticky';
-import axios from './../../../axios'
-import Utils from './../../../utils/utils'
-import ETable from './../../../components/ETable/index'
+import axios from '../../../axios'
+import Utils from '../../../utils/utils'
+import ETable from '../../../components/ETable/index'
 import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
 import Dictionary from '../../../utils/dictionary'
@@ -23,16 +23,16 @@ const renderTabBar = (props, DefaultTabBar) => (
 </Sticky>
 );
 const data = [];
-for (let i = 1; i <= 1; i++) {
+for (let i = 1; i <= 5; i++) {
   data.push({
     key:i.toString(),
     kid: i.toString(),
     nd: `201 ${i}`,
     jjkmCode: `code ${i}`,
     jjkmName: `名称 ${i}`,
-    buyFlag :'是',
-    govCode : '0001',
-    govName :'采购编码',
+    buyFlag :'否',
+    // govCode : '0001',
+    // govName :'采购编码',
     price :'200$',
     number:` ${i}`,
   });
@@ -50,23 +50,38 @@ const EditableRow = ({ form, index, ...props }) => (
 const EditableFormRow = Form.create()(EditableRow);
 
 class EditableCell extends React.Component {
-    state = {
-        editing: false,
-      }
     
-    componentDidMount() {
-        if (this.props.editable) {
-          document.addEventListener('click', this.handleClickOutside, true);
-        }
+     state ={
+        departData:[],
+        departObj:[]
+     }
+     componentWillMount(){   
+        axios.ajax({
+            url:FaceUrl.depysjjflList,
+            method:FaceUrl.POST,
+            baseApi:FaceUrl.bdApi
+        }).then((res)=>{
+            if(res.code == '1') {  
+             let Data=this.renderDepartment(res.data);
+              this.setState({ 
+                departData:Data,
+                departObj:res.data
+              })
+                
+            }
+        }) 
+
+     }
+
+    //遍历部门下拉框 
+     renderDepartment =(data)=>{
+        return data.map((item)=>{ 
+            return <Option key={item.jjkmName}>{item.jjkmName}</Option>
+        })
     }
-    
-    componentWillUnmount() {
-        if (this.props.editable) {
-          document.removeEventListener('click', this.handleClickOutside, true);
-        }
-    }
-    
+    //
     getInput = () => {
+         
         if (this.props.dataIndex === 'nd') {
         return (<Select  style={{ width: 80 }} >
                     <Option value="2018">2018</Option>
@@ -75,23 +90,63 @@ class EditableCell extends React.Component {
                     <Option value="2021">2021</Option>
                     </Select>);
         }
-        if (this.props.dataIndex === 'buyFlag') {
-            return (<Select  style={{ width: 80 }} onChange={()=>this.handleChangBuyFlag} >
-                            <Option value="否">否</Option>
-                            <Option value="是">是</Option>  
-                    </Select>);
+        if (this.props.dataIndex === 'jjkmName') {
+            //   console.log(520)
+            //   console.log(this.state.departData)
+            return (<Select  style={{ width: 150}} onChange={this.handleChangjjfkName} >
+                {this.state.departData }
+               </Select>);
+         
         }
+        if (this.props.dataIndex === 'govCode'||this.props.dataIndex === 'govName'||this.props.dataIndex === 'jjkmCode') {
+            return ( <Input readOnly/>);
+        }
+         
         return <Input />;
   };
-  //
-  handleChangBuyFlag=()=>{ 
-      console.log(222)
-      console.log(this.form)
-    this.form.setFieldsValue({
-        price: '50',
-      });
-   }
+  //更改分类名称
+  handleChangjjfkName = (value)=>{
+      let datalist= this.state.departObj;
+    //   alert(value)
+      console.log(datalist);
+     for(var i=0;i<datalist.length;i++){
 
+         if(datalist[i].jjkmName === value){ 
+            this.form.setFieldsValue({
+                jjkmCode: datalist[i].jjkmCode
+              });
+         }
+     }
+  }
+  //
+  handleChangBuyFlag=(value,kid)=>{   
+       if(value === '是'){
+       let jjkmCode= this.form.getFieldValue('jjkmCode');
+       let jjkmName= this.form.getFieldValue('jjkmName'); 
+         if(jjkmCode&&jjkmName){
+            let datalist= this.state.departObj;
+            //   alert(value)
+              console.log(datalist);
+             for(var i=0;i<datalist.length;i++){ 
+                 if(datalist[i].jjkmName === jjkmName && datalist[i].jjkmCode===jjkmCode){ 
+                    this.form.setFieldsValue({
+                        govCode: datalist[i].govCode,
+                        govName:datalist[i].govName
+                      });
+                 }
+             }
+         }
+       
+       }else{
+        this.form.setFieldsValue({
+            govCode:null ,
+            govName:null
+          });
+       }
+ 
+   }
+ 
+  
   render() {
     const {
       editing,
@@ -105,8 +160,7 @@ class EditableCell extends React.Component {
       
     return (
       <EditableContext.Consumer>
-        {(form) => {
-          let props = this.props;
+        {(form) => { 
           const { getFieldDecorator } = form;
           this.form = form;
           return (
@@ -115,11 +169,11 @@ class EditableCell extends React.Component {
                 <FormItem style={{ margin: 0 }}>
                   {getFieldDecorator(dataIndex, {
                     rules: [{
-                      required: true,
+                      required: false,
                       //message: `Please Input ${title}!`,
                     }],
                     initialValue: record[dataIndex],
-                  })(<Select  style={{ width: 80 }} onChange={this.handleChangBuyFlag} >
+                  })(<Select  style={{ width: 80 }} onChange={(value)=>this.handleChangBuyFlag(value,record.key)} >
                             <Option value="否">否</Option>
                             <Option value="是">是</Option>  
                     </Select>)}
@@ -129,7 +183,7 @@ class EditableCell extends React.Component {
                 <FormItem style={{ margin: 0 }}>
                   {getFieldDecorator(dataIndex, {
                     rules: [{
-                      required: true,
+                      required: false,
                       //message: `Please Input ${title}!`,
                     }],
                     initialValue: record[dataIndex],
@@ -148,6 +202,7 @@ export default class Ysbztz extends React.Component{
     state={
         dataSource:data,
         footer:'',
+        count:data.length,
         type:'xmjbxx'
     }
     
@@ -200,13 +255,13 @@ export default class Ysbztz extends React.Component{
                 dataIndex: 'govCode',
                 key: 'govCode',
                 width: 200,
-                
+                editable: 'true',
               }, {
                 title: '采购编码名称',
                 dataIndex: 'govName',
                 key: 'govName',
                 width: 200,
-               
+                editable: 'true',
               },
               , {
                 title: '单价',
@@ -239,17 +294,27 @@ export default class Ysbztz extends React.Component{
           dataIndex: 'operation',
           key:'operation',
           width: 200,
-          render: (text, record) => {
+          render: (text, record) => { 
+            const editable = this.isEditing(record); 
             return (
-              this.state.dataSource.length >= 1
-                ? (<span>
-                  <Popconfirm title="确定删除吗?" onConfirm={() => this.handleDelete(record.kid)}>
-                    <a href="javascript:;" style={{ marginRight: 8 }}>删除</a>
-                  </Popconfirm>
-                    <a onClick={() => this.edit(record.kid)}>编辑</a>
-                  </span>
-                ) : null
-            );
+                <div>
+                  {editable && ( 
+                      <span>
+                  <EditableContext.Consumer>
+                    {(form) => {
+                     this.form =form;
+                    return  null ;
+                    }}
+                  </EditableContext.Consumer> 
+                </span> 
+                  )}
+                  <Popconfirm title="确定删除吗?" onConfirm={() => this.handleDelete(record.key,'delete')}>
+                   <a href="javascript:;" style={{ marginRight: 8 }}>删除</a>
+                  </Popconfirm>  
+                </div>
+                
+              );
+            
           },
         }];
     
@@ -290,17 +355,31 @@ export default class Ysbztz extends React.Component{
         })
         
     }
-    handleSave = (row) => {
-        const newData = [...this.state.dataSource];
-        const index = newData.findIndex(item => row.kid === item.kid);
+    //取消
+    cancel = () => {
+        this.setState({ editingKey: '' });
+    };
+  //保存
+  save(form, key) {
+    form.validateFields((error, row) => {
+    //   if (error) {
+    //     return;
+    //   }
+      const newData = [...this.state.dataSource];
+      const index = newData.findIndex(item => key === item.key);
+      if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {
           ...item,
           ...row,
         });
-        this.setState({ dataSource: newData });
+        this.setState({ dataSource: newData, editingKey: '' });
+      } else {
+        newData.push(row);
+        this.setState({ dataSource: newData, editingKey: '' });
       }
-
+    });
+  }
     //动作执行
     handleAction = (data) => {
         return data.map((item) => {
@@ -312,8 +391,7 @@ export default class Ysbztz extends React.Component{
         window.history.go(-1);
     }
     //添加部门资金预算按钮
-    handleAdddepartment = ()=>{
-       
+    handleAdddepartment = ()=>{ 
         this.setState({
             type:'bmzjys',
             bmzjysButton:'true',
@@ -333,6 +411,7 @@ export default class Ysbztz extends React.Component{
             })
           }
         if(value === '2'){
+             
             this.setState({
                 type:'bmzjys'
             })
@@ -345,24 +424,81 @@ export default class Ysbztz extends React.Component{
     }
     //添加行
     handleRow =()=>{
-      const row= ''; 
+        let length = this.state.count+1;
+        let row ={buyFlag :"否",jjkmCode:"" ,jjkmName:"",key :length.toString(),nd: "2018" ,number :"", price:"200$"}
+         
      this.setState({
-        dataSource: [...this.state.dataSource, row]
+        dataSource: [...this.state.dataSource, row],
+        count:length
       });
+      console.log(888)
+      console.log(this.state.dataSource)
     }
     //删除行
-    handleDelete = (key) => {
-        const dataSource = [...this.state.dataSource];
-        this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+    handleDelete = (key,value) => { 
+        let newData = [...this.state.dataSource];
+        console.log(key) 
+        console.log(55) 
+        this.setState({ dataSource: newData.filter(item =>  item.key !== key),delFlag:value });
+     //   this.setState({ dataSource: newData.filter(item => { alert(item.key !== key); return( item.key !== key)}) });
       }
       //点击行
-    // onRowClick = (record,index)=>{
-        
-    //     this.setState({ editingKey: record.kid });
-    //   }
-      //
+      onRowClick =(record)=>{
+        let delFlag = this.state.delFlag;
+        let  currentKey = this.state.editingKey;
+        //  if(delFlag==='delete'){ 
+        //     this.setState({ delFlag:'',editingKey:''});
+        //  } 
+         if(record.key===currentKey){
+            this.setState({ editingKey: record.key });
+         }else{ 
+              if(!this.form){
+                this.setState({ editingKey: record.key });
+                return ;
+              }
+            this.setState({ editingKey: record.key });
+            this.form.validateFields((error, row) => {
+                  const newData = [...this.state.dataSource];
+                  let  index = newData.findIndex(item => currentKey === item.key);
+                //   console.log(index);
+                  if (index > -1) {
+                    const item = newData[index];
+                    newData.splice(index, 1, {
+                      ...item,
+                      ...row,
+                    });
+                    this.setState({ dataSource: newData});
+                   
+                  }  
+                });
+         }
+      
+      //  this.submit(key)
+      }
+      //提交
+    submit = ()=>{ 
+        let  currentKey = this.state.editingKey;
+        if(currentKey){
+            this.form.validateFields((error, row) => {
+                const newData = [...this.state.dataSource];
+                let  index = newData.findIndex(item => currentKey === item.key);
+              //   console.log(index);
+                if (index > -1) {
+                  const item = newData[index];
+                  newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                  });
+                  this.setState({ dataSource: newData,editingKey:''  });
+                 
+                }  
+              });
+        }
+            
+      }
+      
     isEditing = (record) => {
-        return record.kid === this.state.editingKey;
+        return record.key === this.state.editingKey;
       };
       //编辑按钮
     edit(key) {
@@ -381,12 +517,12 @@ export default class Ysbztz extends React.Component{
 
             return {           
                 ...col,
+                'departData': this.state.departData,
                 onCell: record => ({
                 record,
                 editable: col.editable,
                 dataIndex: col.dataIndex,
-                title: col.title,
-                // handleSave: this.handleSave,
+                title: col.title, 
                 editing: this.isEditing(record),
                 }),
             };
@@ -409,12 +545,10 @@ export default class Ysbztz extends React.Component{
      
         const columns = this.renderColumns(this.columns);
         const rowKey = function(record) {
-            return record.kid;  
+            return record.key;  
           };
-        console.log(11111222)
-        console.log(columns)
+         
         return (
-
                 <StickyContainer>
                     <div>
                    
@@ -438,8 +572,11 @@ export default class Ysbztz extends React.Component{
                     {((procVo && procVo.procRecId) || type ==='bmzjys' || bmzjysButton ==='true')  &&
                     <TabPane tab="部门资金预算" key="2">
                         <div>
-                            <Button onClick={this.handleRow} type="primary" style={{ marginBottom: 16,marginTop:2 }}>
+                            <Button onClick={this.handleRow} type="primary" style={{ marginBottom: 16,marginTop:2,}}>
                                 新增行
+                            </Button>
+                            <Button onClick={this.submit} type="primary" style={{ marginBottom: 16,marginTop:2,marginLeft:10 }}>
+                                保存
                             </Button>
                             <Table
                                 rowKey={rowKey}
@@ -449,64 +586,18 @@ export default class Ysbztz extends React.Component{
                                 bordered
                                 size="middle"
                                 pagination={false}
-                                // onRow={(record,index) => ({
-                                //     onClick: ()=>{ 
-                                //         this.onRowClick(record,index)
-                                //     }
-                                //   })}
+                                onRow={(record,index) => ({
+                                    onClick: ()=>{ 
+                                        this.onRowClick(record,index)
+                                    }
+                                  })}
                                 
                             />
-                            {/* <table class="" style={{ border: '1px solid #e8e8e8'}} >
-                                <thead class="ant-table-thead">
-                                <tr>
-                                    <th class="" rowspan="2"><span>年度</span></th>
-                                    <th class="" rowspan="2"><span>经济科目编码</span></th>
-                                    <th class="" rowspan="2"><span>经济科目名称</span></th>
-                                    <th class="" rowspan="2"><span>是否政府采购</span></th>
-                                    <th class="" colspan="4"><span>政府采购项目填写如下栏</span></th>
-                                    <th class="" rowspan="2"><span>预算金额</span></th>
-                                    <th class="" rowspan="2"><span>经费详细测算情况</span></th>
-                                    <th class="" rowspan="2"><span>操作</span></th>
-                                </tr>
-                                <tr style={{ borderTop: '1px solid #e8e8e8'}}>
-                                    <th class=""><span>采购品目编码</span></th>
-                                    <th class=""><span>采购编码名称</span></th>
-                                    <th class=""><span>单价</span></th>
-                                    <th class=""><span>数量</span></th>
-                                </tr>
-                                </thead>
-                                <tbody class="ant-table-tbody">
-                                <tr>
-                                    <th class=""style={{ borderRight: '1px solid #e8e8e8'}} ><span>
-                                        <Select defaultValue="2018"  style={{ width: 80 }} >
-                                            <Option value="2018">2018</Option>
-                                            <Option value="2019">2019</Option>
-                                            <Option value="2020">2020</Option>
-                                            <Option value="2021">2021</Option>
-                                        </Select></span></th>
-                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span>30211</span></th>
-                                    <th class=""style={{ borderRight: '1px solid #e8e8e8'}} ><span>国内差旅费</span></th>
-                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span>
-                                        <Select defaultValue="否" style={{ width: 80 }} >
-                                            <Option value="否">否</Option>
-                                            <Option value="是">是</Option>
-                                        </Select>
-                                        </span></th>
-                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
-                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
-                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><a href="" onClick={this.handleDelete} >删除</a></span></th>
-                                </tr>
-                                {this.state.dataSource}
-                                </tbody>
-                            </table> */}
+                             
                         </div>
                     </TabPane>
                     }
-                    {((procVo && procVo.procRecId) || type ==='zfgmfw' || zfgmfwButton ==='true')  && <TabPane tab="政府购买服务项目" key="3">Content of Tab Pane 3</TabPane>}
+                    {((procVo && procVo.procRecId) || type ==='zfgmfw' || zfgmfwButton ==='true')  && <TabPane tab="政府购买服务项目" key="3">开发中......</TabPane>}
                     
                 </Tabs>
             </StickyContainer>
