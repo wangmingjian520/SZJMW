@@ -1,7 +1,7 @@
 export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
-    static bdApi = "http://192.168.50.29:8060/bud";
+    static bdApi = "http://192.168.50.181:8060/bud";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //h1接口
@@ -58,6 +58,7 @@ export default class ApiAndInterfaceUrl {
     static zfysjjflDel = '/gov/delete';
     //预算经济分类-部门预算经济分类
     static depysjjflgl = '/dep/page';
+    static depysjjflList = '/dep/list';
     static depysjjflAdd = '/dep/save';
     static depysjjflDetail = '/dep/findById';
     static depysjjflDel = '/dep/delete';
