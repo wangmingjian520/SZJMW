@@ -21,7 +21,7 @@ export default class ApiAndInterfaceUrl {
     //预算编制-政府购买服务项目管理
     static gmfwgl = '/gmfw/list';
     static gmfwAdd = '/gmfw/save';
-    static gmfwDetail = '/gmfw/findById';
+    static gmfwfindByXmId = '/gmfw/findByXmId/';
     static gmfwDel = '/gmfw/delete';
 
     //预算调整-预算调整申请管理
@@ -54,7 +54,7 @@ export default class ApiAndInterfaceUrl {
     static zfysjjflgl = '/gov/page';
     static zfysjjflList = '/gov/list';
     static zfysjjflAdd = '/gov/save';
-    static zfysjjflDetail = '/gov/findById';
+    static zfysjjflDetail = '/gov/findById/';
     static zfysjjflDel = '/gov/delete';
     //预算经济分类-部门预算经济分类
     static depysjjflgl = '/dep/page';
@@ -62,7 +62,7 @@ export default class ApiAndInterfaceUrl {
     static depysjjflAdd = '/dep/save';
     static depysjjflDetail = '/dep/findById';
     static depysjjflDel = '/dep/delete';
-
+    
      //政府购买服务目录
      static zfgmfwmlTree = '/fwml/tree';
      static zfgmfwmlAdd = '/fwml/save';
@@ -75,11 +75,11 @@ export default class ApiAndInterfaceUrl {
     static jcjlAdd = '/jcjl/save';
     static jcjlDetail = '/jcjl/findById';
     static jcjlDel = '/jcjl/delete';
-    //物资储备检查-问题整改
-    static zgqkgl = '/zgqk/list';
-    static zgqkAdd = '/zgqk/save';
-    static zgqkDetail = '/zgqk/findById';
-    static zgqkDel = '/zgqk/delete';
+    //资金预算
+    static zjysgl = '/zjys/list';
+    static zjysAdd = '/zjys/save';
+    static zjysfindByXmId = '/zjys/findByXmIdAndVersion/';
+    static zjysDel = '/zjys/deleteById/';
     //设备设施管理
     static sbssgl = '/sbss/list';
     static sbssAdd = '/sbss/save';

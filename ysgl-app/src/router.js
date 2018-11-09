@@ -22,9 +22,9 @@ import Bmysjjfl from './pages/ysjjfl/bmysjjfl'
 import Zfgmfwml from './pages/zfgmfwml'
 
 import Excel from './pages/excel'
-import Ysbztz from './pages/ysbz/ystz';
+import Ysbztz from './pages/ysbz/ystz/index';
 
-
+import Proc from './pages/proc/index';
 
 export default class IRouter extends React.Component{
     
@@ -63,7 +63,8 @@ export default class IRouter extends React.Component{
                             <AuthRoute path="/bmysjjfl" component={Bmysjjfl}/>
                             {/*政府购买服务目录*/}
                             <AuthRoute path="/zfgmfwml" component={Zfgmfwml}/>
-                            
+                             {/*流程审批*/}
+                            <AuthRoute path="/proc/:detailId" component={Proc} />
                             <Route component={NoMatch}></Route>
                         </Switch>
                         </Index_main>
