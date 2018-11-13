@@ -10,35 +10,27 @@ class Auth extends React.Component{
         
 
         getUserId = () => {
-            let location = FaceUrl.cas_host+FaceUrl.api_host;
             let userId = '';
-            
+            //let redirectUrl = 'http://192.168.50.30:8060/redirect?url=http://192.168.50.29:3030/';
             const { dispatch } = this.props;
-            //ID为null，通过接口获取当前用户信息，
-            // axios.ajax({
-            //     url:FaceUrl.userInfoUrl,
-            //     method:FaceUrl.POST,
-            //     baseApi:FaceUrl.webApi,
-            //     data:{
-            //         isShowLoading:false
-            //     }
-            // }).then((res)=>{
-            //     if(res.code == '1') {
-            //         userId = res.data.userID;
-            //         dispatch(setUserInfo(userId))
-            //         sessionStorage.setItem("userId",userId)
-            //         console.log("auth==="+res.data.userID);
-            //     }else{
-            //         window.parent.location.href = location;
-            //     }
-            // })
+        //    //登录H5成功后，访问redirect接口获取当前用户信息，
+        //     axios.ajax({
+        //         url:"http://192.168.50.30:8060/bud/platform/getUser",
+        //         method:FaceUrl.GET,
+        //         baseApi:FaceUrl.webApi,
+        //         data:{
+        //             isShowLoading:false
+        //         }
+        //     }).then((res)=>{
+        //         if(res.code == '0'&& res.errorStatus=='10') {
+        //            window.location = redirectUrl
+        //         }
+        //     })
             
             let res = Dictionary.userInfo;
             userId = res.userID;
             dispatch(setUserInfo(userId))
-            sessionStorage.setItem("userId",userId)
             console.log("auth_Dictionary==="+userId);
-            
             let { component: Component, ...rest} = this.props;
             
             return (
