@@ -1,16 +1,14 @@
 import React from 'react';
-import {  Button , Form ,  Table , Card , Popconfirm ,Input , InputNumber , Layout ,Select ,DatePicker ,Tabs ,Row, Col} from  'antd';
+import {  Button , Form ,  Table , Card , Popconfirm ,Input , InputNumber ,message,Tree,TreeSelect , Layout ,Select ,DatePicker ,Tabs ,Row, Col} from  'antd';
 import { StickyContainer, Sticky } from 'react-sticky';
-import axios from './../../../axios'
-import Utils from './../../../utils/utils'
-import ETable from './../../../components/ETable/index'
+import axios from '../../../axios'
 import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
-import Dictionary from '../../../utils/dictionary'
+
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
- 
+const TreeNode = Tree.TreeNode; 
 const Option = Select.Option;
 
 const TabPane = Tabs.TabPane;
@@ -22,22 +20,7 @@ const renderTabBar = (props, DefaultTabBar) => (
     )}
 </Sticky>
 );
-const data = [];
-for (let i = 1; i <= 1; i++) {
-  data.push({
-    key:i.toString(),
-    kid: i.toString(),
-    nd: `201 ${i}`,
-    jjkmCode: `code ${i}`,
-    jjkmName: `名称 ${i}`,
-    buyFlag :'是',
-    govCode : '0001',
-    govName :'采购编码',
-    price :'200$',
-    number:` ${i}`,
-  });
-}
-
+ 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
@@ -48,25 +31,19 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const EditableFormRow = Form.create()(EditableRow);
+ 
 
 class EditableCell extends React.Component {
-    state = {
-        editing: false,
-      }
-    
-    componentDidMount() {
-        if (this.props.editable) {
-          document.addEventListener('click', this.handleClickOutside, true);
-        }
+      
+    //遍历部门下拉框 
+     renderDepartment =(data)=>{
+        return data.map((item)=>{ 
+            return <Option key={item.jjkmName}>{item.jjkmName}</Option>
+        })
     }
-    
-    componentWillUnmount() {
-        if (this.props.editable) {
-          document.removeEventListener('click', this.handleClickOutside, true);
-        }
-    }
-    
+    //
     getInput = () => {
+         
         if (this.props.dataIndex === 'nd') {
         return (<Select  style={{ width: 80 }} >
                     <Option value="2018">2018</Option>
@@ -75,23 +52,68 @@ class EditableCell extends React.Component {
                     <Option value="2021">2021</Option>
                     </Select>);
         }
-        if (this.props.dataIndex === 'buyFlag') {
-            return (<Select  style={{ width: 80 }} onChange={()=>this.handleChangBuyFlag} >
-                            <Option value="否">否</Option>
-                            <Option value="是">是</Option>  
-                    </Select>);
+        if (this.props.dataIndex === 'jjkmname') {
+            const {departobj}=this.props;
+            //   console.log(520)
+            //   console.log(this.state.departData)
+            return (<Select  style={{ width: 150}} onChange={this.handleChangjjfkName} >
+                {this.renderDepartment(departobj)}
+               </Select>);
+         
         }
+        if (this.props.dataIndex === 'zfcgcode'||this.props.dataIndex === 'zfcgname'||this.props.dataIndex === 'jjkmcode') {
+            return ( <Input readOnly/>);
+        }
+         
         return <Input />;
   };
-  //
-  handleChangBuyFlag=()=>{ 
-      console.log(222)
-      console.log(this.form)
-    this.form.setFieldsValue({
-        price: '50',
-      });
-   }
+  //更改分类名称
+  handleChangjjfkName = (value)=>{
+      const {departobj}=this.props;
+      let datalist= departobj;
+    //   alert(value)
+      console.log(datalist);
+     for(var i=0;i<datalist.length;i++){
 
+         if(datalist[i].jjkmName === value){ 
+            this.form.setFieldsValue({
+                jjkmcode: datalist[i].jjkmCode
+              });
+         }
+     }
+  }
+  //
+  handleChangBuyFlag=(value,kid)=>{ 
+    const {departobj}=this.props;
+       if(value === '1'){
+       let jjkmcode= this.form.getFieldValue('jjkmcode');
+       let jjkmname= this.form.getFieldValue('jjkmname'); 
+        
+         if(jjkmcode&&jjkmname){
+            let datalist= departobj;
+            console.log(datalist)
+            //   alert(value)
+              console.log(datalist);
+             for(var i=0;i<datalist.length;i++){ 
+                 if(datalist[i].jjkmName === jjkmname && datalist[i].jjkmCode===jjkmcode){ 
+                    this.form.setFieldsValue({
+                        zfcgcode: datalist[i].govCode,
+                        zfcgname:datalist[i].govName
+                      });
+                 }
+             }
+         }
+       
+       }else{
+        this.form.setFieldsValue({
+            zfcgcode:'' ,
+            zfcgname:''
+          });
+       }
+ 
+   }
+ 
+  
   render() {
     const {
       editing,
@@ -105,23 +127,22 @@ class EditableCell extends React.Component {
       
     return (
       <EditableContext.Consumer>
-        {(form) => {
-          let props = this.props;
+        {(form) => { 
           const { getFieldDecorator } = form;
           this.form = form;
           return (
             <td {...restProps}>
-              {editing ? dataIndex==='buyFlag' ? (
+              {editing ? dataIndex==='zfcgflag' ? (
                 <FormItem style={{ margin: 0 }}>
                   {getFieldDecorator(dataIndex, {
                     rules: [{
-                      required: true,
+                      required: false,
                       //message: `Please Input ${title}!`,
                     }],
                     initialValue: record[dataIndex],
-                  })(<Select  style={{ width: 80 }} onChange={this.handleChangBuyFlag} >
-                            <Option value="否">否</Option>
-                            <Option value="是">是</Option>  
+                  })(<Select  style={{ width: 80 }} onChange={(value)=>this.handleChangBuyFlag(value,record.key)} >
+                            <Option value="0">否</Option>
+                            <Option value="1">是</Option>  
                     </Select>)}
                 </FormItem>
               ) :
@@ -129,7 +150,7 @@ class EditableCell extends React.Component {
                 <FormItem style={{ margin: 0 }}>
                   {getFieldDecorator(dataIndex, {
                     rules: [{
-                      required: true,
+                      required: false,
                       //message: `Please Input ${title}!`,
                     }],
                     initialValue: record[dataIndex],
@@ -143,11 +164,92 @@ class EditableCell extends React.Component {
     );
   }
 }
+//政府购买服务项目
+class EditablezfgmfwCell extends React.Component { 
+       
+    getzffwInput = () => { 
+        
+       if (this.props.dataIndex === 'ssxm'||this.props.dataIndex === 'zfgmmlcode') {
+           
+       return (<Input  readOnly/> );
+       }
+       if (this.props.dataIndex === 'zfgmmlname') {
+        const { treedata } = this.props;
+          const flag=true;//onChange={this.handleChangfwmlName}  labelInValue={flag}
+           return (<TreeSelect  style={{ width: 190}}  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }} onSelect={this.onSelect}>
+                {treedata}
+              </TreeSelect>);
+       }
+        
+       return <Input />;
+ };
+    onSelect =(value, node, extra)=>{
+        console.log(value)
+        console.log(node)
+        this.form.setFieldsValue({
+            zfgmmlcode: node.props.eventKey,
+             
+          });
+    }
+     
+ 
+ render() {
+   const {
+     editing,
+     dataIndex,
+     title,
+     inputType,
+     record,
+     xmname,
+     index,
+     ...restProps
+   } = this.props;
+     
+   return (
+     <EditableContext.Consumer>
+       {(form) => { 
+         const { getFieldDecorator } = form;
+         this.form = form;
+         return (
+           <td {...restProps}>
+             {editing ? dataIndex==='ssxm' ? 
+             (
+                <FormItem style={{ margin: 0 }}>
+                  {getFieldDecorator(dataIndex, {
+                    rules: [{
+                      required: false,
+                      //message: `Please Input ${title}!`,
+                    }],
+                    initialValue:xmname,
+                  })(this.getzffwInput())}
+                </FormItem>
+              ):
+             (
+               <FormItem style={{ margin: 0 }}>
+                 {getFieldDecorator(dataIndex, {
+                   rules: [{
+                     required: false,
+                     //message: `Please Input ${title}!`,
+                   }],
+                   initialValue: record[dataIndex],
+                 })(this.getzffwInput())}
+               </FormItem>
+             ) : restProps.children}
+           </td>
+         );
+       }}
+     </EditableContext.Consumer>
+   );
+ }
+}
 
 export default class Ysbztz extends React.Component{
     state={
-        dataSource:data,
+        dataSource:[],
+        fwxmDataSource:[],
         footer:'',
+        count:0,
+        zfgmfwxmcount:0,
         type:'xmjbxx'
     }
     
@@ -161,15 +263,15 @@ export default class Ysbztz extends React.Component{
           editable: 'true',
         }, {
           title: '经济科目编码',
-          dataIndex: 'jjkmCode',
-          key:'jjkmCode',
+          dataIndex: 'jjkmcode',
+          key:'jjkmcode',
           width: 150,
           editable: 'true',
          
         }, {
           title: '经济科目名称',
-          dataIndex: 'jjkmName',
-          key:'jjkmName',
+          dataIndex: 'jjkmname',
+          key:'jjkmname',
           width: 150,
           editable: 'true',
         //   render: (text, record) => {
@@ -179,59 +281,54 @@ export default class Ysbztz extends React.Component{
         //   },
         }, {
             title: '是否政府采购',
-            dataIndex: 'buyFlag',
-            key:'buyFlag',
+            dataIndex: 'zfcgflag',
+            key:'zfcgflag',
             width: 100,
             editable: 'true',
-            // render: (text, record) => {
-            //     return (
-            //         <Select defaultValue={text} style={{ width: 80 }} >
-            //                 <Option value="否">否</Option>
-            //                 <Option value="是">是</Option>   
-            //         </Select>
-            //     );
-            //   },
+            render: (text, record) => {
+                return text==='0'?'否':'是' ;
+              },
         },{
             title: '政府采购项目填写如下栏',
             dataIndex: 'govCode',
             key: 'govCode',
             children:  [{
                 title: '采购品目编码',
-                dataIndex: 'govCode',
-                key: 'govCode',
+                dataIndex: 'zfcgcode',
+                key: 'zfcgcode',
                 width: 200,
-                
+                editable: 'true',
               }, {
                 title: '采购编码名称',
-                dataIndex: 'govName',
-                key: 'govName',
+                dataIndex: 'zfcgname',
+                key: 'zfcgname',
                 width: 200,
-               
+                editable: 'true',
               },
               , {
                 title: '单价',
-                dataIndex: 'price',
-                key: 'price',
+                dataIndex: 'dj',
+                key: 'dj',
                 width: 100,
                 editable: 'true',
               }, {
                 title: '数量',
-                dataIndex: 'number',
-                key: 'number',
+                dataIndex: 'cgnum',
+                key: 'cgnum',
                 width: 100,
                 editable: 'true',
               },
             ],
         }, {
             title: '预算金额',
-            dataIndex: 'money',
-            key: 'money',
+            dataIndex: 'ysje',
+            key: 'ysje',
             width: 150,
             editable: 'true',
         }, {
             title: '经费详细测算情况',
-            dataIndex: 'csbz',
-            key: 'csbz',
+            dataIndex: 'jfcs',
+            key: 'jfcs',
             width: 200,
             editable: 'true',
         }, {
@@ -239,81 +336,262 @@ export default class Ysbztz extends React.Component{
           dataIndex: 'operation',
           key:'operation',
           width: 200,
-          render: (text, record) => {
+          render: (text, record) => { 
+            const editable = this.isEditing(record); 
             return (
-              this.state.dataSource.length >= 1
-                ? (<span>
-                  <Popconfirm title="确定删除吗?" onConfirm={() => this.handleDelete(record.kid)}>
-                    <a href="javascript:;" style={{ marginRight: 8 }}>删除</a>
-                  </Popconfirm>
-                    <a onClick={() => this.edit(record.kid)}>编辑</a>
-                  </span>
-                ) : null
-            );
+                <div>
+                  {editable && ( 
+                      <span>
+                  <EditableContext.Consumer>
+                    {(form) => {
+                     this.form =form;
+                    return  null ;
+                    }}
+                  </EditableContext.Consumer> 
+                </span> 
+                  )}
+                  <Popconfirm title="确定删除吗?" onConfirm={() => this.handleDelete(record.key,'delete')}>
+                   <a href="javascript:;" style={{ marginRight: 8 }}>删除</a>
+                  </Popconfirm>  
+                </div>
+                
+              );
+            
           },
         }];
+        //政府购买服务项目
+        this.zfgmfwColumns = [{
+            title: '处室',
+            dataIndex: 'gmcs',
+            key:'gmcs',
+            width: 100,
+            editable: 'true',
+          }, {
+            title: '购买服务名称',
+            dataIndex: 'fwname',
+            key:'fwname',
+            width: 150,
+            editable: 'true',
+           
+          }, {
+            title: '所属项目',
+            dataIndex: 'ssxm',
+            key:'ssxm',
+            width: 150,
+            editable: 'true',
+          //   render: (text, record) => {
+          //     return (
+          //         <Input size="small" placeholder="small size" />
+          //     );
+          //   },
+          } 
+           ,{
+              title: '所属政府购买服务目录',
+              dataIndex: 'zfgmfwml',
+              key: 'zfgmfwml',
+              children:  [{
+                  title: '编号',
+                  dataIndex: 'zfgmmlcode',
+                  key: 'zfgmmlcode',
+                  width: 100,
+                  editable: 'true',
+                }, {
+                  title: '名称',
+                  dataIndex: 'zfgmmlname',
+                  key: 'zfgmmlname',
+                  width: 200,
+                  editable: 'true',
+                } 
+              ],
+          }, {
+              title: '金额',
+              dataIndex: 'fwje',
+              key: 'fwje',
+              width: 150,
+              editable: 'true',
+          }, {
+              title: '备注',
+              dataIndex: 'remark',
+              key: 'remark',
+              width: 200,
+              editable: 'true',
+          }, {
+            title: '操作',
+            dataIndex: 'operation',
+            key:'operation',
+            width: 200,
+            render: (text, record) => { 
+              const editable = this.iszfgmfwxmEditing(record); 
+              return (
+                  <div>
+                    {editable && ( 
+                        <span>
+                    <EditableContext.Consumer>
+                      {(form) => {
+                       this.form =form;
+                      return  null ;
+                      }}
+                    </EditableContext.Consumer> 
+                  </span> 
+                    )}
+                    <Popconfirm title="确定删除吗?" onConfirm={() => this.handlezfgmfwxmDelete(record.key,'delete')}>
+                     <a href="javascript:;" style={{ marginRight: 8 }}>删除</a>
+                    </Popconfirm>  
+                  </div>
+                  
+                );
+              
+            },
+          }];    
+
     
       }
-    
-
-      componentWillMount(){    
+    //渲染树节点
+    renderTreeNodes = (data) => {
+        return data.map((item) => {
+        if (item.childs) {
+            //value={item.fwCode}
+            return (
+            <TreeNode  value={item.fwName}  title={item.fwName} key={item.fwCode} >
+                {this.renderTreeNodes(item.childs)}
+            </TreeNode> 
+            );
+        }
+          
+         return <TreeNode value={item.fwName}  title={item.fwName} key={item.fwCode} />;
+        });
+    }
+      ajaxRequest =(url,method,stateVar,param)=>{ 
+            axios.ajax({
+                url:url,
+                method:method,
+                baseApi:FaceUrl.bdApi,
+                data:param
+            }).then((res)=>{
+                if(res.code == '1') { 
+                    if(stateVar==='tableInfo'){
+                        let tableInfo=res.data;
+                        this.setState({
+                            tableInfo
+                        }) 
+                    }
+                    if(stateVar==='procVo'){
+                        let procVo=res.data; 
+                        const actions= this.handleAction(procVo.actions)
+                        this.setState({
+                            procVo : procVo,
+                            actions : actions
+                        }) 
+                    }
+                    if(stateVar==='zjysList'){
+                        let zjysObj=res.data;
+                        let zjysmxList=[];
+                        if(zjysObj){
+                         zjysmxList=zjysObj.zjysmxs; 
+                        } 
+                       let list = zjysmxList.map((item,index)=>{
+                        item.key = index;
+                        return item
+                        }) 
+                     this.setState({
+                        dataSource :list,zjysObj
+                    }) 
+                    }
+                    if(stateVar==='zfgmfwList'){
+                        let zfgmfwObj=res.data; 
+                        let zfgmfwmxList=[];
+                        if(zfgmfwObj){
+                            zfgmfwmxList=zfgmfwObj.gmfwmxs; 
+                        } 
+                        let list = zfgmfwmxList.map((item,index)=>{
+                            item.key = index;
+                            return item
+                            }) 
+                            this.setState({
+                                fwxmDataSource :list,zfgmfwObj
+                            }) 
+                    }
+                    if(stateVar==='departObj'){
+                        let departobj=res.data;
+                        this.setState({
+                            departobj
+                        }) 
+                    }
+                         
+                }
+            })
+           
+        
+      } 
+      // componentWillMount componentDidMount
+      componentDidMount(){    
         let currentKey = window.location.hash.replace(/#|\?.*$/g,'');
         let kid= currentKey.substr(currentKey.lastIndexOf('/')+1) ;
+        
+        // let tableInfo='tableInfo';
+        // this.ajaxRequest(FaceUrl.xmxxDetail+kid,FaceUrl.GET,tableInfo);
         axios.ajax({
             url:FaceUrl.xmxxDetail+kid,
             method:FaceUrl.GET,
             baseApi:FaceUrl.bdApi
         }).then((res)=>{
             if(res.code == '1') {
-             let tableInfo=res.data; 
-            //   console.log(datelist)
+             let tableInfo=res.data;  
                     this.setState({
-                        tableInfo
+                        tableInfo  
                     }) 
+            let zjysList='zjysList'; 
+            this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zjysList);      
+            let zfgmfwList='zfgmfwList'; 
+            this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);   
             }
-        })
+        }) 
+        //部门资金预算-获取下拉服务名称
+         
+        let departObj='departObj'; 
+        this.ajaxRequest(FaceUrl.depysjjflList,FaceUrl.POST,departObj);   
+
+
+        let procVo='procVo';
+        this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
+        
+
         axios.ajax({
-            url:FaceUrl.ProcVo+kid,
+            url:FaceUrl.zfgmfwmlTree,
             method:FaceUrl.GET,
-            baseApi:FaceUrl.bdApi
+            baseApi:FaceUrl.bdApi, 
         }).then((res)=>{
+            console.log(res)
             if(res.code == '1') {
-             let procVo=res.data; 
-             //alert(11111)
-             console.log(procVo)
-            const actions= this.handleAction(procVo.actions)
-                    this.setState({
-                        procVo : procVo,
-                        actions : actions
-                    }) 
+               const treeData= this.renderTreeNodes(res.data)
+                this.setState({ 
+                    treeData: treeData,
+                });
+            }else{
+              //  message.error(message);
             }
         })
         
     }
-    handleSave = (row) => {
-        const newData = [...this.state.dataSource];
-        const index = newData.findIndex(item => row.kid === item.kid);
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        this.setState({ dataSource: newData });
-      }
-
+    
+   
     //动作执行
     handleAction = (data) => {
         return data.map((item) => {
-          return <Button key={item.id} type="primary" style={{marginTop:2,marginLeft:53 }}>{item.name}</Button>;
+          return <Button key={item.id} type="primary" onClick={this.redirectToProc} style={{marginTop:2,marginLeft:53 }}>{item.name}</Button>;
         });
       }
+     //跳转审批页面
+     redirectToProc = ()=>{
+        let xmId= this.state.tableInfo.kid;
+        window.open(`/#/proc/detail/${xmId}`,'_self')
+     }
     //返回上一级
     handleGoLast =()=>{
         window.history.go(-1);
     }
     //添加部门资金预算按钮
-    handleAdddepartment = ()=>{
-       
+    handleAdddepartment = ()=>{ 
         this.setState({
             type:'bmzjys',
             bmzjysButton:'true',
@@ -333,11 +611,18 @@ export default class Ysbztz extends React.Component{
             })
           }
         if(value === '2'){
+            // let zjysList='zjysList';
+            // let tableInfo=this.state.tableInfo;
+            // this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid,FaceUrl.GET,zjysList); 
+            
             this.setState({
                 type:'bmzjys'
             })
           }
         if(value === '3'){
+            // let zfgmfwList='zfgmfwList';
+            // let tableInfo=this.state.tableInfo; 
+            // this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid,FaceUrl.GET,zfgmfwList); 
             this.setState({
                 type:'zfgmfw'
             })
@@ -345,54 +630,354 @@ export default class Ysbztz extends React.Component{
     }
     //添加行
     handleRow =()=>{
-      const row= ''; 
+        let length = this.state.dataSource.length+1;
+        let row ={zfcgflag :"0",jjkmcode:"" ,jjkmname:"",key :length.toString(),nd: "2018" ,cgnum :"", dj:"200"}
+         
      this.setState({
-        dataSource: [...this.state.dataSource, row]
+        dataSource: [...this.state.dataSource, row],
+        count:length
       });
+      console.log(888)
+      console.log(this.state.dataSource)
     }
+    //添加政府购买服务目录行
+    handlezfgmfwxmRow =()=>{
+        let length = this.state.fwxmDataSource.length+1;
+        let row ={ key :length.toString()} 
+     this.setState({
+        fwxmDataSource: [...this.state.fwxmDataSource, row],
+        zfgmfwxmcount:length
+      });
+       
+    }
+
     //删除行
-    handleDelete = (key) => {
-        const dataSource = [...this.state.dataSource];
-        this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+    handleDelete = (key,value) => { 
+        let newData = [...this.state.dataSource];
+        console.log(key) 
+        console.log(55)
+        this.setState({ olddataSource: newData}); 
+        this.setState({ dataSource: newData.filter(item =>  item.key !== key),delFlag:value,editingKey:'' });
+     //   this.setState({ dataSource: newData.filter(item => { alert(item.key !== key); return( item.key !== key)}) });
       }
+      //删除政府服务项目行
+      handlezfgmfwxmDelete = (key,value) => { 
+        let newData = [...this.state.fwxmDataSource];
+        // console.log(key) 
+        // console.log(55) 
+        this.setState({ fwxmDataSource: newData.filter(item =>  item.key !== key) });
+     //   this.setState({ dataSource: newData.filter(item => { alert(item.key !== key); return( item.key !== key)}) });
+      }
+
       //点击行
-    // onRowClick = (record,index)=>{
+      onRowClick =(record)=>{
+        let delFlag = this.state.delFlag;
+        let  currentKey = this.state.editingKey;
+        //  if(delFlag==='delete'){ 
+        //     this.setState({ delFlag:'',editingKey:''});
+        //  } 
+         if(record.key===currentKey){
+            this.setState({ editingKey: record.key });
+         }else{ 
+              if(!this.form){
+                this.setState({ editingKey: record.key });
+                return ;
+              }
+            this.setState({ editingKey: record.key });
+            this.form.validateFields((error, row) => {
+                  const newData = [...this.state.dataSource];
+                  let  index = newData.findIndex(item => currentKey === item.key);
+                //   console.log(index);
+                  if (index > -1) {
+                    const item = newData[index];
+                    newData.splice(index, 1, {
+                      ...item,
+                      ...row,
+                    });
+                    this.setState({ dataSource: newData});
+                   
+                  }  
+                });
+         }
+      }
+      //点击政府购买服务table行
+      onzfgmfwxmRowClick =(record)=>{
+         
+        let  currentKey = this.state.editingfwxmKey;
+        if(record.key===currentKey){
+            this.setState({ editingfwxmKey: record.key });
+         }else{ 
+              if(!this.form){
+                this.setState({ editingfwxmKey: record.key });
+                return ;
+              }
+            this.setState({ editingfwxmKey: record.key });
+            this.form.validateFields((error, row) => {
+                  const newData = [...this.state.dataSource];
+                  let  index = newData.findIndex(item => currentKey === item.key);
+                //   console.log(index);
+                  if (index > -1) {
+                    const item = newData[index];
+                    newData.splice(index, 1, {
+                      ...item,
+                      ...row,
+                    });
+                    this.setState({ dataSource: newData}); 
+                  }  
+                });
+         }
+             
+         
+      }
+      /**  ----------start------------ */
+      //提交
+    submit = ()=>{ 
         
-    //     this.setState({ editingKey: record.kid });
-    //   }
-      //
-    isEditing = (record) => {
-        return record.kid === this.state.editingKey;
+     //   let olddataSource= this.state.olddataSource;
+        let  currentKey = this.state.editingKey;
+       // let delFlag =false;
+         
+        
+        // if(olddataSource&&olddataSource.length>this.state.dataSource.length){
+            
+        //     delFlag=true
+        //     let tableInfo= this.state.tableInfo;
+        //     let zjysObj= this.state.zjysObj;
+        //     let param={};
+        //     param.zjysmxs=this.state.dataSource ;
+        //     param.xmId=tableInfo.kid;
+        //     param.kid=zjysObj.kid; 
+        //     axios.ajax({
+        //         url:FaceUrl.zjysAdd,
+        //         method:FaceUrl.POST,
+        //         baseApi:FaceUrl.bdApi,
+        //         data:param
+        //     }).then((res)=>{
+        //         if(res.code == '1') {  
+        //           let zjysList='zjysList';
+        //          // let tableInfo=this.state.tableInfo;
+        //           this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid,FaceUrl.GET,zjysList);  
+        //           this.setState({editingKey:'' ,olddataSource:'' });
+        //           message.success('保存成功');
+        //           return ;
+        //         }
+        //     }) 
+        // }
+        // if(delFlag){
+        //     return ;
+        // }
+            
+            if(!this.form){ 
+                return ;
+            }else{
+                this.form.validateFields((error, row) => {
+                   
+                    const newData = [...this.state.dataSource];
+                    let  index = newData.findIndex(item => currentKey === item.key);
+                  //   console.log(index);
+                    if (index > -1) {
+                      const item = newData[index];
+                      newData.splice(index, 1, {
+                        ...item,
+                        ...row,
+                      });
+                      console.log(newData)
+                      this.setState({ dataSource:newData,editingKey:''  });
+                      
+                      let tableInfo= this.state.tableInfo;
+                      let zjysObj= this.state.zjysObj;
+                      let param={};
+                      param.zjysmxs=newData ;
+                      param.xmId=tableInfo.kid;
+                      if(zjysObj){
+                        param.kid=zjysObj.kid; 
+                      } 
+                      axios.ajax({
+                          url:FaceUrl.zjysAdd,
+                          method:FaceUrl.POST,
+                          baseApi:FaceUrl.bdApi,
+                          data:param
+                      }).then((res)=>{
+                          if(res.code == '1') {  
+                            let zjysList='zjysList';
+                         //   let tableInfo=this.state.tableInfo;
+                            this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zjysList);  
+                            message.success('保存成功');
+                          }
+                      }) 
+                    }else{
+                        let tableInfo= this.state.tableInfo;
+                        let zjysObj= this.state.zjysObj;
+                        let param={};
+                        param.zjysmxs=this.state.dataSource ;
+                        param.xmId=tableInfo.kid;
+                        param.kid=zjysObj.kid; 
+                        axios.ajax({
+                            url:FaceUrl.zjysAdd,
+                            method:FaceUrl.POST,
+                            baseApi:FaceUrl.bdApi,
+                            data:param
+                        }).then((res)=>{
+                            if(res.code == '1') {  
+                            let zjysList='zjysList';
+                            // let tableInfo=this.state.tableInfo;
+                            this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zjysList);  
+                            this.setState({editingKey:'' ,olddataSource:'' });
+                            message.success('保存成功');
+                            return ;
+                            }
+                        })
+                    }  
+                  });
+            }
+            
+            
+      }
+    //政府购买服务项目保存事件
+    submitzfgmfwxm = ()=>{ 
+        let  currentKey = this.state.editingfwxmKey;
+         
+        if(!this.form){ 
+             
+            return ;
+         }else{
+             
+            this.form.validateFields((error, row) => {
+                const newData = [...this.state.fwxmDataSource];
+                let  index = newData.findIndex(item => currentKey === item.key);
+              //   console.log(index);
+                if (index > -1) {
+                  const item = newData[index];
+                  newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                  });
+                  this.setState({ fwxmDataSource: newData,editingfwxmKey:'' });
+                  let tableInfo= this.state.tableInfo;
+                  let zfgmfwObj= this.state.zfgmfwObj;
+                //   console.log(newData)
+                //   console.log('zfgmfwObj')
+                //   console.log(zfgmfwObj)
+                 
+                  let param={};
+                  param.gmfwmxs=newData ;
+                  param.xmId=tableInfo.kid;
+                  if(zfgmfwObj){
+                    param.kid=zfgmfwObj.kid; 
+                  }  
+                  axios.ajax({
+                    url:FaceUrl.gmfwAdd,
+                    method:FaceUrl.POST,
+                    baseApi:FaceUrl.bdApi,
+                    data:param
+                }).then((res)=>{
+                    if(res.code == '1') {  
+                        let zfgmfwList='zfgmfwList'; 
+                        this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);   
+                        message.success('保存成功');
+                    }
+                }) 
+                }else{
+                    let param={};
+                    let tableInfo= this.state.tableInfo;
+                    let zfgmfwObj= this.state.zfgmfwObj;
+                    param.gmfwmxs=newData ;
+                    param.xmId=tableInfo.kid;
+                    param.kid=zfgmfwObj.kid; 
+  
+                    axios.ajax({
+                      url:FaceUrl.gmfwAdd,
+                      method:FaceUrl.POST,
+                      baseApi:FaceUrl.bdApi,
+                      data:param
+                  }).then((res)=>{
+                      if(res.code == '1') {  
+                          let zfgmfwList='zfgmfwList'; 
+                          this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);   
+                          message.success('保存成功');
+                          this.setState({editingfwxmKey:'' });
+                      }
+                  }) 
+
+                }  
+              });
+        }
+            
+      }
+/**  ----------------end------*/
+      /**  ----------------start------*/
+      isEditing = (record) => {
+        return record.key === this.state.editingKey;
       };
+      
+      //服务项目是否编辑
+      iszfgmfwxmEditing = (record) => {
+        return record.key === this.state.editingfwxmKey;
+      };
+      /**---------------- end------ */
+
+      /**--------- start--------- */
       //编辑按钮
     edit(key) {
         this.setState({ editingKey: key });
       }
-        // 遍历列
-     renderColumns =(data)=>{
-        return data.map((col)=>{
-            if(col.children){
+       //编辑按钮
+    editzfgmfw(key) {
+        this.setState({ editingfwxmKey: key });
+      }
+       /**---------------- end------ */
+
+      /**---------------- start--------- */
+     
+    renderColumns =(data)=>{ 
+           return data.map((col)=>{
+               if(col.children){
+                   //如果列有children
+                   col.children=this.renderColumns(col.children);
+                
+               }else if(!col.editable) {
+                       return col;
+               }      
+               return {           
+                   ...col, 
+                   onCell: record => ({
+                   record,
+                   departobj:this.state.departobj,
+                   editable: col.editable,
+                   dataIndex: col.dataIndex,
+                   title: col.title, 
+                   editing: this.isEditing(record),
+                   }),
+               };
+           })
+       }
+    
+      // 遍历政府购买服务列
+      renderzfgmfwxmColumns =(data)=>{
+        return data.map((column)=>{
+            if(column.children){
                 //如果列有children
-                col.children=this.renderColumns(col.children);
+                column.children=this.renderzfgmfwxmColumns(column.children);
              
-            }else if(!col.editable) {
-                    return col;
+            }else if(!column.editable) {
+                    return column;
             } 
 
             return {           
-                ...col,
+                ...column, 
                 onCell: record => ({
                 record,
-                editable: col.editable,
-                dataIndex: col.dataIndex,
-                title: col.title,
-                // handleSave: this.handleSave,
-                editing: this.isEditing(record),
+                treedata:this.state.treeData,
+                xmname:this.state.tableInfo.xmname,
+                editable: column.editable,
+                dataIndex: column.dataIndex,
+                title: column.title, 
+                editing: this.iszfgmfwxmEditing(record),
                 }),
             };
         })
     }
-
+   /**---------------- end------ */
     render(){
         
         const { dataSource } = this.state;
@@ -400,21 +985,31 @@ export default class Ysbztz extends React.Component{
         let procVo=this.state.procVo;  
         let bmzjysButton =this.state.bmzjysButton;
         let zfgmfwButton= this. state.zfgmfwButton;
+
+        let zjysObj= this.state.zjysObj;
+        let zfgmfwObj=this.state.zfgmfwObj;
         const components = {
             body: {
                 row: EditableFormRow,
                 cell: EditableCell,
             },
         };
+        const zfgmfwxmcomponents = {
+            body: {
+                row: EditableFormRow,
+                cell: EditablezfgmfwCell,
+            },
+        }; 
+        
+         const columns = this.renderColumns(this.columns);
+        
+      //  console.log(columns)
+      const zfgmfwxmcolumns = this.renderzfgmfwxmColumns(this.zfgmfwColumns);
      
-        const columns = this.renderColumns(this.columns);
-        const rowKey = function(record) {
-            return record.kid;  
-          };
-        console.log(11111222)
-        console.log(columns)
-        return (
 
+     // console.log(columns)
+     // console.log(zfgmfwxmcolumns)
+        return (
                 <StickyContainer>
                     <div>
                    
@@ -423,8 +1018,8 @@ export default class Ysbztz extends React.Component{
                        <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120}}>预审审批</Button> 
                        <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>目标下达</Button>  */}
                         {this.state.actions}
-                        {procVo && !procVo.procRecId && <Button onClick={this.handleAdddepartment} type="primary" style={{marginTop:2,marginLeft:120 }}>上报预算</Button> }
-                        {procVo && !procVo.procRecId && <Button onClick={this.handleAddzfgmfw} type="primary" style={{marginTop:2,marginLeft:120 }}>政府购买项目服务</Button> }
+                        {!zjysObj  && <Button onClick={this.handleAdddepartment} type="primary" style={{marginTop:2,marginLeft:120 }}>添加部门资金预算</Button> }
+                        {!zfgmfwObj  && <Button onClick={this.handleAddzfgmfw} type="primary" style={{marginTop:2,marginLeft:120 }}>添加政府购买项目服务</Button> }
                        <Button onClick={this.handleGoLast} type="primary" style={{marginTop:2,marginRight:600 ,marginLeft:200}}>返回上一级</Button> 
                          
                    </div>
@@ -435,78 +1030,58 @@ export default class Ysbztz extends React.Component{
                         <OpenFormTable type={this.state.type} tableInfo={this.state.tableInfo} PtableInfo={this.PtableInfo} 
                         clickData={this.state.clickData}  wrappedComponentRef={(inst)=>{this.modalForm = inst;}}/>
                     </TabPane>
-                    {((procVo && procVo.procRecId) || type ==='bmzjys' || bmzjysButton ==='true')  &&
+                    {(zjysObj || type ==='bmzjys' || bmzjysButton ==='true')  &&
                     <TabPane tab="部门资金预算" key="2">
                         <div>
-                            <Button onClick={this.handleRow} type="primary" style={{ marginBottom: 16,marginTop:2 }}>
+                            <Button onClick={this.handleRow} type="primary" style={{ marginBottom: 16,marginTop:2,}}>
                                 新增行
                             </Button>
+                            <Button onClick={this.submit} type="primary" style={{ marginBottom: 16,marginTop:2,marginLeft:10 }}>
+                                保存 
+                            </Button>
                             <Table
-                                rowKey={rowKey}
+                                 
                                 components={components}
                                 columns={columns}
                                 dataSource={this.state.dataSource}
                                 bordered
                                 size="middle"
                                 pagination={false}
-                                // onRow={(record,index) => ({
-                                //     onClick: ()=>{ 
-                                //         this.onRowClick(record,index)
-                                //     }
-                                //   })}
+                                onRow={(record,index) => ({
+                                    onClick: ()=>{ 
+                                        this.onRowClick(record,index)
+                                    }
+                                  })}
                                 
                             />
-                            {/* <table class="" style={{ border: '1px solid #e8e8e8'}} >
-                                <thead class="ant-table-thead">
-                                <tr>
-                                    <th class="" rowspan="2"><span>年度</span></th>
-                                    <th class="" rowspan="2"><span>经济科目编码</span></th>
-                                    <th class="" rowspan="2"><span>经济科目名称</span></th>
-                                    <th class="" rowspan="2"><span>是否政府采购</span></th>
-                                    <th class="" colspan="4"><span>政府采购项目填写如下栏</span></th>
-                                    <th class="" rowspan="2"><span>预算金额</span></th>
-                                    <th class="" rowspan="2"><span>经费详细测算情况</span></th>
-                                    <th class="" rowspan="2"><span>操作</span></th>
-                                </tr>
-                                <tr style={{ borderTop: '1px solid #e8e8e8'}}>
-                                    <th class=""><span>采购品目编码</span></th>
-                                    <th class=""><span>采购编码名称</span></th>
-                                    <th class=""><span>单价</span></th>
-                                    <th class=""><span>数量</span></th>
-                                </tr>
-                                </thead>
-                                <tbody class="ant-table-tbody">
-                                <tr>
-                                    <th class=""style={{ borderRight: '1px solid #e8e8e8'}} ><span>
-                                        <Select defaultValue="2018"  style={{ width: 80 }} >
-                                            <Option value="2018">2018</Option>
-                                            <Option value="2019">2019</Option>
-                                            <Option value="2020">2020</Option>
-                                            <Option value="2021">2021</Option>
-                                        </Select></span></th>
-                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span>30211</span></th>
-                                    <th class=""style={{ borderRight: '1px solid #e8e8e8'}} ><span>国内差旅费</span></th>
-                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span>
-                                        <Select defaultValue="否" style={{ width: 80 }} >
-                                            <Option value="否">否</Option>
-                                            <Option value="是">是</Option>
-                                        </Select>
-                                        </span></th>
-                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" style={{ borderRight: '1px solid #e8e8e8'}}><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
-                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><InputNumber size="small" min={1} max={100000} defaultValue={3}  /></span></th>
-                                    <th class="" ><span><Input size="small" placeholder="small size" /></span></th>
-                                    <th class="" ><span><a href="" onClick={this.handleDelete} >删除</a></span></th>
-                                </tr>
-                                {this.state.dataSource}
-                                </tbody>
-                            </table> */}
+                             
                         </div>
                     </TabPane>
                     }
-                    {((procVo && procVo.procRecId) || type ==='zfgmfw' || zfgmfwButton ==='true')  && <TabPane tab="政府购买服务项目" key="3">Content of Tab Pane 3</TabPane>}
+                    {(zfgmfwObj || type ==='zfgmfw' || zfgmfwButton ==='true')  && <TabPane tab="政府购买服务项目" key="3"> 
+                            <Button onClick={this.handlezfgmfwxmRow} type="primary" style={{ marginBottom: 16,marginTop:2,}}>
+                                新增行
+                            </Button>
+                            <Button onClick={this.submitzfgmfwxm} type="primary" style={{ marginBottom: 16,marginTop:2,marginLeft:10 }}>
+                                保存
+                            </Button>
+                    <Table
+                            
+                            components={zfgmfwxmcomponents}
+                            columns={zfgmfwxmcolumns}
+                            dataSource={this.state.fwxmDataSource}
+                            bordered
+                            size="middle"
+                            pagination={false}
+                            onRow={(record,index) => ({
+                                onClick: ()=>{ 
+                                    this.onzfgmfwxmRowClick(record,index)
+                                }
+                                })}
+                                
+                            />
+
+                    </TabPane>}
                     
                 </Tabs>
             </StickyContainer>
