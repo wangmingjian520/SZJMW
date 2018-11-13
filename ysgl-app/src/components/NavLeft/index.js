@@ -36,7 +36,6 @@ class NavLeft extends React.Component{
                         })
                         return ;
                     }
-                     
                 }
               }
           }
@@ -72,7 +71,6 @@ class NavLeft extends React.Component{
             method:FaceUrl.GET,
             baseApi:FaceUrl.bdApi,
             data:{
-                userId,
                 isShowLoading:true
             }
         }).then((res)=>{

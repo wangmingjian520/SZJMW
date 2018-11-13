@@ -6,7 +6,7 @@ export default class NoMatch extends React.Component{
     render(){
         return (
             <div>
-                这是404Page
+                404
             </div>
         );
     }

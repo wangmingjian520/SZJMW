@@ -8,41 +8,47 @@ import { Modal , message} from 'antd'
 // 表示跨域请求时是否需要使用凭证
 axios.defaults.withCredentials = true;
 
-axios.defaults.crossDomain = false;
+axios.defaults.crossDomain = true;
 
 // 设置超时
 axios.defaults.timeout = 10000;
 
 axios.interceptors.request.use(config => {
-    //发送请求操作，统一再请求里加上userId 
-    let userid = sessionStorage.getItem('userId')
-    config.headers['userId'] = userid ? userid : '';
+    config.data = JSON.stringify(config.data);
+    if (!config.headers['X-Requested-With']) {  
+        config.headers['X-Requested-With'] = 'XMLHttpRequest';  
+    } 
+
     return config;
 }, error => {
     //发送请求错误操作
     console.log('请求失败')
     return Promise.reject(error);
 })
+
+
 axios.interceptors.response.use(response => {
  
     //对响应数据做操作
-    if(parseInt(response.data.code, 10) <= '2000000') {
+    if(response.data && parseInt(response.data.code, 10) <= '2000000') {
         //console.log('请求成功');
         return response
     }
-    if(response.data.code === '2000401' || response.data.code === 2000401) {
-        console.log('已过期重新登陆', response.data.code);
-        window.parent.location.href = FaceUrl.cas_host+FaceUrl.api_host;
+    if(response.data && response.data.code == '0' && response.data.errorStatus=='10') {
+      
         return Promise.reject(response);
     }
     else {
-        console.log('请求失败', response.data.code);
-        alert(response.data.message);
+        //console.log('请求失败', response.data.code);
         return Promise.reject(response);
     }
 }, error => {
-    //对响应数据错误做操作
-    console.log('请求error', error.message);
+    if (error.response) {
+        switch (error.response.status) {
+            case 401: 401
+            window.parent.location.href = FaceUrl.cas_host+FaceUrl.api_host;
+        }
+    }
     return Promise.reject(error);
 })
 
@@ -99,12 +105,6 @@ export default class Axios {
         if(options.baseApi){
             baseApi = options.baseApi;
         }
-        //let userId ='';
-        //往header里存放用户ID
-        // if(options.data && options.data.userId){
-        //     userId = options.data.userId;
-        //    }
-        // axios.defaults.headers.common['userId'] = userId
         return new Promise((resolve,reject)=>{
             
             axios({
@@ -114,7 +114,7 @@ export default class Axios {
                 timeout:5000,
                 data:options.data ? options.data : '',
                 //params: options.data.params?options.data.params : '',
-                headers: {'Content-Type': 'application/json'},
+                headers: {'Content-Type': 'application/json;charset=UTF-8'},
             }).then((response)=>{
                 if (options.data && options.data.isShowLoading !== false) {
                     loading = document.getElementById('ajaxLoading');
@@ -125,10 +125,15 @@ export default class Axios {
                     if (res.code == '1'){
                         resolve(res);
                     }else{
-                        Modal.info({
-                            title:"提示",
-                            content:res.msg
-                        })
+                        //如果用户登录信息失效，跳转SSO登录
+                        if(res.code == '0'&&res.errorStatus=='10'){
+                            window.location.href = FaceUrl.redirectUrl;
+                        }else{
+                            Modal.info({
+                                title:"提示",
+                                content:res.message
+                            })
+                        }
                     }
                 }else{
                     reject(response.data);
