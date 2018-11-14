@@ -4,8 +4,10 @@ import { StickyContainer, Sticky } from 'react-sticky';
 import axios from '../../../axios'
 import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
-
-
+import ImgGoBack from '../../../static/images/ystz/goback.png'
+import ImgSongShen from '../../../static/images/ystz/songshen.png'
+import ImgZjys from '../../../static/images/ystz/zjys.png'
+import ImgFwxm from '../../../static/images/ystz/fwxm.png'
 const Content = Layout;
 const { TextArea ,Search} = Input;
 const TreeNode = Tree.TreeNode; 
@@ -250,7 +252,8 @@ export default class Ysbztz extends React.Component{
         footer:'',
         count:0,
         zfgmfwxmcount:0,
-        type:'xmjbxx'
+        type:'xmjbxx',
+        visible:false
     }
     
     constructor(props) {
@@ -517,6 +520,22 @@ export default class Ysbztz extends React.Component{
                             departobj
                         }) 
                     }
+                    if(stateVar==='procStart'){
+                        let procStart =res.data;
+                        // this.setState({
+                        //     procStart
+                        // }) 
+                          let xmId= this.state.tableInfo.kid;
+                         window.open(`/#/proc/detail/${xmId}`,'_self')
+                           //window.location.reload();
+                    }
+                    if(stateVar==='procRun'){
+                        // let xmId= this.state.tableInfo.kid;
+                        //  window.open(`/#/proc/detail/${xmId}`,'_self')
+                        //  let xmId= this.state.tableInfo.kid;
+                        //   window.open(`/#/ysbztz/detail/${xmId}`,'_self')
+                        // window.location.reload();
+                    }
                          
                 }
             })
@@ -543,7 +562,8 @@ export default class Ysbztz extends React.Component{
             let zjysList='zjysList'; 
             this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zjysList);      
             let zfgmfwList='zfgmfwList'; 
-            this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);   
+            this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);  
+            
             }
         }) 
         //部门资金预算-获取下拉服务名称
@@ -551,7 +571,7 @@ export default class Ysbztz extends React.Component{
         let departObj='departObj'; 
         this.ajaxRequest(FaceUrl.depysjjflList,FaceUrl.POST,departObj);   
 
-
+       
         let procVo='procVo';
         this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
         
@@ -578,17 +598,102 @@ export default class Ysbztz extends React.Component{
     //动作执行
     handleAction = (data) => {
         return data.map((item) => {
-          return <Button key={item.id} type="primary" onClick={this.redirectToProc} style={{marginTop:2,marginLeft:53 }}>{item.name}</Button>;
+            return  <div key={item.id} style={{marginLeft:20,display:"inline-block"}}>
+                      <span><img src={ImgSongShen} style={{marginTop:-3,marginLeft:5,marginRight:4}}></img> 
+                         <a onClick={()=>{this.redirectToProc(item.id)}} style={{color:'#1890ff',height:24,display:"inline-block",letterSpacing:3}}>{item.name}</a>
+                      </span>
+                    </div>;
+            
+          //return <Button key={item.id} type="primary"  onClick={()=>{this.redirectToProc(item.id)}} style={{marginTop:2,marginLeft:53 }}>{item.name}</Button>;
         });
       }
      //跳转审批页面
-     redirectToProc = ()=>{
-        let xmId= this.state.tableInfo.kid;
-        window.open(`/#/proc/detail/${xmId}`,'_self')
+     redirectToProc = (value)=>{
+        //  if(value==='yssp_nb_cs_th'){
+        //       let xmId= this.state.tableInfo.kid;
+        //        window.open(`/#/ysbztz/detail/${xmId}`,'_self');
+        //        return ; 
+        //  } 
+         console.log(990)
+         console.log(value)
+         let procVo =this.state.procVo; 
+         let param ={};
+         param.procId=procVo.procId; 
+         param.actionId=value;
+        // if(procVo.procRecId){
+             //流程执行
+            //  param.procRecId=procVo.procRecId;
+            //  let selectedUsers=[];
+            //  let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
+            //  selectedUsers.push(User);
+            //  param.selectedUsers=selectedUsers; 
+            //        let procRun='procRun';
+            //         this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
+                    
+                
+           
+            //  axios.ajax({
+            //     url:FaceUrl.procGetPersons,
+            //     method:FaceUrl.POST,
+            //     baseApi:FaceUrl.bdApi, 
+            //     data:param
+            // }).then((res)=>{
+            //     if(res.code == '1') {
+            //         let data=res.data;
+            //         let chooseFlag=data.choose; 
+            //         param.selectedUsers=data.persons;
+            //         if(!chooseFlag){
+            //             let procRun='procRun';
+            //             this.ajaxRequest(FaceUrl.procRun,FaceUrl.GET,procRun,param);
+            //         }
+            //     }
+            // })
+            
+      //   }else{
+             //流程启动
+             console.log(11)
+             console.log(procVo)
+             console.log(this.state.tableInfo)
+                   param.xmId=this.state.tableInfo.kid;
+                   param.taskId=procVo.taskId;
+                   let selectedUsers=[];
+                   let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
+                   selectedUsers.push(User);
+                   param.selectedUsers=selectedUsers; 
+                        let procStart='procStart';
+                        this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param);
+                    
+               
+             
+            // axios.ajax({
+            //     url:FaceUrl.procGetPersons,
+            //     method:FaceUrl.POST,
+            //     baseApi:FaceUrl.bdApi, 
+            //     data:param
+            // }).then((res)=>{
+            //     if(res.code == '1') {
+            //         let data=res.data;
+            //         let chooseFlag=data.choose; 
+            //         param.selectedUsers=data.persons;
+            //         if(!chooseFlag){
+            //             let procStart='procStart';
+            //             this.ajaxRequest(FaceUrl.procStart,FaceUrl.GET,procStart,param);
+            //         }
+            //     }
+            // })
+            
+            
+      //   }
+         
+            
+ 
+        // let xmId= this.state.tableInfo.kid;
+        // window.open(`/#/proc/detail/${xmId}`,'_self')
      }
     //返回上一级
     handleGoLast =()=>{
-        window.history.go(-1);
+       // window.history.go(-1);
+       window.open(`/#/xmjbxx`,'_self')
     }
     //添加部门资金预算按钮
     handleAdddepartment = ()=>{ 
@@ -978,9 +1083,19 @@ export default class Ysbztz extends React.Component{
         })
     }
    /**---------------- end------ */
+   handleOk = () => { 
+      this.setState({visible: false });
+     
+  }
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  }
+
     render(){
-        
-        const { dataSource } = this.state;
+          
+         
+        const { dataSource,visible } = this.state;
         let type =this.state.type;
         let procVo=this.state.procVo;  
         let bmzjysButton =this.state.bmzjysButton;
@@ -1011,16 +1126,68 @@ export default class Ysbztz extends React.Component{
      // console.log(zfgmfwxmcolumns)
         return (
                 <StickyContainer>
-                    <div>
-                   
-                       {/* <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:3 }}>上报预算</Button> 
-                       <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>历程查看</Button> 
-                       <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120}}>预审审批</Button> 
-                       <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>目标下达</Button>  */}
+                    <div style={{borderBottom:'2px solid #d9d9d9',paddingBottom:10}}>
+                        <div style={{marginLeft:9,marginTop:10,display:"inline-block"}}>
+                        <span><img src={ImgGoBack} style={{marginTop:-3,marginLeft:5,marginRight:4}}></img> 
+                           <a  onClick={this.handleGoLast} style={{color:'#1890ff',height:24,display:"inline-block",letterSpacing:2}}>返回上层</a>
+                        </span>
+                         </div>
+
                         {this.state.actions}
-                        {!zjysObj  && <Button onClick={this.handleAdddepartment} type="primary" style={{marginTop:2,marginLeft:120 }}>添加部门资金预算</Button> }
-                        {!zfgmfwObj  && <Button onClick={this.handleAddzfgmfw} type="primary" style={{marginTop:2,marginLeft:120 }}>添加政府购买项目服务</Button> }
-                       <Button onClick={this.handleGoLast} type="primary" style={{marginTop:2,marginRight:600 ,marginLeft:200}}>返回上一级</Button> 
+
+                        {!zjysObj  && <div style={{marginLeft:20,display:"inline-block"}}>
+                        <span><img src={ImgZjys} style={{marginTop:-3,marginLeft:5,marginRight:4}}></img> 
+                           <a onClick={this.handleAdddepartment} style={{color:'#1890ff',height:24,display:"inline-block",letterSpacing:3}}>添加部门资金预算</a>
+                        </span>
+                        </div>}
+                        
+                        {!zfgmfwObj  &&<div style={{marginLeft:20,display:"inline-block"}}>
+                          <span><img src={ImgFwxm} style={{marginTop:-3,marginLeft:5,marginRight:4}}></img> 
+                           <a onClick={this.handleAddzfgmfw} style={{color:'#1890ff',height:24,display:"inline-block",letterSpacing:3}}>添加政府服务目录</a>
+                          </span>
+                        </div>}             
+                        
+                        {/* <Modal
+                            visible={visible}f
+                            title="Title"
+                            onOk={this.handleOk}
+                            onCancel={this.handleCancel}
+                            footer={[
+                                <Button key="back" onClick={this.handleCancel}>取消</Button>,
+                                <Button key="submit" type="primary" onClick={this.handleOk}>
+                                提交
+                                </Button>,
+                            ]}
+                             > 
+                                <ETable
+                                    columns={columns}
+                                    updateSelectedItem={Utils.updateSelectedItem.bind(this)}
+                                    dataSource={this.state.list}
+                                    selectedRowKeys={this.state.selectedRowKeys}
+                                    selectedIds={this.state.selectedIds}
+                                    selectedItem={this.state.selectedItem}
+                                    rowSelection={rowSelection}
+                                    pagination={false}
+                                 />
+                                <Table  
+                                columns={columns}
+                                dataSource={this.state.dataSource}
+                                bordered
+                                size="size"
+                                pagination={false}
+                                onRow={(record,index) => ({
+                                    onClick: ()=>{ 
+                                        this.onRowClick(record,index)
+                                    }
+                                  })}
+                                
+                            />
+                        </Modal> */}  
+                        
+                        
+                        {/* {!zjysObj  && <Button onClick={this.handleAdddepartment} type="primary" style={{marginTop:2,marginLeft:120 }}>添加部门资金预算</Button> }
+                        {!zfgmfwObj  && <Button onClick={this.handleAddzfgmfw} type="primary" style={{marginTop:2,marginLeft:120 }}>添加政府购买项目服务</Button> } */}
+                       {/* <Button onClick={this.handleGoLast} type="primary" style={{marginTop:2,marginRight:600 ,marginLeft:200}}>返回上一级</Button>  */}
                          
                    </div>
                
