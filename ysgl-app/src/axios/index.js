@@ -2,6 +2,7 @@ import JsonP from 'jsonp'
 import axios from 'axios'
 import Utils from './../utils/utils'
 import FaceUrl from './../utils/apiAndInterfaceUrl'
+// import Propties from './../data/propties.json'
 import { Modal , message} from 'antd'
 
 // 配置 CORS 跨域
@@ -127,6 +128,7 @@ export default class Axios {
                     }else{
                         //如果用户登录信息失效，跳转SSO登录
                         if(res.code == '0'&&res.errorStatus=='10'){
+                            console.log("res.code==="+res.code);
                             window.location.href = FaceUrl.redirectUrl;
                         }else{
                             Modal.info({

@@ -30,7 +30,7 @@ class Auth extends React.Component{
             let res = Dictionary.userInfo;
             userId = res.userID;
             dispatch(setUserInfo(userId))
-            console.log("auth_Dictionary==="+userId);
+            //console.log("auth_Dictionary==="+userId);
             let { component: Component, ...rest} = this.props;
             
             return (

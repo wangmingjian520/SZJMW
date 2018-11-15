@@ -1187,7 +1187,7 @@ class OpenFormTable extends React.Component{
         return (
             <Card
             title="项目基本信息表"
-            extra={<a href="#">上报预算</a> }
+            // extra={<a href="#">上报预算</a> }
             style={{ width: 1000 }}
             >
             <Form layout="inline">
