@@ -5,6 +5,10 @@ import axios from '../../axios'
 import moment from 'moment'
 import FaceUrl from '../../utils/apiAndInterfaceUrl'
 
+import ImgGoBack from '../../static/images/ystz/goback.png'
+import ImgSongShen from '../../static/images/ystz/songshen.png'
+import ImgZjys from '../../static/images/ystz/zjys.png'
+import ImgFwxm from '../../static/images/ystz/fwxm.png'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
@@ -219,6 +223,23 @@ export default class Proc extends React.Component{
                             this.setState({
                                 fwxmDataSource :list
                             }) 
+                    }
+                    // if(stateVar==='procStart'){
+                    //     let procStart =res.data;
+                    //     // this.setState({
+                    //     //     procStart
+                    //     // }) 
+                        
+                    //      window.location.reload();
+                    // }
+                    if(stateVar==='procRun'){           //||param.actionId==='yssp_cwwld_bcw_pz'
+                        if(param.actionId==='yssp_nb_cs_th'||param.actionId==='yssp_nb_fs_thlr'||param.actionId==='yssp_msc_cs_thcs'){
+                          let xmId= this.state.tableInfo.kid;
+                          window.open(`/#/ysbztz/detail/${xmId}`,'_self')
+                        }else{
+                            window.location.reload();
+                        }
+                       
                     }    
                 }
             })
@@ -245,12 +266,19 @@ export default class Proc extends React.Component{
             let zjysList='zjysList'; 
             this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zjysList);      
             let zfgmfwList='zfgmfwList'; 
-            this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);   
+            this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);  
+
+            if(tableInfo.status ==='3'){
+                this.setState({actions: '' });
+             }else{
+                let procVo='procVo';
+                this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
+             } 
             }
         }) 
            
-        let procVo='procVo';
-        this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
+        // let procVo='procVo';
+        // this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
         
         
     }
@@ -259,15 +287,99 @@ export default class Proc extends React.Component{
     //动作执行
     handleAction = (data) => {
         return data.map((item) => {
-          return <Button key={item.id} type="primary" style={{marginTop:2,marginLeft:53 }}>{item.name}</Button>;
+            return  <div key={item.id} style={{marginLeft:20,display:"inline-block"}}>
+            <span><img src={ImgSongShen} style={{marginTop:-3,marginLeft:5,marginRight:4}}></img> 
+               <a onClick={()=>{this.redirectToProc(item.id)}} style={{color:'#1890ff',height:24,display:"inline-block",letterSpacing:3}}>{item.name}</a>
+            </span>
+          </div>;
         });
       }
 
     //返回上一级
     handleGoLast =()=>{
-        window.history.go(-1);
+       // window.history.go(-1);
+       //let xmId= this.state.tableInfo.kid;
+        window.open(`/#/xmjbxx`,'_self')
     }
-    
+    //跳转审批页面
+    redirectToProc = (value)=>{
+ 
+        console.log(990)
+        console.log(value)
+        let procVo =this.state.procVo; 
+        let param ={};
+        param.procId=procVo.procId; 
+        param.actionId=value;
+    //    if(procVo.procRecId&&!this.state.tableInfo.status==='1'){
+            //流程执行
+            param.procRecId=procVo.procRecId;
+            let selectedUsers=[];
+            let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
+            selectedUsers.push(User);
+            param.selectedUsers=selectedUsers; 
+                  let procRun='procRun';
+                  this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
+                   
+               
+          
+           //  axios.ajax({
+           //     url:FaceUrl.procGetPersons,
+           //     method:FaceUrl.POST,
+           //     baseApi:FaceUrl.bdApi, 
+           //     data:param
+           // }).then((res)=>{
+           //     if(res.code == '1') {
+           //         let data=res.data;
+           //         let chooseFlag=data.choose; 
+           //         param.selectedUsers=data.persons;
+           //         if(!chooseFlag){
+           //             let procRun='procRun';
+           //             this.ajaxRequest(FaceUrl.procRun,FaceUrl.GET,procRun,param);
+           //         }
+           //     }
+           // })
+           
+     //  }else{
+            //流程启动
+            // console.log(11)
+            // console.log(procVo)
+            // console.log(this.state.tableInfo)
+            //       param.xmId=this.state.tableInfo.kid;
+            //       param.taskId=procVo.taskId;
+            //       let selectedUsers=[];
+            //       let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
+            //       selectedUsers.push(User);
+            //       param.selectedUsers=selectedUsers; 
+            //            let procStart='procStart';
+            //            this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param);
+                   
+              
+            
+           // axios.ajax({
+           //     url:FaceUrl.procGetPersons,
+           //     method:FaceUrl.POST,
+           //     baseApi:FaceUrl.bdApi, 
+           //     data:param
+           // }).then((res)=>{
+           //     if(res.code == '1') {
+           //         let data=res.data;
+           //         let chooseFlag=data.choose; 
+           //         param.selectedUsers=data.persons;
+           //         if(!chooseFlag){
+           //             let procStart='procStart';
+           //             this.ajaxRequest(FaceUrl.procStart,FaceUrl.GET,procStart,param);
+           //         }
+           //     }
+           // })
+           
+           
+    //   }
+        
+           
+
+       // let xmId= this.state.tableInfo.kid;
+       // window.open(`/#/proc/detail/${xmId}`,'_self')
+    }
     
     // onTabClick=(value)=>{
     //     if(value === '1'){
@@ -298,14 +410,23 @@ export default class Proc extends React.Component{
 
         return (
                 <StickyContainer>
-                    <div>
-                   
+                 <div style={{borderBottom:'2px solid #d9d9d9',paddingBottom:10}}>
+                    <div style={{marginLeft:9,marginTop:10,display:"inline-block"}}>
+                        <span><img src={ImgGoBack} style={{marginTop:-3,marginLeft:5,marginRight:4}}></img> 
+                           <a  onClick={this.handleGoLast} style={{color:'#1890ff',height:24,display:"inline-block",letterSpacing:2}}>返回上层</a>
+                        </span>
+                         </div>
+                        {this.state.actions}
+
+                        
+                        
+                       
                        {/* <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:3 }}>上报预算</Button> 
                        <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>历程查看</Button> 
                        <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120}}>预审审批</Button> 
                        <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>目标下达</Button>  */}
                         {/* {this.state.actions} */}
-                       <Button onClick={this.handleGoLast} type="primary" style={{marginTop:2,marginRight:600 ,marginLeft:200}}>返回上一级</Button> 
+                       
                    </div>
                
                     
