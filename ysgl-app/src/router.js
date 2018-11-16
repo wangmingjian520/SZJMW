@@ -26,6 +26,10 @@ import Ysbztz from './pages/ysbz/ystz/index';
 
 import Proc from './pages/proc/index';
 
+import Spdblb from './pages/yssp/spdblb'
+import Spzblb from './pages/yssp/spzblb'
+import Splsbj from './pages/yssp/splsbj'
+
 export default class IRouter extends React.Component{
     
     render(){
@@ -65,6 +69,12 @@ export default class IRouter extends React.Component{
                             <AuthRoute path="/zfgmfwml" component={Zfgmfwml}/>
                              {/*流程审批*/}
                             <AuthRoute path="/proc/:detailId" component={Proc} />
+                            {/*审批待办*/}
+                            <AuthRoute path="/spdblb" component={Spdblb} />
+                            {/*审批在办*/}
+                            <AuthRoute path="/spzblb" component={Spzblb} />
+                            {/*审批历史办结*/}
+                            <AuthRoute path="/splsbj" component={Splsbj} />
                             <Route component={NoMatch}></Route>
                         </Switch>
                         </Index_main>

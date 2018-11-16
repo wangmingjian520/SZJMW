@@ -25,6 +25,14 @@ export default class Dictionary {
     }
     //预算计划/审批状态
     static spStatus = {
+        '1':'编制中',
+        '2':'审核中',
+        '3':'执行中',
+        '4':'已完成',
+        '5':'调整中'
+    }
+    //预算计划/审批状态
+    static spStatus = {
         '1':'初核',
         '2':'复核',
         '3':'退回',

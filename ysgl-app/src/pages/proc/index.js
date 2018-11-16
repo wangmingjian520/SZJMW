@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Button , Form ,  Table , Card , Popconfirm ,Input , InputNumber ,message,Tree,TreeSelect , Layout ,Select ,DatePicker ,Tabs ,Row, Col} from  'antd';
+import {  Button , Form ,  Table , Card , Popconfirm ,Input ,Modal, InputNumber ,message,Tree,TreeSelect , Layout ,Select ,DatePicker ,Tabs ,Row, Col} from  'antd';
 import { StickyContainer, Sticky } from 'react-sticky';
 import axios from '../../axios'
 import moment from 'moment'
@@ -32,8 +32,11 @@ export default class Proc extends React.Component{
     state={
         dataSource:[],
         fwxmDataSource:[],
+        userdataSource:[],
         footer:'', 
-        type:'xmjbxx'
+        type:'xmjbxx',
+        visible :false,
+        selectedRowKeys: []
     }
     
     constructor(props) {
@@ -171,7 +174,19 @@ export default class Proc extends React.Component{
               key: 'remark',
               width: 200,
               editable: 'true',
-          }];     
+          }]; 
+           //人员信息列表
+      this.userColumns = [{
+        title: '编号',
+        dataIndex: 'no',
+        key:'no',
+        width: 50, 
+      },{
+        title: '姓名',
+        dataIndex: 'name',
+        key:'name',
+        width: 100, 
+      }]    
       }
    
       ajaxRequest =(url,method,stateVar,param)=>{ 
@@ -224,21 +239,21 @@ export default class Proc extends React.Component{
                                 fwxmDataSource :list
                             }) 
                     }
-                    // if(stateVar==='procStart'){
-                    //     let procStart =res.data;
-                    //     // this.setState({
-                    //     //     procStart
-                    //     // }) 
+                    if(stateVar==='procStart'){
+                        let procStart =res.data;
+                        // this.setState({
+                        //     procStart
+                        // }) 
                         
-                    //      window.location.reload();
-                    // }
+                         window.location.reload();
+                    }
                     if(stateVar==='procRun'){           //||param.actionId==='yssp_cwwld_bcw_pz'
-                        if(param.actionId==='yssp_nb_cs_th'||param.actionId==='yssp_nb_fs_thlr'||param.actionId==='yssp_msc_cs_thcs'){
-                          let xmId= this.state.tableInfo.kid;
-                          window.open(`/#/ysbztz/detail/${xmId}`,'_self')
-                        }else{
+                        // if(param.actionId==='yssp_nb_cs_th'||param.actionId==='yssp_nb_fs_thlr'||param.actionId==='yssp_msc_cs_thcs'){
+                        //   let xmId= this.state.tableInfo.kid;
+                        //   window.open(`#/ysbztz/detail/${xmId}`,'_self')
+                        // }else{
                             window.location.reload();
-                        }
+                       // }
                        
                     }    
                 }
@@ -298,106 +313,148 @@ export default class Proc extends React.Component{
     //返回上一级
     handleGoLast =()=>{
        // window.history.go(-1);
-       //let xmId= this.state.tableInfo.kid;
-        window.open(`/#/xmjbxx`,'_self')
+       //let xmId= this.state.tableInfo.kid;http://192.168.50.183:3030/#/spdblb
+       window.open(`#/spdblb`,'_self')
+       // window.open(`/#/xmjbxx`,'_self')
     }
-    //跳转审批页面
-    redirectToProc = (value)=>{
- 
-        console.log(990)
-        console.log(value)
-        let procVo =this.state.procVo; 
-        let param ={};
-        param.procId=procVo.procId; 
-        param.actionId=value;
-    //    if(procVo.procRecId&&!this.state.tableInfo.status==='1'){
-            //流程执行
-            param.procRecId=procVo.procRecId;
-            let selectedUsers=[];
-            let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
-            selectedUsers.push(User);
-            param.selectedUsers=selectedUsers; 
-                  let procRun='procRun';
-                  this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
-                   
-               
-          
-           //  axios.ajax({
-           //     url:FaceUrl.procGetPersons,
-           //     method:FaceUrl.POST,
-           //     baseApi:FaceUrl.bdApi, 
-           //     data:param
-           // }).then((res)=>{
-           //     if(res.code == '1') {
-           //         let data=res.data;
-           //         let chooseFlag=data.choose; 
-           //         param.selectedUsers=data.persons;
-           //         if(!chooseFlag){
-           //             let procRun='procRun';
-           //             this.ajaxRequest(FaceUrl.procRun,FaceUrl.GET,procRun,param);
-           //         }
-           //     }
-           // })
-           
-     //  }else{
-            //流程启动
-            // console.log(11)
-            // console.log(procVo)
-            // console.log(this.state.tableInfo)
-            //       param.xmId=this.state.tableInfo.kid;
-            //       param.taskId=procVo.taskId;
-            //       let selectedUsers=[];
-            //       let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
-            //       selectedUsers.push(User);
-            //       param.selectedUsers=selectedUsers; 
-            //            let procStart='procStart';
-            //            this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param);
-                   
-              
-            
-           // axios.ajax({
-           //     url:FaceUrl.procGetPersons,
-           //     method:FaceUrl.POST,
-           //     baseApi:FaceUrl.bdApi, 
-           //     data:param
-           // }).then((res)=>{
-           //     if(res.code == '1') {
-           //         let data=res.data;
-           //         let chooseFlag=data.choose; 
-           //         param.selectedUsers=data.persons;
-           //         if(!chooseFlag){
-           //             let procStart='procStart';
-           //             this.ajaxRequest(FaceUrl.procStart,FaceUrl.GET,procStart,param);
-           //         }
-           //     }
-           // })
-           
-           
-    //   }
-        
-           
+         //模态框选人时的改变
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+       
+    console.log('selectedRowKeys')
+    console.log(selectedRowKeys) 
+    console.log(selectedRows)
+   
+     const selectedIds = [];
+      selectedRows.map((item)=>{
+          selectedIds.push(item.id);
+      });
+      this.setState({
+          selectedIds:selectedIds,
+          selectedItem: selectedRows
+      }); 
+   
+};
 
-       // let xmId= this.state.tableInfo.kid;
-       // window.open(`/#/proc/detail/${xmId}`,'_self')
+//取消
+handleCancel = () => {
+    this.setState({ visible: false });
+  }
+//模态框提交
+    handleOk = () => { 
+
+       if(this.state.choose){
+        if(this.state.selectedItem){
+            let  advice=  document.getElementById('advice').value;
+          //  流程启动
+           let procVo =this.state.procVo; 
+           let param ={};
+            param.procId=procVo.procId; 
+            param.actionId=this.state.actionId;
+            param.xmId=this.state.tableInfo.kid;
+            param.taskId=procVo.taskId;
+            param.selectedUsers=this.state.selectedItem;
+            if(this.state.actionId==='yssp_nb_lr_ss'){
+                let procStart='procStart';
+                this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
+            }else{ 
+                param.procRecId=procVo.procRecId;
+                let procRun='procRun';
+                this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
+            } 
+                    
+            this.setState({visible: false });
+
+        }else{
+            message.error('请选择选择人员！');
+        } 
+       }else{
+        let  advice=  document.getElementById('advice').value;
+        //  流程启动
+         let procVo =this.state.procVo; 
+         let param ={};
+          param.procId=procVo.procId; 
+          param.actionId=this.state.actionId;
+          param.xmId=this.state.tableInfo.kid;
+          param.taskId=procVo.taskId;
+          param.selectedUsers=this.state.userdataSource;
+          param.procRecId=procVo.procRecId; 
+          if(this.state.actionId==='yssp_nb_lr_ss'){
+            let procStart='procStart';
+            this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
+        }else{ 
+            param.procRecId=procVo.procRecId;
+            let procRun='procRun';
+            this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
+        } 
+          this.setState({visible: false });
+       }
+ 
+        
     }
+     //跳转审批页面
+     redirectToProc = (value)=>{
+        //  if(value==='yssp_nb_cs_th'){
+        //       let xmId= this.state.tableInfo.kid;
+        //        window.open(`/#/ysbztz/detail/${xmId}`,'_self');
+        //        return ; 
+        //  } 
+         
+         let procVo =this.state.procVo; 
+         console.log(11)
+         console.log(procVo)
+         console.log(value)
+         let param ={};
+         param.procId=procVo.procId; 
+         param.actionId=value;
+         param.xmId=this.state.tableInfo.kid;
+         param.taskId=procVo.taskId;
+         param.procRecId=procVo.procRecId;
+         if(value==='yssp_nb_cs_th'||value==='yssp_nb_fs_thlr'){
+            param.procRecId=procVo.procRecId;
+             let selectedUsers=[];
+             let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
+             selectedUsers.push(User);
+             param.selectedUsers=selectedUsers; 
+                   let procRun='procRun';
+                    this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
+        }else{
+            axios.ajax({
+                url:FaceUrl.procGetPersons,
+                method:FaceUrl.POST,
+                baseApi:FaceUrl.bdApi, 
+                data:param
+            }).then((res)=>{
+                if(res.code == '1') {
+                    let data=res.data; 
+                    let chooseFlag=data.choose; 
+                    //let persons =data.persons ;
+                    let list =data.persons.map((item,index)=>{
+                        item.key = index;
+                        item.no=index+1;
+                        return item
+                        })
+                   if(chooseFlag){
+                    this.setState({ 
+                        choose:chooseFlag
+                    });
+                   }
+                    this.setState({ 
+                        visible: true,
+                        userdataSource:list,
+                        actionId :value, 
+                    });
+              
+                } 
+                 
+            })
+        }
+     
+            
+       
+               
+     } 
     
-    // onTabClick=(value)=>{
-    //     if(value === '1'){
-    //         this.setState({
-    //             type:'xmjbxx'
-    //         })
-    //       }
-    //     if(value === '2'){
-    //         this.setState({
-    //             type:'bmzjys'
-    //         })
-    //       }
-    //     if(value === '3'){
-    //         this.setState({
-    //             type:'zfgmfw'
-    //         })
-    //     }
-    // }
+   
    
     
     render(){
@@ -407,7 +464,12 @@ export default class Proc extends React.Component{
         // let procVo=this.state.procVo;  
         // let bmzjysButton =this.state.bmzjysButton;
         // let zfgmfwButton= this. state.zfgmfwButton;
-
+        let rowSelect = {};
+        //  alert(this.state.choose)
+          if(this.state.choose){ 
+            rowSelect = { rowSelection:{type:'checkbox',
+             onChange: this.onSelectChange }}; 
+          } 
         return (
                 <StickyContainer>
                  <div style={{borderBottom:'2px solid #d9d9d9',paddingBottom:10}}>
@@ -419,7 +481,52 @@ export default class Proc extends React.Component{
                         {this.state.actions}
 
                         
-                        
+                        <Modal
+                            visible={this.state.visible}
+                            title="选择人员或意见"
+                            onOk={this.handleOk}
+                            onCancel={this.handleCancel}
+                            footer={[
+                                <Button key="back" onClick={this.handleCancel}>取消</Button>,
+                                <Button key="submit" type="primary" onClick={this.handleOk}>
+                                提交
+                                </Button>,
+                            ]}
+                             > 
+                             <div>
+                                {/* <ETable
+                                    columns={columns}
+                                    updateSelectedItem={Utils.updateSelectedItem.bind(this)}
+                                    dataSource={this.state.list}
+                                    selectedRowKeys={this.state.selectedRowKeys}
+                                    selectedIds={this.state.selectedIds}
+                                    selectedItem={this.state.selectedItem}
+                                    rowSelection={rowSelection}
+                                    pagination={false}
+                                 /> */}
+                                <Table  
+                                {...rowSelect}
+                               // rowSelection={rowSelect }
+                                columns={this.userColumns}
+                                dataSource={this.state.userdataSource}
+                                bordered
+                                size="size"
+                                pagination={false}
+                                onRow={(record,index) => ({
+                                    onClick: ()=>{ 
+                                        this.onRowClick(record,index)
+                                    }
+                                  })}
+                                />
+                               {/* {border:'1px solid #d9d9d9'} */}
+                            <div style={{height:200}}>意见填写<div style={{height:150}}><TextArea id='advice' style={{ width: 500 }}
+                                    autosize={{minRows:6}}
+                                    placeholder="请填写意见" 
+                                    /></div>
+                            
+                            </div>
+                          </div>
+                        </Modal> 
                        
                        {/* <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:3 }}>上报预算</Button> 
                        <Button onClick={this.handleAdd} type="primary" style={{marginTop:2,marginLeft:120 }}>历程查看</Button> 
