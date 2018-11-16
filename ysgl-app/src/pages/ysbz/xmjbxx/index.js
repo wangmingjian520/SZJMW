@@ -25,7 +25,7 @@ class Xmjbxx extends React.Component{
     }
 
     componentDidMount(){
-      this.requestList()
+      //this.requestList()
     }
 
     requestList = ()=>{
@@ -75,9 +75,10 @@ class Xmjbxx extends React.Component{
             if(res.code == '1') {
                 let tableInfo = res.data;
                 if(tableInfo.status==='1'){
-                    window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
+
+                    window.open(`#ysbztz/detail/${value.kid}`,'_self')
                 }else{
-                    window.open(`/#/proc/detail/${value.kid}`,'_self')
+                    window.open(`#/proc/detail/${value.kid}`,'_self')
                 }
             } 
         })

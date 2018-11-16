@@ -123,19 +123,15 @@ export default class Axios {
                 }
                 if (response.status == '200'){
                     let res = response.data;
-                    if (res.code == '1'){
-                        resolve(res);
-                    }else{
+                    resolve(res);
+                   
                         //如果用户登录信息失效，跳转SSO登录
-                        if(res.code == '0'&&res.errorStatus=='10'){
-                            console.log("res.code==="+res.code);
-                            window.location.href = FaceUrl.redirectUrl;
-                        }else{
+                       if(res.code == '0'){
                             Modal.info({
                                 title:"提示",
                                 content:res.message
                             })
-                        }
+                        
                     }
                 }else{
                     reject(response.data);

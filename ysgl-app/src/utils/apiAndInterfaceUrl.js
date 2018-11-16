@@ -2,18 +2,18 @@ export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
 
-    static bdApi = "http://192.168.50.30:9001/api/api/";
+    static bdApi = "http://192.168.50.29:8060/bud/api/";
     //static bdApi = "http://119.147.216.208/api/intrl/bud/api/";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //h1接口
-    static redirectUrl = 'http://192.168.50.30:9001/api/redirect?url=http://192.168.50.30:9001/';
+    static redirectUrl = 'http://192.168.50.29:8060/bud/redirect?url=http://192.168.50.29:3030';
     //static redirectUrl = 'http://119.147.216.208/api/intrl/bud/redirect?url=http://119.147.216.208/intrl/budget-web/';
     
     //userInfo接口
     //static webApi = "http://192.168.50.29:8060/";
     // static webApi = "http://119.147.216.208/api/intrl/";
-    static userInfoUrl = '/user/info';
+    static userInfoUrl = '/platform/getUser';
 
     //预算编制-项目基本信息
      //预算编制-政府购买服务项目管理
