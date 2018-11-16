@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Button , Form ,  Table , Card , Popconfirm ,Input , InputNumber ,message,Tree,TreeSelect , Layout ,Select ,DatePicker ,Tabs ,Row, Col} from  'antd';
+import {  Button , Form ,  Table , Card , Popconfirm ,Input ,Modal, InputNumber ,message,Tree,TreeSelect , Layout ,Select ,DatePicker ,Tabs ,Row, Col} from  'antd';
 import { StickyContainer, Sticky } from 'react-sticky';
 import axios from '../../../axios'
 import moment from 'moment'
@@ -249,11 +249,13 @@ export default class Ysbztz extends React.Component{
     state={
         dataSource:[],
         fwxmDataSource:[],
+        userdataSource:[],
         footer:'',
         count:0,
         zfgmfwxmcount:0,
         type:'xmjbxx',
-        visible:false
+        visible:false,
+        selectedRowKeys: []
     }
     
     constructor(props) {
@@ -446,8 +448,18 @@ export default class Ysbztz extends React.Component{
               
             },
           }];    
-
-    
+      //人员信息列表
+      this.userColumns = [{
+        title: '编号',
+        dataIndex: 'no',
+        key:'no',
+        width: 50, 
+      },{
+        title: '姓名',
+        dataIndex: 'name',
+        key:'name',
+        width: 100, 
+      }]
       }
     //渲染树节点
     renderTreeNodes = (data) => {
@@ -521,20 +533,22 @@ export default class Ysbztz extends React.Component{
                         }) 
                     }
                     if(stateVar==='procStart'){
-                        let procStart =res.data;
+                      //  let procStart =res.data;
                         // this.setState({
                         //     procStart
                         // }) 
-                          let xmId= this.state.tableInfo.kid;
-                         window.open(`/#/proc/detail/${xmId}`,'_self')
+                        //   let xmId= this.state.tableInfo.kid;http://192.168.50.183:3030/#/xmjbxx
+                          window.open(`#/xmjbxx`,'_self')
                            //window.location.reload();
+                           
+
                     }
                     if(stateVar==='procRun'){
                         // let xmId= this.state.tableInfo.kid;
                         //  window.open(`/#/proc/detail/${xmId}`,'_self')
                         //  let xmId= this.state.tableInfo.kid;
                         //   window.open(`/#/ysbztz/detail/${xmId}`,'_self')
-                        // window.location.reload();
+                          window.location.reload();
                     }
                          
                 }
@@ -563,15 +577,18 @@ export default class Ysbztz extends React.Component{
             this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zjysList);      
             let zfgmfwList='zfgmfwList'; 
             this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);  
-            
+            // if(tableInfo.status==='1'){
+            //     let procVo='procVo';
+            //     this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
+            // }
             }
         }) 
         //部门资金预算-获取下拉服务名称
          
         let departObj='departObj'; 
         this.ajaxRequest(FaceUrl.depysjjflList,FaceUrl.POST,departObj);   
-
-       
+        
+        
         let procVo='procVo';
         this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
         
@@ -607,6 +624,79 @@ export default class Ysbztz extends React.Component{
           //return <Button key={item.id} type="primary"  onClick={()=>{this.redirectToProc(item.id)}} style={{marginTop:2,marginLeft:53 }}>{item.name}</Button>;
         });
       }
+       //模态框选人时的改变
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+       
+    console.log('selectedRowKeys')
+    console.log(selectedRowKeys) 
+    console.log(selectedRows)
+   
+     const selectedIds = [];
+      selectedRows.map((item)=>{
+          selectedIds.push(item.id);
+      });
+      this.setState({
+          selectedIds:selectedIds,
+          selectedItem: selectedRows
+      }); 
+   
+};
+//模态框提交
+    handleOk = () => { 
+
+       if(this.state.choose){
+        if(this.state.selectedItem){
+            let  advice=  document.getElementById('advice').value;
+          //  流程启动
+           let procVo =this.state.procVo; 
+           let param ={};
+            param.procId=procVo.procId; 
+            param.actionId=this.state.actionId;
+            param.xmId=this.state.tableInfo.kid;
+            param.taskId=procVo.taskId;
+            param.selectedUsers=this.state.selectedItem;
+            if(this.state.actionId==='yssp_nb_lr_ss'){
+                let procStart='procStart';
+                this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
+            }else{ 
+                param.procRecId=procVo.procRecId;
+                let procRun='procRun';
+                this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
+            } 
+                    
+            this.setState({visible: false });
+
+        }else{
+            message.error('请选择选择人员！');
+        } 
+       }else{
+        let  advice=  document.getElementById('advice').value;
+        //  流程启动
+         let procVo =this.state.procVo; 
+         let param ={};
+          param.procId=procVo.procId; 
+          param.actionId=this.state.actionId;
+          param.xmId=this.state.tableInfo.kid;
+          param.taskId=procVo.taskId;
+          param.selectedUsers=this.state.userdataSource;
+          param.procRecId=procVo.procRecId; 
+          if(this.state.actionId==='yssp_nb_lr_ss'){
+            let procStart='procStart';
+            this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
+        }else{ 
+            param.procRecId=procVo.procRecId;
+            let procRun='procRun';
+            this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
+        } 
+          this.setState({visible: false });
+       }
+
+        
+        
+        
+    //    this.setState({visible: false });
+        
+    }
      //跳转审批页面
      redirectToProc = (value)=>{
         //  if(value==='yssp_nb_cs_th'){
@@ -614,12 +704,62 @@ export default class Ysbztz extends React.Component{
         //        window.open(`/#/ysbztz/detail/${xmId}`,'_self');
         //        return ; 
         //  } 
-         console.log(990)
-         console.log(value)
+         
          let procVo =this.state.procVo; 
+         console.log(11)
+         console.log(procVo)
+         console.log(value)
          let param ={};
          param.procId=procVo.procId; 
          param.actionId=value;
+         param.xmId=this.state.tableInfo.kid;
+         param.taskId=procVo.taskId;
+         param.procRecId=procVo.procRecId;
+         if(value==='yssp_nb_cs_th'||value==='yssp_nb_fs_thlr'){
+            param.procRecId=procVo.procRecId;
+             let selectedUsers=[];
+             let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
+             selectedUsers.push(User);
+             param.selectedUsers=selectedUsers; 
+                   let procRun='procRun';
+                    this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
+        }else{
+            axios.ajax({
+                url:FaceUrl.procGetPersons,
+                method:FaceUrl.POST,
+                baseApi:FaceUrl.bdApi, 
+                data:param
+            }).then((res)=>{
+                if(res.code == '1') {
+                    let data=res.data; 
+                    let chooseFlag=data.choose; 
+                    //let persons =data.persons ;
+                    let list =data.persons.map((item,index)=>{
+                        item.key = index;
+                        item.no=index+1;
+                        return item
+                        })
+                   if(chooseFlag){
+                    this.setState({ 
+                        choose:chooseFlag
+                    });
+                   }
+                    this.setState({ 
+                        visible: true,
+                        userdataSource:list,
+                        actionId :value, 
+                    });
+                   // param.selectedUsers=data.persons;
+                     
+                        // let procRun='procRun';
+                        // this.ajaxRequest(FaceUrl.procRun,FaceUrl.GET,procRun,param);
+                    
+                } 
+                // else{
+                //     message.error('该用户没有相关人员信息');
+                // }
+            })
+        }
         // if(procVo.procRecId){
              //流程执行
             //  param.procRecId=procVo.procRecId;
@@ -630,40 +770,23 @@ export default class Ysbztz extends React.Component{
             //        let procRun='procRun';
             //         this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
                     
-                
-           
-            //  axios.ajax({
-            //     url:FaceUrl.procGetPersons,
-            //     method:FaceUrl.POST,
-            //     baseApi:FaceUrl.bdApi, 
-            //     data:param
-            // }).then((res)=>{
-            //     if(res.code == '1') {
-            //         let data=res.data;
-            //         let chooseFlag=data.choose; 
-            //         param.selectedUsers=data.persons;
-            //         if(!chooseFlag){
-            //             let procRun='procRun';
-            //             this.ajaxRequest(FaceUrl.procRun,FaceUrl.GET,procRun,param);
-            //         }
-            //     }
-            // })
+            
             
       //   }else{
              //流程启动
-             console.log(11)
-             console.log(procVo)
-             console.log(this.state.tableInfo)
-                   param.xmId=this.state.tableInfo.kid;
-                   param.taskId=procVo.taskId;
-                   let selectedUsers=[];
-                   let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
-                   selectedUsers.push(User);
-                   param.selectedUsers=selectedUsers; 
-                        let procStart='procStart';
-                        this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param);
+            //  console.log(11)
+            //  console.log(procVo)
+            //  console.log(this.state.tableInfo)
+            //        param.xmId=this.state.tableInfo.kid;
+            //        param.taskId=procVo.taskId;
+            //        let selectedUsers=[];
+            //        let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
+            //        selectedUsers.push(User);
+            //        param.selectedUsers=selectedUsers; 
+            //             let procStart='procStart';
+            //             this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param);
                     
-               
+                        
              
             // axios.ajax({
             //     url:FaceUrl.procGetPersons,
@@ -693,7 +816,7 @@ export default class Ysbztz extends React.Component{
     //返回上一级
     handleGoLast =()=>{
        // window.history.go(-1);
-       window.open(`/#/xmjbxx`,'_self')
+       window.open(`#/xmjbxx`,'_self')
     }
     //添加部门资金预算按钮
     handleAdddepartment = ()=>{ 
@@ -1083,14 +1206,13 @@ export default class Ysbztz extends React.Component{
         })
     }
    /**---------------- end------ */
-   handleOk = () => { 
-      this.setState({visible: false });
-     
-  }
+  
 
   handleCancel = () => {
     this.setState({ visible: false });
   }
+ 
+
 
     render(){
           
@@ -1120,10 +1242,13 @@ export default class Ysbztz extends React.Component{
         
       //  console.log(columns)
       const zfgmfwxmcolumns = this.renderzfgmfwxmColumns(this.zfgmfwColumns);
+      let rowSelect = {};
+     //  alert(this.state.choose)
+       if(this.state.choose){ 
+         rowSelect = { rowSelection:{type:'checkbox',
+          onChange: this.onSelectChange }}; 
+       } 
      
-
-     // console.log(columns)
-     // console.log(zfgmfwxmcolumns)
         return (
                 <StickyContainer>
                     <div style={{borderBottom:'2px solid #d9d9d9',paddingBottom:10}}>
@@ -1135,21 +1260,21 @@ export default class Ysbztz extends React.Component{
 
                         {this.state.actions}
 
-                        {!zjysObj  && <div style={{marginLeft:20,display:"inline-block"}}>
+                        {!zjysObj && this.state.tableInfo &&this.state.tableInfo.status==='1' && <div style={{marginLeft:20,display:"inline-block"}}>
                         <span><img src={ImgZjys} style={{marginTop:-3,marginLeft:5,marginRight:4}}></img> 
                            <a onClick={this.handleAdddepartment} style={{color:'#1890ff',height:24,display:"inline-block",letterSpacing:3}}>添加部门资金预算</a>
                         </span>
                         </div>}
                         
-                        {!zfgmfwObj  &&<div style={{marginLeft:20,display:"inline-block"}}>
+                        {!zfgmfwObj&&this.state.tableInfo && this.state.tableInfo.status==='1' &&<div style={{marginLeft:20,display:"inline-block"}}>
                           <span><img src={ImgFwxm} style={{marginTop:-3,marginLeft:5,marginRight:4}}></img> 
                            <a onClick={this.handleAddzfgmfw} style={{color:'#1890ff',height:24,display:"inline-block",letterSpacing:3}}>添加政府服务目录</a>
                           </span>
                         </div>}             
                         
-                        {/* <Modal
-                            visible={visible}f
-                            title="Title"
+                         <Modal
+                            visible={visible}
+                            title="选择人员或意见"
                             onOk={this.handleOk}
                             onCancel={this.handleCancel}
                             footer={[
@@ -1159,7 +1284,8 @@ export default class Ysbztz extends React.Component{
                                 </Button>,
                             ]}
                              > 
-                                <ETable
+                             <div>
+                                {/* <ETable
                                     columns={columns}
                                     updateSelectedItem={Utils.updateSelectedItem.bind(this)}
                                     dataSource={this.state.list}
@@ -1168,10 +1294,12 @@ export default class Ysbztz extends React.Component{
                                     selectedItem={this.state.selectedItem}
                                     rowSelection={rowSelection}
                                     pagination={false}
-                                 />
+                                 /> */}
                                 <Table  
-                                columns={columns}
-                                dataSource={this.state.dataSource}
+                                {...rowSelect}
+                               // rowSelection={rowSelect }
+                                columns={this.userColumns}
+                                dataSource={this.state.userdataSource}
                                 bordered
                                 size="size"
                                 pagination={false}
@@ -1180,9 +1308,16 @@ export default class Ysbztz extends React.Component{
                                         this.onRowClick(record,index)
                                     }
                                   })}
-                                
-                            />
-                        </Modal> */}  
+                                />
+                               {/* {border:'1px solid #d9d9d9'} */}
+                            <div style={{height:200}}>意见填写<div style={{height:150}}><TextArea id='advice' style={{ width: 500 }}
+                                    autosize={{minRows:6}}
+                                    placeholder="请填写意见" 
+                                    /></div>
+                            
+                            </div>
+                          </div>
+                        </Modal> 
                         
                         
                         {/* {!zjysObj  && <Button onClick={this.handleAdddepartment} type="primary" style={{marginTop:2,marginLeft:120 }}>添加部门资金预算</Button> }

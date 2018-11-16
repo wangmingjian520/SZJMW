@@ -66,23 +66,24 @@ class Xmjbxx extends React.Component{
 
     //打开详情
     handleDetail = (value)=>{
-        axios.ajax({
-            url:FaceUrl.xmxxDetail+value.kid,
-            method:FaceUrl.GET,
-            baseApi:FaceUrl.bdApi
-        }).then((res)=>{
-            console.log(res)
-            if(res.code == '1') {
-                let tableInfo = res.data;
-                if(tableInfo.status==='1'){
-
-                    window.open(`#ysbztz/detail/${value.kid}`,'_self')
-                }else{
-                    window.open(`#/proc/detail/${value.kid}`,'_self')
-                }
-            } 
-        })
-       // window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
+ 
+        // axios.ajax({
+        //     url:FaceUrl.xmxxDetail+value.kid,
+        //     method:FaceUrl.GET,
+        //     baseApi:FaceUrl.bdApi
+        // }).then((res)=>{
+        //     console.log(res)
+        //     if(res.code == '1') {
+        //         let tableInfo = res.data;
+        //         if(tableInfo.status==='1'){
+        //             window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
+        //         }else{
+        //             window.open(`/#/proc/detail/${value.kid}`,'_self')
+        //         }
+        //     } 
+        // })
+        window.open(`#/ysbztz/detail/${value.kid}`,'_self')
+ 
     }
     //关闭详情
     handleCancel = () => {
