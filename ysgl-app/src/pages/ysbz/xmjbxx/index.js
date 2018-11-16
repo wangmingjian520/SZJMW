@@ -25,7 +25,7 @@ class Xmjbxx extends React.Component{
     }
 
     componentDidMount(){
-      this.requestList()
+      //this.requestList()
     }
 
     requestList = ()=>{
@@ -66,6 +66,7 @@ class Xmjbxx extends React.Component{
 
     //打开详情
     handleDetail = (value)=>{
+ 
         // axios.ajax({
         //     url:FaceUrl.xmxxDetail+value.kid,
         //     method:FaceUrl.GET,
@@ -82,6 +83,7 @@ class Xmjbxx extends React.Component{
         //     } 
         // })
         window.open(`#/ysbztz/detail/${value.kid}`,'_self')
+ 
     }
     //关闭详情
     handleCancel = () => {
