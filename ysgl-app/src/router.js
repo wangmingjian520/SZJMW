@@ -1,5 +1,6 @@
 import React from 'react';
 import { HashRouter , Route , Switch , Redirect} from 'react-router-dom'
+
 import App from './App'
 import Index_main from './index_main'
 import AuthRoute  from './components/Auth'

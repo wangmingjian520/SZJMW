@@ -7,12 +7,20 @@ import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
 import Dictionary from '../../../utils/dictionary'
 import { connect } from 'react-redux'
+import PropTypes from "prop-types";
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-class Xmjbxx extends React.Component{
+class Xmjbxx extends React.Component{ 
+    static contextTypes = {
+        router: PropTypes.object
+    }
+    constructor(props, context) {
+         super(props, context);
+    }
+
     state={
         dataSource:[],
         footer:'',
@@ -25,7 +33,7 @@ class Xmjbxx extends React.Component{
     }
 
     componentDidMount(){
-      //this.requestList()
+      this.requestList()
     }
 
     requestList = ()=>{
@@ -66,24 +74,23 @@ class Xmjbxx extends React.Component{
 
     //打开详情
     handleDetail = (value)=>{
- 
-        // axios.ajax({
-        //     url:FaceUrl.xmxxDetail+value.kid,
-        //     method:FaceUrl.GET,
-        //     baseApi:FaceUrl.bdApi
-        // }).then((res)=>{
-        //     console.log(res)
-        //     if(res.code == '1') {
-        //         let tableInfo = res.data;
-        //         if(tableInfo.status==='1'){
-        //             window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
-        //         }else{
-        //             window.open(`/#/proc/detail/${value.kid}`,'_self')
-        //         }
-        //     } 
-        // })
-        window.open(`#/ysbztz/detail/${value.kid}`,'_self')
- 
+        axios.ajax({
+            url:FaceUrl.xmxxDetail+value.kid,
+            method:FaceUrl.GET,
+            baseApi:FaceUrl.bdApi
+        }).then((res)=>{
+            console.log(res)
+            if(res.code == '1') {
+                let tableInfo = res.data;
+                let todoUrl = "";
+                if(tableInfo.status==='1'){
+                    todoUrl = `/ysbztz/detail/${value.kid}`;
+                }else{
+                    todoUrl =`/proc/detail/${value.kid}`;
+                }
+                this.context.router.history.push(todoUrl); 
+            } 
+        })
     }
     //关闭详情
     handleCancel = () => {
@@ -165,6 +172,7 @@ class Xmjbxx extends React.Component{
 
     
     render(){
+
         const columns = [
             {
                  title:'项目名称',

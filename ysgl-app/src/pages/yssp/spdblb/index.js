@@ -7,12 +7,20 @@ import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
 import Dictionary from '../../../utils/dictionary'
 import { connect } from 'react-redux'
+import PropTypes from "prop-types";
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
 export default  class Spdblb extends React.Component{
+    static contextTypes = {
+        router: PropTypes.object
+    }
+    constructor(props, context) {
+         super(props, context);
+    }
+
     state={
         dataSource:[],
         footer:'',
@@ -66,22 +74,7 @@ export default  class Spdblb extends React.Component{
 
     //打开详情
     handleDetail = (value)=>{
-        // axios.ajax({
-        //     url:FaceUrl.xmxxDetail+value.kid,
-        //     method:FaceUrl.GET,
-        //     baseApi:FaceUrl.bdApi
-        // }).then((res)=>{
-        //     console.log(res)
-        //     if(res.code == '1') {
-        //         let tableInfo = res.data;
-        //         if(tableInfo.status==='1'){
-        //             window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
-        //         }else{
-        //             window.open(`/#/proc/detail/${value.kid}`,'_self')
-        //         }
-        //     } 
-        // })
-        window.open(`/#/proc/detail/${value.kid}`,'_self')
+        this.context.router.history.push(`/proc/detail/${value.kid}`);
     }
     //关闭详情
     handleCancel = () => {
@@ -180,7 +173,7 @@ export default  class Spdblb extends React.Component{
                 align:'center',
            },
             {
-            title:'任务名 ',
+            title:'当前环节',
             dataIndex:'taskName',
             key:'taskName',
             align:'center',
@@ -265,7 +258,7 @@ export default  class Spdblb extends React.Component{
                     <span className="table_button ht" >
                         {/* <Button icon="plus" ghost type="primary" onClick={()=>{this.handleOperate('add')}}>添加</Button>
                         <Button icon="form" ghost type="primary" onClick={()=>{this.handleOperate('edit')}}>修改</Button> */}
-                        <Button icon="delete" ghost type="primary" onClick={this.handleDelete}>删除</Button>    
+                        {/* <Button icon="delete" ghost type="primary" onClick={this.handleDelete}>删除</Button>     */}
                     </span>   
                     </div>        
                     <ETable

@@ -2,20 +2,20 @@ export default class ApiAndInterfaceUrl {
     static GET = "GET";
     static POST = "POST";
 
-    static bdApi = "http://192.168.50.183:8060/bud/api";
-
+    //static bdApi = "http://192.168.50.29:8060/bud/api";
+    static bdApi =" http://119.147.216.208/api/intrl/bud/api";
     //菜单接口
     static menuUrl = '/platform/listResource';
     //h1接口
-    static redirectUrl = 'http://192.168.50.183:8060/bud/redirect?url=http://192.168.50.183:3030/';
-    //static cas_prefix_logout = cas_host+"/sso/logout?service="+api_host;//sso logout
+    //static redirectUrl = 'http://192.168.50.29:8060/bud/redirect?url=http://192.168.50.29:3030/';
+    static redirectUrl ='http://119.147.216.208/api/intrl/bud/redirect?url=http://119.147.216.208/intrl/budget-web/'
     
     //userInfo接口
     // static webApi = "http://192.168.50.181:8060/";
     // static userInfoUrl = '/user/info';
     //预算编制-项目基本信息
      //预算编制-政府购买服务项目管理
-     static xmjbxx = '/xmxx/list';
+     static xmjbxx = '/xmxx/list/1';
      static xmxxAdd = '/xmxx/save';
      static xmxxDetail = '/xmxx/findById/';
      static xmxxDel = '/xmxx/delete';
