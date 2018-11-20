@@ -30,7 +30,7 @@ export default  class Spdlsbj extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.xmxxsplist+'/3',FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
@@ -81,7 +81,7 @@ export default  class Spdlsbj extends React.Component{
         //         }
         //     } 
         // })
-        window.open(`#/proc/detail/${value.kid}`,'_self')
+        window.open(`/#/proc/detail/${value.kid}`,'_self')
     }
     //关闭详情
     handleCancel = () => {
@@ -179,19 +179,24 @@ export default  class Spdlsbj extends React.Component{
                 key:'xmsxname',
                 align:'center',
             },
-             {
-                 title:'资金保障类型名称',
-                 dataIndex:'zjbztypename',
-                 key:'zjbztypename',
-                 align:'center',
-            },
-             {
-                 title:'项目类别名称 ',
-                 dataIndex:'xmtypename',
-                 key:'xmtypename',
-                 align:'center',
-                
-            },
+            {
+                title:'流程名',
+                dataIndex:'procName',
+                key:'procName',
+                align:'center',
+           },
+            {
+            title:'任务名 ',
+            dataIndex:'taskName',
+            key:'taskName',
+            align:'center',
+           },
+           {
+            title:'当前执行人 ',
+            dataIndex:'currentPersonName',
+            key:'currentPersonName',
+            align:'center',
+          },
             {
                 title:'项目负责人',
                 dataIndex:'xmfzrname',

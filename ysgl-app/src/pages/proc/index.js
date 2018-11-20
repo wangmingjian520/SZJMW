@@ -205,7 +205,11 @@ export default class Proc extends React.Component{
                     }
                     if(stateVar==='procVo'){
                         let procVo=res.data; 
-                        const actions= this.handleAction(procVo.actions)
+                        let actions=procVo.actions ||[];
+                        if(actions.length>0){
+                            actions= this.handleAction(procVo.actions)
+                        }
+                         
                         this.setState({
                             procVo : procVo,
                             actions : actions
@@ -353,15 +357,16 @@ handleCancel = () => {
             param.xmId=this.state.tableInfo.kid;
             param.taskId=procVo.taskId;
             param.selectedUsers=this.state.selectedItem;
-            if(this.state.actionId==='yssp_nb_lr_ss'){
-                let procStart='procStart';
-                this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
-            }else{ 
+            param.remark=advice; 
                 param.procRecId=procVo.procRecId;
-                let procRun='procRun';
-                this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
-            } 
-                    
+                if(procVo.procRecId){ 
+                    param.procRecId=procVo.procRecId;
+                    let procRun='procRun';
+                    this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
+                 }else{ 
+                    let procStart='procStart';
+                    this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
+                 }  
             this.setState({visible: false });
 
         }else{
@@ -378,14 +383,15 @@ handleCancel = () => {
           param.taskId=procVo.taskId;
           param.selectedUsers=this.state.userdataSource;
           param.procRecId=procVo.procRecId; 
-          if(this.state.actionId==='yssp_nb_lr_ss'){
-            let procStart='procStart';
-            this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
-        }else{ 
+          param.remark=advice;
+           if(procVo.procRecId){ 
             param.procRecId=procVo.procRecId;
             let procRun='procRun';
             this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
-        } 
+         }else{ 
+            let procStart='procStart';
+            this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
+         } 
           this.setState({visible: false });
        }
  
@@ -409,15 +415,15 @@ handleCancel = () => {
          param.xmId=this.state.tableInfo.kid;
          param.taskId=procVo.taskId;
          param.procRecId=procVo.procRecId;
-         if(value==='yssp_nb_cs_th'||value==='yssp_nb_fs_thlr'){
-            param.procRecId=procVo.procRecId;
-             let selectedUsers=[];
-             let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
-             selectedUsers.push(User);
-             param.selectedUsers=selectedUsers; 
-                   let procRun='procRun';
-                    this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
-        }else{
+     //    if(value==='yssp_nb_cs_th'||value==='yssp_nb_fs_thlr'){
+            // param.procRecId=procVo.procRecId;
+            //  let selectedUsers=[];
+            //  let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
+            //  selectedUsers.push(User);
+            //  param.selectedUsers=selectedUsers; 
+            //        let procRun='procRun';
+            //         this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
+      //  }else{
             axios.ajax({
                 url:FaceUrl.procGetPersons,
                 method:FaceUrl.POST,
@@ -428,11 +434,15 @@ handleCancel = () => {
                     let data=res.data; 
                     let chooseFlag=data.choose; 
                     //let persons =data.persons ;
-                    let list =data.persons.map((item,index)=>{
-                        item.key = index;
-                        item.no=index+1;
-                        return item
-                        })
+                    let list =[];
+                    if(data.persons){
+                            list =data.persons.map((item,index)=>{
+                            item.key = index;
+                            item.no=index+1;
+                            return item
+                            })
+                    }
+                    
                    if(chooseFlag){
                     this.setState({ 
                         choose:chooseFlag
@@ -447,7 +457,7 @@ handleCancel = () => {
                 } 
                  
             })
-        }
+      //  }
      
             
        
