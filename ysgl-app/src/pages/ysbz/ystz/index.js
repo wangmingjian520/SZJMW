@@ -36,7 +36,7 @@ const EditableFormRow = Form.create()(EditableRow);
  
 
 class EditableCell extends React.Component {
-      
+      state ={read:'readOnly'}
     //遍历部门下拉框 
      renderDepartment =(data)=>{
         return data.map((item)=>{ 
@@ -491,17 +491,16 @@ export default class Ysbztz extends React.Component{
                         }) 
                     }
                     if(stateVar==='procVo'){
-                        let procVo=res.data; 
-                        if(procVo.actions!=null)
-                        {
-                            const actions= this.handleAction(procVo.actions)
-                            this.setState({
-                                procVo : procVo,
-                                actions : actions
-                            }) 
-                        }
+                        let procVo=res.data;
+                        let actions=procVo.actions||[];
+                        if(actions.length>0){
+                           actions= this.handleAction(actions);
+                        } 
                         
-                        
+                        this.setState({
+                            procVo : procVo,
+                            actions : actions
+                        }) 
                     }
                     if(stateVar==='zjysList'){
                         let zjysObj=res.data;
@@ -660,14 +659,16 @@ export default class Ysbztz extends React.Component{
             param.xmId=this.state.tableInfo.kid;
             param.taskId=procVo.taskId;
             param.selectedUsers=this.state.selectedItem;
-            if(this.state.actionId==='yssp_nb_lr_ss'){
-                let procStart='procStart';
-                this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
-            }else{ 
+            param.remark=advice;
+            if(procVo.procRecId){ 
                 param.procRecId=procVo.procRecId;
                 let procRun='procRun';
-                this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
+                this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);  
+            }else{ 
+                let procStart='procStart';
+                this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param);
             } 
+             
                     
             this.setState({visible: false });
 
@@ -685,13 +686,14 @@ export default class Ysbztz extends React.Component{
           param.taskId=procVo.taskId;
           param.selectedUsers=this.state.userdataSource;
           param.procRecId=procVo.procRecId; 
-          if(this.state.actionId==='yssp_nb_lr_ss'){
-            let procStart='procStart';
-            this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param); 
-        }else{ 
+          param.remark=advice;
+          if(procVo.procRecId){ 
             param.procRecId=procVo.procRecId;
             let procRun='procRun';
-            this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param); 
+            this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);  
+        }else{ 
+            let procStart='procStart';
+            this.ajaxRequest(FaceUrl.procStart,FaceUrl.POST,procStart,param);
         } 
           this.setState({visible: false });
        }
@@ -864,7 +866,7 @@ export default class Ysbztz extends React.Component{
     //添加行
     handleRow =()=>{
         let length = this.state.dataSource.length+1;
-        let row ={zfcgflag :"0",jjkmcode:"" ,jjkmname:"",key :length.toString(),nd: "2018" ,cgnum :"", dj:"200"}
+        let row ={zfcgflag :"0",jjkmcode:"" ,jjkmname:"",key :length.toString(),nd: "2018" ,cgnum :"", dj:""}
          
      this.setState({
         dataSource: [...this.state.dataSource, row],

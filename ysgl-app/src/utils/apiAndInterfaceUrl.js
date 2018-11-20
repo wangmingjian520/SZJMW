@@ -17,7 +17,7 @@ export default class ApiAndInterfaceUrl {
 
     //预算编制-项目基本信息
      //预算编制-政府购买服务项目管理
-     static xmjbxx = '/xmxx/list';
+     static xmjbxx = '/xmxx/list/1';
      static xmxxAdd = '/xmxx/save';
      static xmxxDetail = '/xmxx/findById/';
      static xmxxDel = '/xmxx/delete';

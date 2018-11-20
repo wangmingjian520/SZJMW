@@ -30,7 +30,7 @@ export default  class Spzblb extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.xmxxsplist+'/2',FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
@@ -81,7 +81,7 @@ export default  class Spzblb extends React.Component{
         //         }
         //     } 
         // })
-        window.open(`#/proc/detail/${value.kid}`,'_self')
+        window.open(`/#/proc/detail/${value.kid}`,'_self')
     }
     //关闭详情
     handleCancel = () => {
@@ -173,16 +173,11 @@ export default  class Spzblb extends React.Component{
                      return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{xmname}</a>;
                 }
              },
+             
              {
-                title:'项目属性名称',
-                dataIndex:'xmsxname',
-                key:'xmsxname',
-                align:'center',
-            },
-             {
-                 title:'资金保障类型名称',
-                 dataIndex:'zjbztypename',
-                 key:'zjbztypename',
+                 title:'流程名',
+                 dataIndex:'procName',
+                 key:'procName',
                  align:'center',
             },
              {
@@ -191,6 +186,17 @@ export default  class Spzblb extends React.Component{
                  key:'xmtypename',
                  align:'center',
                 
+            },{
+                title:'任务名 ',
+                dataIndex:'taskName',
+                key:'taskName',
+                align:'center',
+            },
+            {
+                title:'当前执行人 ',
+                dataIndex:'currentPersonName',
+                key:'currentPersonName',
+                align:'center',
             },
             {
                 title:'项目负责人',
