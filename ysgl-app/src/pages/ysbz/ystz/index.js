@@ -36,7 +36,7 @@ const EditableFormRow = Form.create()(EditableRow);
  
 
 class EditableCell extends React.Component {
-      state ={read:'readOnly'}
+    state ={read:true}
     //遍历部门下拉框 
      renderDepartment =(data)=>{
         return data.map((item)=>{ 
@@ -66,7 +66,9 @@ class EditableCell extends React.Component {
         if (this.props.dataIndex === 'zfcgcode'||this.props.dataIndex === 'zfcgname'||this.props.dataIndex === 'jjkmcode') {
             return ( <Input readOnly/>);
         }
-         
+        if (this.props.dataIndex === 'cgnum'||this.props.dataIndex === 'dj') {
+            return ( <Input />);
+        }
         return <Input />;
   };
   //更改分类名称
@@ -74,6 +76,7 @@ class EditableCell extends React.Component {
       const {departobj}=this.props;
       let datalist= departobj;
     //   alert(value)
+    let zfcgflag= this.form.getFieldValue('zfcgflag');
       console.log(datalist);
      for(var i=0;i<datalist.length;i++){
 
@@ -81,6 +84,13 @@ class EditableCell extends React.Component {
             this.form.setFieldsValue({
                 jjkmcode: datalist[i].jjkmCode
               });
+            if(zfcgflag==='1'){
+                this.form.setFieldsValue({
+                    zfcgcode: datalist[i].govCode,
+                    zfcgname:datalist[i].govName
+                  });
+                  this.setState({read:false})
+              }
          }
      }
   }
@@ -921,8 +931,14 @@ export default class Ysbztz extends React.Component{
             this.setState({ editingKey: record.key });
             this.form.validateFields((error, row) => {
                   const newData = [...this.state.dataSource];
-                  let  index = newData.findIndex(item => currentKey === item.key);
+                 // let  index = newData.findIndex(item => currentKey === item.key);
                 //   console.log(index);
+                let  index = -1;
+                  for(let i=0;i<newData.length;i++){ 
+                      if(currentKey == newData[i].key){
+                        index=i ; 
+                      }
+                  } 
                   if (index > -1) {
                     const item = newData[index];
                     newData.splice(index, 1, {
@@ -949,8 +965,14 @@ export default class Ysbztz extends React.Component{
             this.setState({ editingfwxmKey: record.key });
             this.form.validateFields((error, row) => {
                   const newData = [...this.state.dataSource];
-                  let  index = newData.findIndex(item => currentKey === item.key);
+                 // let  index = newData.findIndex(item => currentKey === item.key);
                 //   console.log(index);
+                let  index = -1;
+                  for(let i=0;i<newData.length;i++){ 
+                      if(currentKey == newData[i].key){
+                        index=i ; 
+                      }
+                  } 
                   if (index > -1) {
                     const item = newData[index];
                     newData.splice(index, 1, {
@@ -970,46 +992,22 @@ export default class Ysbztz extends React.Component{
         
      //   let olddataSource= this.state.olddataSource;
         let  currentKey = this.state.editingKey;
-       // let delFlag =false;
-         
-        
-        // if(olddataSource&&olddataSource.length>this.state.dataSource.length){
-            
-        //     delFlag=true
-        //     let tableInfo= this.state.tableInfo;
-        //     let zjysObj= this.state.zjysObj;
-        //     let param={};
-        //     param.zjysmxs=this.state.dataSource ;
-        //     param.xmId=tableInfo.kid;
-        //     param.kid=zjysObj.kid; 
-        //     axios.ajax({
-        //         url:FaceUrl.zjysAdd,
-        //         method:FaceUrl.POST,
-        //         baseApi:FaceUrl.bdApi,
-        //         data:param
-        //     }).then((res)=>{
-        //         if(res.code == '1') {  
-        //           let zjysList='zjysList';
-        //          // let tableInfo=this.state.tableInfo;
-        //           this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid,FaceUrl.GET,zjysList);  
-        //           this.setState({editingKey:'' ,olddataSource:'' });
-        //           message.success('保存成功');
-        //           return ;
-        //         }
-        //     }) 
-        // }
-        // if(delFlag){
-        //     return ;
-        // }
+      
             
             if(!this.form){ 
                 return ;
             }else{
                 this.form.validateFields((error, row) => {
                    
-                    const newData = [...this.state.dataSource];
-                    let  index = newData.findIndex(item => currentKey === item.key);
+                    const newData = [...this.state.dataSource]; 
+                   // let  index = newData.findIndex(item => currentKey === item.key);
                   //   console.log(index);
+                  let  index = -1;
+                  for(let i=0;i<newData.length;i++){ 
+                      if(currentKey == newData[i].key){
+                        index=i ; 
+                      }
+                  } 
                     if (index > -1) {
                       const item = newData[index];
                       newData.splice(index, 1, {
@@ -1079,8 +1077,14 @@ export default class Ysbztz extends React.Component{
              
             this.form.validateFields((error, row) => {
                 const newData = [...this.state.fwxmDataSource];
-                let  index = newData.findIndex(item => currentKey === item.key);
+              //  let  index = newData.findIndex(item => currentKey === item.key);
               //   console.log(index);
+              let  index = -1;
+                  for(let i=0;i<newData.length;i++){ 
+                      if(currentKey == newData[i].key){
+                        index=i ; 
+                      }
+                  } 
                 if (index > -1) {
                   const item = newData[index];
                   newData.splice(index, 1, {
