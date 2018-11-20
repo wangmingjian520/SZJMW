@@ -30,14 +30,14 @@ export default  class Spdblb extends React.Component{
 
     requestList = ()=>{
         let _this =this;
-        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.xmxxsplist+'/1',FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //查询
     handleSearchTable = (value)=>{
         let _this =this;
         this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
+        axios.requestList(_this,FaceUrl.xmxxsplist+'/1',FaceUrl.POST,FaceUrl.bdApi,this.params);
     }
 
     //打开添加编辑
@@ -81,7 +81,7 @@ export default  class Spdblb extends React.Component{
         //         }
         //     } 
         // })
-        window.open(`#/proc/detail/${value.kid}`,'_self')
+        window.open(`/#/proc/detail/${value.kid}`,'_self')
     }
     //关闭详情
     handleCancel = () => {
@@ -174,24 +174,23 @@ export default  class Spdblb extends React.Component{
                 }
              },
              {
-                title:'项目属性名称',
-                dataIndex:'xmsxname',
-                key:'xmsxname',
+                title:'流程名',
+                dataIndex:'procName',
+                key:'procName',
                 align:'center',
-            },
-             {
-                 title:'资金保障类型名称',
-                 dataIndex:'zjbztypename',
-                 key:'zjbztypename',
-                 align:'center',
-            },
-             {
-                 title:'项目类别名称 ',
-                 dataIndex:'xmtypename',
-                 key:'xmtypename',
-                 align:'center',
-                
-            },
+           },
+            {
+            title:'任务名 ',
+            dataIndex:'taskName',
+            key:'taskName',
+            align:'center',
+           },
+           {
+            title:'当前执行人 ',
+            dataIndex:'currentPersonName',
+            key:'currentPersonName',
+            align:'center',
+        },
             {
                 title:'项目负责人',
                 dataIndex:'xmfzrname',
