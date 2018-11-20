@@ -32,14 +32,16 @@ axios.interceptors.response.use(response => {
  
     //对响应数据做操作
     if(response.data && parseInt(response.data.code, 10) <= '2000000') {
-        //console.log('请求成功');
-        return response
-    }
-    if(response.data && response.data.code == '0' && response.data.errorStatus=='10') {
-      
-        return Promise.reject(response);
-    }
-    else {
+        if( response.data.code == '0' && response.data.errorStatus=='10'){
+            //alert('跳转'+response.config.url);
+            window.location.href = FaceUrl.redirectUrl;
+            
+        }else{
+            //console.log('请求成功'+response.config.url);
+            return response
+        }
+       
+    }else {
         //console.log('请求失败', response.data.code);
         return Promise.reject(response);
     }
@@ -114,6 +116,7 @@ export default class Axios {
                 baseURL:baseApi,
                 timeout:5000,
                 data:options.data ? options.data : '',
+                await : false,
                 //params: options.data.params?options.data.params : '',
                 headers: {'Content-Type': 'application/json;charset=UTF-8'},
             }).then((response)=>{
@@ -125,14 +128,14 @@ export default class Axios {
                     let res = response.data;
                     resolve(res);
                    
-                        //如果用户登录信息失效，跳转SSO登录
-                       if(res.code == '0'){
-                            Modal.info({
-                                title:"提示",
-                                content:res.message
-                            })
+                    //     //如果用户登录信息失效，跳转SSO登录
+                    //    if(res.code == '1' && res.errorStatus != '10'){
+                    //         Modal.info({
+                    //             title:"提示",
+                    //             content:res.message
+                    //         })
                         
-                    }
+                    // }
                 }else{
                     reject(response.data);
                 }

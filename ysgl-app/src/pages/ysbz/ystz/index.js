@@ -492,11 +492,16 @@ export default class Ysbztz extends React.Component{
                     }
                     if(stateVar==='procVo'){
                         let procVo=res.data; 
-                        const actions= this.handleAction(procVo.actions)
-                        this.setState({
-                            procVo : procVo,
-                            actions : actions
-                        }) 
+                        if(procVo.actions!=null)
+                        {
+                            const actions= this.handleAction(procVo.actions)
+                            this.setState({
+                                procVo : procVo,
+                                actions : actions
+                            }) 
+                        }
+                        
+                        
                     }
                     if(stateVar==='zjysList'){
                         let zjysObj=res.data;

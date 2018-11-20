@@ -7,12 +7,17 @@ import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
 import Dictionary from '../../../utils/dictionary'
 import { connect } from 'react-redux'
+import history from './../../../history';
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
 class Xmjbxx extends React.Component{
+    constructor(props, context) {
+        super(props, context);
+     }     
+ 
     state={
         dataSource:[],
         footer:'',
@@ -25,7 +30,7 @@ class Xmjbxx extends React.Component{
     }
 
     componentDidMount(){
-      //this.requestList()
+      this.requestList()
     }
 
     requestList = ()=>{
@@ -66,24 +71,31 @@ class Xmjbxx extends React.Component{
 
     //打开详情
     handleDetail = (value)=>{
- 
-        // axios.ajax({
-        //     url:FaceUrl.xmxxDetail+value.kid,
-        //     method:FaceUrl.GET,
-        //     baseApi:FaceUrl.bdApi
-        // }).then((res)=>{
-        //     console.log(res)
-        //     if(res.code == '1') {
-        //         let tableInfo = res.data;
-        //         if(tableInfo.status==='1'){
-        //             window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
-        //         }else{
-        //             window.open(`/#/proc/detail/${value.kid}`,'_self')
-        //         }
-        //     } 
-        // })
-        window.open(`#/ysbztz/detail/${value.kid}`,'_self')
- 
+        axios.ajax({
+            url:FaceUrl.xmxxDetail+value.kid,
+            method:FaceUrl.GET,
+            baseApi:FaceUrl.bdApi
+        }).then((res)=>{
+            console.log(res)
+            if(res.code == '1') {
+                let tableInfo = res.data;
+                let todoUrl = "";
+                if(tableInfo.status==='1'){
+                    todoUrl = `#/ysbztz/detail/${value.kid}`;
+                    
+                    
+                   //window.open(`#ysbztz/detail/${value.kid}`,'_self')
+                }else{
+                    todoUrl =`#/proc/detail/${value.kid}`;
+                   
+                    //window.open(`#/proc/detail/${value.kid}`,'_self')
+                }
+                window.location.href=todoUrl
+                //history.push(todoUrl);
+                
+            } 
+        })
+       // window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
     }
     //关闭详情
     handleCancel = () => {
@@ -165,6 +177,7 @@ class Xmjbxx extends React.Component{
 
     
     render(){
+
         const columns = [
             {
                  title:'项目名称',
