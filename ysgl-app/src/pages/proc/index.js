@@ -12,11 +12,8 @@ import ImgFwxm from '../../static/images/ystz/fwxm.png'
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
- 
 const Option = Select.Option;
-
 const TabPane = Tabs.TabPane;
-
 const renderTabBar = (props, DefaultTabBar) => (
 <Sticky bottomOffset={80}>
     {({ style }) => (
@@ -26,8 +23,6 @@ const renderTabBar = (props, DefaultTabBar) => (
 );
  
 const FormItem = Form.Item;
-  
-
 export default class Proc extends React.Component{
     state={
         dataSource:[],
@@ -251,27 +246,22 @@ export default class Proc extends React.Component{
                         
                          window.location.reload();
                     }
-                    if(stateVar==='procRun'){           //||param.actionId==='yssp_cwwld_bcw_pz'
-                        // if(param.actionId==='yssp_nb_cs_th'||param.actionId==='yssp_nb_fs_thlr'||param.actionId==='yssp_msc_cs_thcs'){
-                        //   let xmId= this.state.tableInfo.kid;
-                        //   window.open(`#/ysbztz/detail/${xmId}`,'_self')
-                        // }else{
-                            window.location.reload();
-                       // }
-                       
+                    if(stateVar==='procRun'){
+                            Modal.info({
+                                            title:"提示",
+                                            content:"审核成功！"
+                                        })
+                            window.location.href="#/spdblb";
                     }    
                 }
             })
-           
-        
-      } 
-      // componentWillMount componentDidMount
-      componentDidMount(){    
+     } 
+      
+    // componentWillMount componentDidMount
+    componentDidMount(){    
         let currentKey = window.location.hash.replace(/#|\?.*$/g,'');
         let kid= currentKey.substr(currentKey.lastIndexOf('/')+1) ;
-        
-        // let tableInfo='tableInfo';
-        // this.ajaxRequest(FaceUrl.xmxxDetail+kid,FaceUrl.GET,tableInfo);
+
         axios.ajax({
             url:FaceUrl.xmxxDetail+kid,
             method:FaceUrl.GET,
@@ -295,14 +285,8 @@ export default class Proc extends React.Component{
              } 
             }
         }) 
-           
-        // let procVo='procVo';
-        // this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
-        
-        
     }
     
-   
     //动作执行
     handleAction = (data) => {
         return data.map((item) => {
@@ -319,31 +303,30 @@ export default class Proc extends React.Component{
        // window.history.go(-1);
        //let xmId= this.state.tableInfo.kid;http://192.168.50.183:3030/#/spdblb
        window.open(`#/spdblb`,'_self')
-       // window.open(`/#/xmjbxx`,'_self')
     }
-         //模态框选人时的改变
-  onSelectChange = (selectedRowKeys, selectedRows) => {
+    //模态框选人时的改变
+    onSelectChange = (selectedRowKeys, selectedRows) => {
        
-    console.log('selectedRowKeys')
-    console.log(selectedRowKeys) 
-    console.log(selectedRows)
-   
-     const selectedIds = [];
-      selectedRows.map((item)=>{
-          selectedIds.push(item.id);
-      });
-      this.setState({
-          selectedIds:selectedIds,
-          selectedItem: selectedRows
-      }); 
-   
-};
+        console.log('selectedRowKeys')
+        console.log(selectedRowKeys) 
+        console.log(selectedRows)
+    
+        const selectedIds = [];
+        selectedRows.map((item)=>{
+            selectedIds.push(item.id);
+        });
+        this.setState({
+            selectedIds:selectedIds,
+            selectedItem: selectedRows
+        }); 
+    
+    };
 
-//取消
-handleCancel = () => {
-    this.setState({ visible: false });
-  }
-//模态框提交
+    //取消
+    handleCancel = () => {
+        this.setState({ visible: false });
+    }
+    //模态框提交
     handleOk = () => { 
 
        if(this.state.choose){
@@ -394,36 +377,20 @@ handleCancel = () => {
          } 
           this.setState({visible: false });
        }
- 
-        
     }
-     //跳转审批页面
-     redirectToProc = (value)=>{
-        //  if(value==='yssp_nb_cs_th'){
-        //       let xmId= this.state.tableInfo.kid;
-        //        window.open(`/#/ysbztz/detail/${xmId}`,'_self');
-        //        return ; 
-        //  } 
-         
-         let procVo =this.state.procVo; 
-         console.log(11)
-         console.log(procVo)
-         console.log(value)
+
+    //跳转审批页面
+    redirectToProc = (value)=>{
+        let procVo =this.state.procVo; 
+        //  console.log(11)
+        //  console.log(procVo)
+        //  console.log(value)
          let param ={};
          param.procId=procVo.procId; 
          param.actionId=value;
          param.xmId=this.state.tableInfo.kid;
          param.taskId=procVo.taskId;
          param.procRecId=procVo.procRecId;
-     //    if(value==='yssp_nb_cs_th'||value==='yssp_nb_fs_thlr'){
-            // param.procRecId=procVo.procRecId;
-            //  let selectedUsers=[];
-            //  let User={"id":"f87b6fbe-6943-4c52-bd82-e920941cfe6c","name":"编制人员"};
-            //  selectedUsers.push(User);
-            //  param.selectedUsers=selectedUsers; 
-            //        let procRun='procRun';
-            //         this.ajaxRequest(FaceUrl.procRun,FaceUrl.POST,procRun,param);
-      //  }else{
             axios.ajax({
                 url:FaceUrl.procGetPersons,
                 method:FaceUrl.POST,
@@ -442,30 +409,19 @@ handleCancel = () => {
                             return item
                             })
                     }
-                    
-                   if(chooseFlag){
-                    this.setState({ 
-                        choose:chooseFlag
-                    });
-                   }
-                    this.setState({ 
-                        visible: true,
-                        userdataSource:list,
-                        actionId :value, 
-                    });
-              
+                    if(chooseFlag){
+                        this.setState({ 
+                            choose:chooseFlag
+                        });
+                    }
+                        this.setState({ 
+                            visible: true,
+                            userdataSource:list,
+                            actionId :value, 
+                        });
                 } 
-                 
             })
-      //  }
-     
-            
-       
-               
-     } 
-    
-   
-   
+    } 
     
     render(){
         
@@ -545,8 +501,6 @@ handleCancel = () => {
                         {/* {this.state.actions} */}
                        
                    </div>
-               
-                    
                 <Tabs defaultActiveKey="1" renderTabBar={renderTabBar} onTabClick={this.onTabClick}>
                     <TabPane tab="项目基本信息" key="1" >
                         <OpenFormTable type={this.state.type} tableInfo={this.state.tableInfo} PtableInfo={this.PtableInfo} 
@@ -600,7 +554,7 @@ class OpenFormTable extends React.Component{
         return (
             <Card
             title="项目基本信息表"
-            extra={<a href="#">上报预算</a> }
+            // extra={<a href="#">上报预算</a> }
             style={{ width: 1000 }}
             >
             <Form layout="inline">

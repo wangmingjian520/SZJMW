@@ -19,7 +19,7 @@ axios.interceptors.request.use(config => {
     if (!config.headers['X-Requested-With']) {  
         config.headers['X-Requested-With'] = 'XMLHttpRequest';  
     } 
-
+    config.headers["P3P"] = "CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\""
     return config;
 }, error => {
     //发送请求错误操作

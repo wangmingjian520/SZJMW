@@ -7,17 +7,20 @@ import moment from 'moment'
 import FaceUrl from '../../../utils/apiAndInterfaceUrl'
 import Dictionary from '../../../utils/dictionary'
 import { connect } from 'react-redux'
-import history from './../../../history';
+import PropTypes from "prop-types";
 
 const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-class Xmjbxx extends React.Component{
+class Xmjbxx extends React.Component{ 
+    static contextTypes = {
+        router: PropTypes.object
+    }
     constructor(props, context) {
-        super(props, context);
-     }     
- 
+         super(props, context);
+    }
+
     state={
         dataSource:[],
         footer:'',
@@ -81,21 +84,13 @@ class Xmjbxx extends React.Component{
                 let tableInfo = res.data;
                 let todoUrl = "";
                 if(tableInfo.status==='1'){
-                    todoUrl = `#/ysbztz/detail/${value.kid}`;
-                    
-                    
-                   //window.open(`#ysbztz/detail/${value.kid}`,'_self')
+                    todoUrl = `/ysbztz/detail/${value.kid}`;
                 }else{
-                    todoUrl =`#/proc/detail/${value.kid}`;
-                   
-                    //window.open(`#/proc/detail/${value.kid}`,'_self')
+                    todoUrl =`/proc/detail/${value.kid}`;
                 }
-                window.location.href=todoUrl
-                //history.push(todoUrl);
-                
+                this.context.router.history.push(todoUrl); 
             } 
         })
-       // window.open(`/#/ysbztz/detail/${value.kid}`,'_self')
     }
     //关闭详情
     handleCancel = () => {
