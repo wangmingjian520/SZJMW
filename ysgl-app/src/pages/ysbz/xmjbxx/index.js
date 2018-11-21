@@ -74,23 +74,9 @@ class Xmjbxx extends React.Component{
 
     //打开详情
     handleDetail = (value)=>{
-        axios.ajax({
-            url:FaceUrl.xmxxDetail+value.kid,
-            method:FaceUrl.GET,
-            baseApi:FaceUrl.bdApi
-        }).then((res)=>{
-            console.log(res)
-            if(res.code == '1') {
-                let tableInfo = res.data;
-                let todoUrl = "";
-                if(tableInfo.status==='1'){
-                    todoUrl = `/ysbztz/detail/${value.kid}`;
-                }else{
-                    todoUrl =`/proc/detail/${value.kid}`;
-                }
-                this.context.router.history.push(todoUrl); 
-            } 
-        })
+         
+        let todoUrl = `/ysbztz/detail/${value.kid}`;
+        this.context.router.history.push(todoUrl); 
     }
     //关闭详情
     handleCancel = () => {

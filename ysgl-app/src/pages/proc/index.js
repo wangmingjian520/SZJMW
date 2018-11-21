@@ -276,13 +276,10 @@ export default class Proc extends React.Component{
             this.ajaxRequest(FaceUrl.zjysfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zjysList);      
             let zfgmfwList='zfgmfwList'; 
             this.ajaxRequest(FaceUrl.gmfwfindByXmId+tableInfo.kid+'/'+tableInfo.latestVersion,FaceUrl.GET,zfgmfwList);  
-
-            if(tableInfo.status ==='3'){
-                this.setState({actions: '' });
-             }else{
+ 
                 let procVo='procVo';
                 this.ajaxRequest(FaceUrl.ProcVo+kid,FaceUrl.GET,procVo);
-             } 
+             
             }
         }) 
     }
@@ -300,9 +297,9 @@ export default class Proc extends React.Component{
 
     //返回上一级
     handleGoLast =()=>{
-       // window.history.go(-1);
+        window.history.go(-1);
        //let xmId= this.state.tableInfo.kid;http://192.168.50.183:3030/#/spdblb
-       window.open(`#/spdblb`,'_self')
+     //  window.open(`#/spdblb`,'_self')
     }
     //模态框选人时的改变
     onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -381,6 +378,7 @@ export default class Proc extends React.Component{
 
     //跳转审批页面
     redirectToProc = (value)=>{
+        alert(1)
         let procVo =this.state.procVo; 
         //  console.log(11)
         //  console.log(procVo)
@@ -419,7 +417,13 @@ export default class Proc extends React.Component{
                             userdataSource:list,
                             actionId :value, 
                         });
-                } 
+                } else{
+                    this.setState({ 
+                        visible: true,
+                        userdataSource:[],
+                        actionId :value, 
+                    });
+                }
             })
     } 
     
