@@ -321,7 +321,7 @@ export default class Proc extends React.Component{
 
     //取消
     handleCancel = () => {
-        this.setState({ visible: false });
+        this.setState({ visible: false,choose:false });
     }
     //模态框提交
     handleOk = () => { 
@@ -377,8 +377,7 @@ export default class Proc extends React.Component{
     }
 
     //跳转审批页面
-    redirectToProc = (value)=>{
-        alert(1)
+    redirectToProc = (value)=>{ 
         let procVo =this.state.procVo; 
         //  console.log(11)
         //  console.log(procVo)
@@ -481,12 +480,7 @@ export default class Proc extends React.Component{
                                 dataSource={this.state.userdataSource}
                                 bordered
                                 size="size"
-                                pagination={false}
-                                onRow={(record,index) => ({
-                                    onClick: ()=>{ 
-                                        this.onRowClick(record,index)
-                                    }
-                                  })}
+                                pagination={false} 
                                 />
                                {/* {border:'1px solid #d9d9d9'} */}
                             <div style={{height:200}}>意见填写<div style={{height:150}}><TextArea id='advice' style={{ width: 500 }}
