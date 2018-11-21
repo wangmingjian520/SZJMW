@@ -64,7 +64,7 @@ class EditableCell extends React.Component {
          
         }
         if (this.props.dataIndex === 'zfcgcode'||this.props.dataIndex === 'zfcgname'||this.props.dataIndex === 'jjkmcode') {
-            return ( <Input readOnly/>);
+            return ( <Input disabled={true}/>);
         }
         if (this.props.dataIndex === 'cgnum'||this.props.dataIndex === 'dj') {
             return ( <Input />);
