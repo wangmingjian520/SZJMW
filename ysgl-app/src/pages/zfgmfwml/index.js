@@ -178,7 +178,7 @@ export default class Zfgmfwml extends React.Component{
                 </Breadcrumb>
                 {/* content-wrap */}
                 {/* <Layout > */}
-                    <div className="content-wrap"  style={{border:'solid 1px #e8e8e8',position:'absolute',height:'89vh',width:330,left:0}}> 
+                    <div className="content-wrap"  style={{border:'solid 1px #e8e8e8',position:'absolute',height:'84vh',width:330,left:0}}> 
                     <Tree    
                             defaultExpandAll
                             showLine
