@@ -171,14 +171,14 @@ export default class Zfgmfwml extends React.Component{
             }
             
         return (
-            <div>
+            <div style={{width:'100%',position:'relative'}}>
                 <Breadcrumb separator=">" style={{ margin: '16px 20px' }}>
                     <Breadcrumb.Item>首页</Breadcrumb.Item>
                     <Breadcrumb.Item>政府购买服务目录</Breadcrumb.Item>
                 </Breadcrumb>
                 {/* content-wrap */}
                 {/* <Layout > */}
-                    <div className="content-wrap"  style={{border:'solid 1px #e8e8e8',height:'89vh',width:'20%',float:"left"}}> 
+                    <div className="content-wrap"  style={{border:'solid 1px #e8e8e8',position:'absolute',height:'89vh',width:330,left:0}}> 
                     <Tree    
                             defaultExpandAll
                             showLine
@@ -187,7 +187,7 @@ export default class Zfgmfwml extends React.Component{
                             {this.renderTreeNodes(this.state.treeData)}
                         </Tree>
                     </div>
-              <div className="content-wrap"style={{float:"left",width:'80%'}}>
+              <div className="content-wrap" style={{width:'100%',position:'absolute',left:330,top:36}}>
                 <Tabs type="card" onTabClick={this.onTabClick}>
                         <TabPane tab="详情" key="1" {...flag}>
                         <OpenFormTable type={this.state.type} tableInfo={this.state.tableInfo} PtableInfo={this.PtableInfo} clickData={this.state.clickData} 

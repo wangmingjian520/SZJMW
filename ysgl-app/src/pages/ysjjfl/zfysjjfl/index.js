@@ -207,7 +207,7 @@ export default class Ystzgl extends React.Component{
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入物资名称/测算标准"
+                        placeholder="请输入预算经济分类编号/名称"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
