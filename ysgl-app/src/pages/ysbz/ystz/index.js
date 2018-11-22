@@ -181,9 +181,9 @@ class EditablezfgmfwCell extends React.Component {
        
     getzffwInput = () => { 
         
-       if (this.props.dataIndex === 'ssxm'||this.props.dataIndex === 'zfgmmlcode') {
+       if (this.props.dataIndex === 'ssxm'||this.props.dataIndex === 'zfgmmlcode'||this.props.dataIndex==='gmcsName') {
            
-       return (<Input  readOnly/> );
+       return (<Input  disabled={true}/> );
        }
        if (this.props.dataIndex === 'zfgmmlname') {
         const { treedata } = this.props;
@@ -376,9 +376,9 @@ export default class Ysbztz extends React.Component{
         }];
         //政府购买服务项目
         this.zfgmfwColumns = [{
-            title: '处室',
-            dataIndex: 'gmcs',
-            key:'gmcs',
+            title: '处室名称',
+            dataIndex: 'gmcsName',
+            key:'gmcsName',
             width: 100,
             editable: 'true',
           }, {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Button , Form ,  Breadcrumb , Modal , message ,Input , InputNumber , Layout ,Select ,DatePicker ,Row, Col} from  'antd';
+import {  Button , Form ,  Breadcrumb , Modal , message ,Input , Table ,InputNumber , Layout ,Select ,DatePicker ,Row, Col} from  'antd';
 import axios from './../../../axios'
 import Utils from './../../../utils/utils'
 import ETable from './../../../components/ETable/index'
@@ -13,150 +13,13 @@ const Content = Layout;
 const { TextArea ,Search} = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-export default  class Spzblb extends React.Component{
+export default  class Spdblb extends React.Component{
     static contextTypes = {
         router: PropTypes.object
     }
     constructor(props, context) {
          super(props, context);
-    }
-
-    state={
-        dataSource:[],
-        footer:'',
-    }
-
-    params={
-        currentPage:1,
-        pageSize:10,
-        query:{},
-    }
-
-    componentDidMount(){
-      this.requestList()
-    }
-
-    requestList = ()=>{
-        let _this =this;
-        axios.requestList(_this,FaceUrl.xmxxsplist+'/2',FaceUrl.POST,FaceUrl.bdApi,this.params);
-    }
-
-    //查询
-    handleSearchTable = (value)=>{
-        let _this =this;
-        this.params.query = {"searchInfo":value}
-        axios.requestList(_this,FaceUrl.xmjbxx,FaceUrl.POST,FaceUrl.bdApi,this.params);
-    }
-
-    //打开添加编辑
-    handleOperate =(type)=>{
-        let item = this.state.selectedItem
-        if(type==='add'){
-            this.setState({
-                type:type,
-                isVisible:true,
-                title:'添加'
-           })
-        }else if(type==='edit'){
-            if(item&&item.length==1){
-                this.setState({
-                    type:type,
-                    isVisible:true,
-                    title:'修改',
-                    tableInfo:item[0]
-               })  
-            }else{
-                message.error('请选择一条需要修改的项！');
-                
-            }
-        }
-    }
-
-    //打开详情
-    handleDetail = (value)=>{
-        this.context.router.history.push(`/proc/detail/${value.kid}`);
-    }
-    //关闭详情
-    handleCancel = () => {
-        this.setState({ 
-            isVisible: false,
-            tableInfo:{} 
-        });
-        this.requestList(); 
-    }
-
-    //提交
-    handleSubmit =()=>{
-        let type = this.state.type;
-        const form = this.modalForm.props.form;
-        form.validateFields((err, values) => {
-        if (err) {
-            return;
-        }
-        //console.log('form: ', values);
-            let message = "";
-            if(type=="add"){
-                message="添加成功";
-            }if(type=="edit"){
-                message="修改成功";
-            }
-            //提交or修改
-            axios.ajax({
-                url:FaceUrl.xmxxAdd,
-                method:FaceUrl.POST,
-                baseApi:FaceUrl.bdApi,
-                data:{
-                    ...values,
-                    isShowLoading:true
-                }
-            }).then((res)=>{
-                if(res.code == '1') {
-                    form.resetFields();
-                    this.setState({ 
-                        isVisible: false,
-                        tableInfo:{}  
-                    });
-                    this.requestList();
-                    message.success(message);
-                }
-            })
-        });
-    }
-
-    //删除操作
-    handleDelete = ()=>{
-        let rows = this.state.selectedItem;
-        let ids = [];
-        if(rows&&rows.length){
-            rows.map((item)=>{
-                ids.push(item.kid)
-            })
-            Modal.confirm({
-                title:'提示',
-                content:`您确定要删除这${ids.length}项吗？`,
-                onOk:()=>{
-                    axios.ajax({
-                        url:FaceUrl.xmxxDel,
-                        method:FaceUrl.POST,
-                        baseApi:FaceUrl.bdApi,
-                        data:ids
-                    }).then((res)=>{
-                        if(res.code == '1') {
-                            this.requestList();
-                            message.success('删除成功！');
-                        }
-                    })
-                   
-                }
-            })
-        }else{
-            message.error('请选择需要删除的项！');
-        }
-    }
-
-    
-    render(){
-        const columns = [
+         this.columns = [
             {
                  title:'项目名称',
                  dataIndex:'xmname',
@@ -172,15 +35,9 @@ export default  class Spzblb extends React.Component{
                  dataIndex:'procName',
                  key:'procName',
                  align:'center',
-            },
-             {
-                 title:'项目类别名称 ',
-                 dataIndex:'xmtypename',
-                 key:'xmtypename',
-                 align:'center',
-                
-            },{
-                title:'任务名 ',
+            } 
+            ,{
+                title:'当前环节 ',
                 dataIndex:'taskName',
                 key:'taskName',
                 align:'center',
@@ -230,20 +87,153 @@ export default  class Spzblb extends React.Component{
                 return moment(enddate).format('YYYY-MM-DD')
              }
             },
-            
-         ]
-        let footer = {}
-        if(this.state.type=='detail'){
-            footer={
-               footer: <Button key="关闭" onClick={this.handleCancel.bind(this)}>关闭</Button>,
+            {
+                title:'操作',
+                dataIndex:'operation',
+                key:'operation',
+                align:'center',
+                render:(value,record)=>{ 
+                   // return <a  href="javascript:;" onClick={()=>{this.handleDetail(record)}}>{xmname}</a>;
+                    return <a href="javascript:;" onClick={()=>{this.historyproc(record)}}>历程</a>;
+                 
+                },
             }
             
-        }
+         ],
+         this.historyColumns=[
+            {
+                title:'序号',
+                dataIndex:'no',
+                key:'no',
+                width:100,
+                align:'center', 
+            },
+            {
+                title:'执行人',
+                dataIndex:'executorName',
+                key:'executorName',
+                width:150,
+                align:'center', 
+            },
+            {
+                title:'任务名称',
+                dataIndex:'taskName',
+                key:'taskName',
+                width:150,
+                align:'center', 
+            },
+            {
+                title:'执行动作名',
+                dataIndex:'actionName',
+                key:'actionName',
+                width:150,
+                align:'center', 
+            },
+            {
+                title:'意见',
+                dataIndex:'remark',
+                key:'remark',
+                width:350,
+                align:'center', 
+            },
+            {
+                title:'开始时间',
+                dataIndex:'startTime',
+                key:'startTime',
+                width:150,
+                align:'center', 
+                render(startTime){
+                    return moment(startTime).format('YYYY-MM-DD HH:mm:ss')
+                 }
+            },
+            {
+                title:'结束时间',
+                dataIndex:'finishTime',
+                key:'finishTime',
+                width:150,
+                align:'center', 
+                render(finishTime){
+                    return <span>{finishTime? moment(finishTime).format('YYYY-MM-DD HH:mm:ss'):''}</span>
+                 }
+            },
+         ]
+    }
+   
+    state={
+        dataSource:[],
+        historySource:[],
+        footer:'',
+        visible:false
+    }
 
-        //多选框
-        const rowSelection = {
-            type: 'checkbox',
-        }
+    params={
+        currentPage:1,
+        pageSize:10,
+        query:{},
+    }
+
+    componentDidMount(){
+      this.requestList()
+    }
+
+    requestList = ()=>{
+        let _this =this;
+        axios.requestList(_this,FaceUrl.xmxxsplist+'/2',FaceUrl.POST,FaceUrl.bdApi,this.params);
+    }
+
+    //查询
+    handleSearchTable = (value)=>{
+        let _this =this;
+        this.params.query = {"searchInfo":value}
+        axios.requestList(_this,FaceUrl.xmxxsplist+'/2',FaceUrl.POST,FaceUrl.bdApi,this.params);
+    }
+
+     
+    //历程
+    historyproc = (record)=>{
+        console.log(12)
+        console.log(record)
+        axios.ajax({
+            url:FaceUrl.historyProc+record.procRecId,
+            method:FaceUrl.GET,
+            baseApi:FaceUrl.bdApi, 
+        }).then((res)=>{
+            if(res.code == '1') {
+                let data =res.data;
+                let list=[];
+                if(data.tasks){
+                    list =data.tasks.map((item,index)=>{
+                    item.key = index;
+                    item.no=index+1;
+                    return item
+                    })
+                }
+                this.setState({historySource:list}) ;
+                console.log(123456)
+                console.log(data)
+            }
+        })
+        this.setState({visible:true}) ;
+    }
+    //打开详情
+    handleDetail = (value)=>{
+        this.context.router.history.push(`/proc/detail/${value.kid}`);
+    }
+      
+    //取消
+    handleCancel = ()=>{
+        this.setState({
+            visible:false
+        })
+        this.requestList(); 
+    }
+    
+    render(){
+        
+        let footer = {
+            footer: <Button key="关闭" onClick={this.handleCancel.bind(this)}>关闭</Button>,
+         }
+         
 
         return (
             <div>
@@ -257,28 +247,36 @@ export default  class Spzblb extends React.Component{
                     <span className="table_input ft">
                         <Search size="large" style={{width: 325}}
                         name="searchInfo"
-                        placeholder="请输入项目名称/属性名称/负责人"
+                        placeholder="请输入项目名称/负责人"
                         onSearch={value => this.handleSearchTable(value)}
                         enterButton
                         />  
                     </span>
                     <span className="table_button ht" >
-                        {/* <Button icon="plus" ghost type="primary" onClick={()=>{this.handleOperate('add')}}>添加</Button>
-                        <Button icon="form" ghost type="primary" onClick={()=>{this.handleOperate('edit')}}>修改</Button> */}
-                        {/* <Button icon="delete" ghost type="primary" onClick={this.handleDelete}>删除</Button>     */}
+                   
                     </span>   
                     </div>        
-                    <ETable
-                        columns={columns}
-                        updateSelectedItem={Utils.updateSelectedItem.bind(this)}
-                        dataSource={this.state.list}
-                        selectedRowKeys={this.state.selectedRowKeys}
-                        selectedIds={this.state.selectedIds}
-                        selectedItem={this.state.selectedItem}
-                        rowSelection={rowSelection}
-                        pagination={this.state.pagination}
-                    />
-
+                    {/*   */}
+                     <Table   
+                            columns={this.columns}
+                            dataSource={this.state.list} 
+                            pagination={this.state.pagination} 
+                          />
+                  <Modal
+                        {...footer}
+                        visible={this.state.visible}
+                        title="历程列表" 
+                        onCancel={this.handleCancel} 
+                        width={1400}
+                         > 
+                        <Table   
+                                columns={this.historyColumns}
+                                dataSource={this.state.historySource}
+                                bordered
+                                size="size"
+                                pagination={false} 
+                                />
+                   </Modal>
                 </Content>
                 
             </div>
