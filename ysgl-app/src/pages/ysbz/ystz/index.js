@@ -66,8 +66,8 @@ class EditableCell extends React.Component {
         if (this.props.dataIndex === 'zfcgcode'||this.props.dataIndex === 'zfcgname'||this.props.dataIndex === 'jjkmcode') {
             return ( <Input disabled={true}/>);
         }
-        if (this.props.dataIndex === 'cgnum'||this.props.dataIndex === 'dj') {
-            return ( <Input />);
+        if (this.props.dataIndex === 'cgnum'||this.props.dataIndex === 'dj'|| this.props.dataIndex ==='ysje') {
+            return ( <InputNumber min={0} />);
         }
         return <Input />;
   };
@@ -191,6 +191,9 @@ class EditablezfgmfwCell extends React.Component {
            return (<TreeSelect  style={{ width: 190}}  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }} onSelect={this.onSelect}>
                 {treedata}
               </TreeSelect>);
+       }
+       if(this.props.dataIndex === 'fwje'){
+        return ( <InputNumber min={0}/>);
        }
         
        return <Input />;
