@@ -9,7 +9,7 @@ export default class ApiAndInterfaceUrl {
     //h1接口
     static redirectUrl = 'http://192.168.50.183:8060/bud/redirect?url=http://192.168.50.183:3030/';
     //static redirectUrl ='http://119.147.216.208/api/intrl/bud/redirect?url=http://119.147.216.208/intrl/budget-web/'
-    
+
     //userInfo接口
     // static webApi = "http://192.168.50.181:8060/";
     // static userInfoUrl = '/user/info';
