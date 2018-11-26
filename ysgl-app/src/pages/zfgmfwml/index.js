@@ -307,7 +307,7 @@ class OpenFormTable extends React.Component{
               {/* <Contrbutton type={this.props.type} handleReset={this.handleReset} /> */}
                 <FormItem label="服务目录编码" {...formItemLayout}>
                     {   
-                        tableInfo && type==='detail'? getFieldDecorator('fwCode',{
+                        tableInfo && (type==='detail' || type==='edit') ? getFieldDecorator('fwCode',{
                             initialValue:tableInfo.fwCode,
                             rules:[
                             ]
@@ -379,7 +379,7 @@ class OpenFormTable extends React.Component{
                             rules:[{  required: true,
                                 message:'排序号不能为空！'}]
                         })(
-                        <InputNumber />    
+                        <InputNumber min={0}/>    
                         
                         )
                     }

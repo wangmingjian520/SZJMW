@@ -334,6 +334,7 @@ class OpenFormTable extends React.Component{
                 <FormItem label="预算经济分类编号" {...formItemLayout}>
                     {   
                         tableInfo && type=='detail'? tableInfo.jjkmCode: 
+                        tableInfo && type=='add'? 
                         getFieldDecorator('jjkmCode',{
                             initialValue:tableInfo.jjkmCode,
                             rules:[
@@ -343,8 +344,11 @@ class OpenFormTable extends React.Component{
                                 }
                             ]
                         })
-                         (   <Input placeholder="请输入预算经济分类编号" />
-                         )
+                         (<Input placeholder="请输入预算经济分类编号" />
+                         ) : getFieldDecorator('jjkmCode',{
+                            initialValue:tableInfo.jjkmCode, 
+                        })
+                         (<Input readOnly/> )
                     }
                 </FormItem>
                 <FormItem label="预算经济分类名称" {...formItemLayout}>
@@ -370,7 +374,7 @@ class OpenFormTable extends React.Component{
                             initialValue:tableInfo.tabindex,
                             rules:[]
                         })(
-                        <InputNumber />    
+                        <InputNumber min={0}/>    
                         
                         )
                     }
