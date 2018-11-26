@@ -200,8 +200,8 @@ export default class Proc extends React.Component{
                     }
                     if(stateVar==='procVo'){
                         let procVo=res.data; 
-                        let actions=procVo.actions ||[];
-                        if(actions.length>0){
+                        let actions=[];
+                        if(procVo.actions&&procVo.actions.length>0){
                             actions= this.handleAction(procVo.actions)
                         }
                          
