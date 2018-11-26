@@ -66,11 +66,35 @@ class EditableCell extends React.Component {
         if (this.props.dataIndex === 'zfcgcode'||this.props.dataIndex === 'zfcgname'||this.props.dataIndex === 'jjkmcode') {
             return ( <Input disabled={true}/>);
         }
-        if (this.props.dataIndex === 'cgnum'||this.props.dataIndex === 'dj'|| this.props.dataIndex ==='ysje') {
-            return ( <InputNumber min={0} />);
+        if (this.props.dataIndex === 'cgnum') {
+            return ( <InputNumber min={0} id="cgnum" onChange={this.handleChangcgnum} />);
+        }
+        if (this.props.dataIndex === 'dj') {
+            return ( <InputNumber min={0} id="dj" onChange={this.handleChangdj} />);
+        }
+        if(this.props.dataIndex ==='ysje'){
+            return <Input readOnly/>;
         }
         return <Input />;
   };
+  //更改数量，自动计算
+  handleChangcgnum = (value)=>{ 
+    
+    let dj= document.getElementById('dj').value || 0; 
+        this.form.setFieldsValue({
+            ysje: value*dj
+          });
+     
+  }
+  //更改单价，自动计算
+  handleChangdj = (value)=>{ 
+    let cgnum= document.getElementById('cgnum').value || 0;
+     
+        this.form.setFieldsValue({
+            ysje: cgnum*value
+          });
+     
+  }
   //更改分类名称
   handleChangjjfkName = (value)=>{
       const {departobj}=this.props;
